@@ -1,0 +1,41 @@
+{
+  "main": "node_modules/expo/AppEntry.js",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "eject": "expo eject"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^10.0.6",
+    "expo": "~36.0.0",
+    "firebase": "^7.11.0",
+    "lodash": "^4.17.15",
+    "react": "^16.13.0",
+    "react-dom": "~16.9.0",
+    "react-native": "^0.61.5",
+    "react-native-background-fetch": "2.0.x",
+    "react-native-background-task": "^0.2.1",
+    "react-native-gesture-handler": "^1.6.0",
+    "react-native-link": "^4.1.0",
+    "react-native-macos": "^0.60.0-microsoft.57",
+    "react-native-queue": "^1.2.1",
+    "react-native-reanimated": "^1.7.0",
+    "react-native-safe-area-context": "^0.7.3",
+    "react-native-screens": "^2.3.0",
+    "react-native-vector-icons": "^6.6.0",
+    "react-native-web": "~0.11.7",
+    "react-navigation": "^4.2.2",
+    "react-navigation-stack": "^2.2.3",
+    "react-navigation-tabs": "^2.8.2",
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-thunk": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0",
+    "babel-preset-expo": "~8.0.0"
+  },
+  "private": true
+}
