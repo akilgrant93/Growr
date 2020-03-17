@@ -11,6 +11,7 @@ import Loading from './Components/Loading'
 
 export default class App extends Component {
   userState={
+    //toggle true to render routes supposed to be triggered in the firebase.auth function in the componentDidMount
     loggedIn: false
   }
   componentDidMount(){
