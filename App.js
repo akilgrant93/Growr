@@ -5,15 +5,49 @@ import { createStore } from 'redux'
 import applyMiddleWare from 'redux/src/applyMiddleware'
 import ReduxThunk from 'redux-thunk'
 import reducers from './reducers'
+import LoginForm from './Components/LoginForm'
+import firebase from 'firebase'
+import Loading from './Components/Loading'
 
 export default class App extends Component {
-  render() {
+  userState={
+    loggedIn: false
+  }
+  componentDidMount(){
+    console.log('mounted!')
+    console.log('firebase!', firebase)
+    firebase.auth().onAuthStateChanged(user => {
+          console.log(user)
+         if(user){
+            this.setState({
+              loggedIn:true
+            })
+         }else{
+           this.setState({
+             loggedIn:false
+           })
+         }
+    })
+  }
 
+  renderContent = () => {
+    console.log(this)
+    switch(this.userState.loggedIn){
+      case false:
+        return <LoginForm />
+      case true:
+        return <Routes />
+        default:
+          return <Loading />
+    }
+  }
+  render() {
     const state = createStore(reducers, {}, applyMiddleWare(ReduxThunk))
 
     return (
+
       <Provider store={state}>
-        <Routes />
+        {this.renderContent()}
       </Provider>
     )
   }

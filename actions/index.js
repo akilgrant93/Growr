@@ -1,5 +1,4 @@
 import firebase from '../fb'
-import { log } from 'util'
 
 export function getPlants(){
   return(dispatch) => {

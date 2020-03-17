@@ -19,28 +19,35 @@ class Plants extends Component {
           renderItem={(item) => {
             return (
               <View style={styles.plantListItem}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <View style={styles.textView}>
                 <Text style={styles.title}>
                   {item.item.name}
                 </Text>
                 <Text style={styles.subtitle}>
                   {item.item.type.toUpperCase()}
                 </Text>
-                <View style={{flexDirection: 'row', paddingRight: '1em', justifyContent: 'flex-end'}}>
-                  <TouchableHighlight style={{backgroundColor:'#004d00'}} onPress={() => this.props.navigation.navigate('Edit', {...item})}>
-                    <View style={styles.imgFlex}>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                  <TouchableHighlight style={styles.imgFlex} onPress={() => this.props.navigation.navigate('Edit', {...item})}>
+                    <View >
                       <Text style={styles.buttonText}>EDIT</Text>
                     </View>
                   </TouchableHighlight>
-                  <TouchableHighlight style={{backgroundColor:'#b3ffb3'}} onPress={() => this.props.deletePlant(item.item.key) }>
-                    <View style={styles.imgFlex}>
+                  <TouchableHighlight style={styles.imgFlex2} onPress={() => this.props.deletePlant(item.item.key) }>
+                    <View >
                       <Text style={styles.buttonText2}>DELETE</Text>
                     </View>
                   </TouchableHighlight>
+                  </View>
                 </View>
               </View>
             )
           }} />
         }
+        <TouchableHighlight style={{padding: 20, backgroundColor: '#fff', borderRadius: 8, marginBottom: "3%"}}>
+            <Text style={{color: "red"}}>Logout</Text>
+          </TouchableHighlight>
       </View>
     )
   }
@@ -49,15 +56,15 @@ class Plants extends Component {
 const styles = StyleSheet.create({
   buttonText: {
   fontSize: 8,
-  color:  '#fff',
+  color:  '#004d00',
   fontWeight: 'bold',
-  padding: '.5em',
+  padding: '3%',
   },
   buttonText2: {
     fontSize: 8,
-    color:  '#004d00',
+    color:  '#fff',
     fontWeight: 'bold',
-    padding: '.5em',
+    padding: '3%',
     },
   container: {
     flex: 1,
@@ -67,28 +74,45 @@ const styles = StyleSheet.create({
   },
   imgFlex: {
     display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor:'#90F890'
+
+  },
+  imgFlex2: {
+    display: 'flex',
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
+    flexDirection: 'column',
+    justifyContent: 'center',
+    backgroundColor:'#00e600',
   },
   plantListItem: {
-    elevation: 8,
-    marginTop:20,
-    height:75,
+    marginTop:10,
+    minHeight:35,
     width: '90%',
-    paddingTop: '.5m',
     marginLeft: '5%',
-    borderRadius: '5px',
+    borderRadius: 5,
     borderColor: '#004d00',
-    borderWidth: 1,
+    backgroundColor: '#C0FBC0'
   },
   title: {
     textAlign: 'center',
     color: '#004d00',
     fontWeight: 'bold',
-    paddingTop: '.5em'
+    paddingTop: '2%',
   },
   subtitle: {
     textAlign: 'center',
     fontSize: 10,
-    padding: '.5em'
+    padding: '2%'
+  },
+  textView: {
+    display: 'flex',
+    width: '60%',
+    paddingTop: '2%',
+    paddingBottom: '2%',
+    flexDirection: 'column'
   }
 })
 
