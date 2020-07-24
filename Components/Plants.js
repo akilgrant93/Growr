@@ -24,9 +24,9 @@ class Plants extends Component {
                 <Text style={styles.title}>
                   {item.item.name}
                 </Text>
-                <Text style={styles.subtitle}>
+                {/* <Text style={styles.subtitle}>
                   {item.item.type.toUpperCase()}
-                </Text>
+                </Text> */}
                 </View>
                 <View style={{flexDirection: 'row'}}>
                   <TouchableHighlight style={styles.imgFlex} onPress={() => this.props.navigation.navigate('Edit', {...item})}>

@@ -10,7 +10,7 @@ import firebase from 'firebase'
 import Loading from './Components/Loading'
 
 export default class App extends Component {
-  userState={
+  state={
     //toggle true to render routes supposed to be triggered in the firebase.auth function in the componentDidMount
     loggedIn: false
   }
@@ -33,7 +33,7 @@ export default class App extends Component {
 
   renderContent = () => {
     console.log(this)
-    switch(this.userState.loggedIn){
+    switch(this.state.loggedIn){
       case false:
         return <LoginForm />
       case true:
