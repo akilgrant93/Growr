@@ -8,6 +8,11 @@ import reducers from './reducers'
 import LoginForm from './Components/LoginForm'
 import firebase from 'firebase'
 import Loading from './Components/Loading'
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
 
 export default class App extends Component {
   state={

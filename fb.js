@@ -1,5 +1,6 @@
 import * as firebase from 'firebase'
-//db info
+import 'firebase/firestore';
+
 export let firebaseConfig = {
   apiKey: "AIzaSyB_f7-flGSfGXOzc3BpwTErFnf1fOoDRP4",
   authDomain: "growr-65834.firebaseapp.com",

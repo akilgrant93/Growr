@@ -37,7 +37,7 @@ const BottomTab = createBottomTabNavigator(
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, horizontal, tintColor }) => {
         const { routeName } = navigation.state;
-        console.log('routeName', routeName)
+        // console.log('routeName', routeName)
         if (routeName === 'Home') {
           return (
             <Image

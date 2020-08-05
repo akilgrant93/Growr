@@ -1,32 +1,34 @@
-import React, { Component } from 'react'
-import { Text, View, StyleSheet, Button, FlatList, TouchableHighlight, Image } from 'react-native'
-import { getPlants, deletePlant } from '../actions'
+import React, { Component, useState } from 'react'
+import { Text, View, StyleSheet, Button, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native'
+import { getUserPlants, deletePlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Icon from 'react-native-vector-icons'
 
 class Plants extends Component {
   componentDidMount(){
-    this.props.getPlants()
+    this.props.getUserPlants()
   }
   render() {
     return (
       <View style={styles.container}>
+
         {
           this.props.loadingReducer ? <Text>Loading Please Wait</Text> : <FlatList style={{width:'100%'}}
           data={this.props.listOfPlants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            return (
+            // console.log('item',item)
+             return (
               <View style={styles.plantListItem}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={styles.textView}>
                 <Text style={styles.title}>
-                  {item.item.name}
+                  {item.item.commonName}
                 </Text>
-                {/* <Text style={styles.subtitle}>
-                  {item.item.type.toUpperCase()}
-                </Text> */}
+                <Text style={styles.title}>
+                 {item.item.scientificName}
+                </Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>
                   <TouchableHighlight style={styles.imgFlex} onPress={() => this.props.navigation.navigate('Edit', {...item})}>
@@ -129,6 +131,6 @@ function mapState(state){
   }
 }
 
-export default connect(mapState, {getPlants, deletePlant})(Plants)
+export default connect(mapState, {getUserPlants, deletePlant})(Plants)
 
 

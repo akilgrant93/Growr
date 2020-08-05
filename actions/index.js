@@ -1,6 +1,9 @@
 import firebase from '../fb'
+let app = firebase.app()
+const db = firebase.firestore()
 
-export function getPlants(){
+//actually gets all plants
+export function getUserPlants(){
   return(dispatch) => {
 
     dispatch({
@@ -21,7 +24,14 @@ export function getPlants(){
   }
 }
 
+//add a plant to searchable db
 export function postPlant(name, type){
+  return (dispatch) => {
+    firebase.firestore().ref('/plants').push({name, type})
+  }
+}
+
+export function postUserPlant(name, type){
   return (dispatch) => {
     firebase.database().ref('/plants').push({name, type})
   }
