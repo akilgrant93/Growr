@@ -8,13 +8,15 @@ import { AntDesign } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { connect } from 'react-redux'
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component'
+//make header component - experiment w/ react navigation
 
 class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      fetching_from_server: false,
+      endCursor: {},
+      startCursor: {},
+      limit: 40,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
@@ -28,34 +30,90 @@ class Post extends Component {
     var uniques = [];
     var itemsFound = {};
     for(var i = 0, l = arr.length; i < l; i++) {
-        var stringified = JSON.stringify(arr[i].name);
-        if(itemsFound[stringified]) { continue; }
-        uniques.push(arr[i]);
-        itemsFound[stringified] = true;
+      var stringified = JSON.stringify(arr[i].commonName)+JSON.stringify(arr[i].scientificName);
+      if(itemsFound[stringified]) { continue; }
+      uniques.push(arr[i]);
+      itemsFound[stringified] = true;
     }
     return uniques;
   }
 
+  prev = async({
+    search = this.state.value,
+  } = {}) => {
+    const db = firebase.firestore();
+    const snapshot = await db.collection('plants')
+    .where('keywords', 'array-contains', search.toLowerCase())
+      .orderBy('name.scientificName','desc')
+      .limit(this.state.limit)
+      .startAfter(this.state.startCursor)
+      .get();
+    this.setState({tableData: [], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0]})
+    return snapshot.docs.reverse().reduce((acc, doc) => {
+      const name = doc.data().name;
+      this.setState({
+        tableData:
+        this.multiDimensionalUnique(
+            [...this.state.tableData,
+              {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
+            ]
+          )
+        })
+    }, '');
+  }
+
+  next = async({
+    search = this.state.value,
+  } = {}) => {
+    const db = firebase.firestore();
+    const snapshot = await db.collection('plants')
+    .where('keywords', 'array-contains', search.toLowerCase())
+      .orderBy('name.scientificName')
+      .limit(this.state.limit)
+      .startAfter(this.state.endCursor)
+      .get();
+    this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1]})
+    return snapshot.docs.reduce((acc, doc) => {
+      const name = doc.data().name;
+      console.log('name',name)
+      this.setState({
+        tableData:
+        this.multiDimensionalUnique(
+          [...this.state.tableData,
+            {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
+          ]
+          )
+        })
+    }, '');
+  }
+
   searchByName = async ({
     search = '',
-    limit = 50,
-    lastNameOfLastPlant = ''
   } = {}) => {
 
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('name.scientificName')
-      .limit(limit)
+      .limit(this.state.limit)
       .get();
+    this.state.endCursor = snapshot.docs[snapshot.docs.length-1]
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data().name;
-      this.setState({tableData: this.multiDimensionalUnique([...this.state.tableData, name.commonName !== '' ? {name: name.commonName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`} : {name: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}])})
+      this.count++
+      // console.log(doc.data().name)
+      this.setState({
+        tableData:
+        this.multiDimensionalUnique(
+          [...this.state.tableData,
+            {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
+          ]
+          )
+        })
     }, '');
-  };d
+  }
 
   handleChange = async() => {
-    console.log(this.state)
     this.setState({tableData: []})
     await this.searchByName({search: this.state.value})
   }
@@ -70,7 +128,7 @@ class Post extends Component {
   }
 
   render() {
-    console.log('tabledata', this.state.tableData)
+    // console.log('tabledata', this.state.tableData.length)
     return (
       <View style={styles.container}>
         <Text style={styles.text}> What kind of plant are you growing? </Text>
@@ -103,24 +161,29 @@ class Post extends Component {
         </View>
 
         <View>
-           {!this.state.tableData ? <View></View> : <FlatList style={{width:'100%'}}
+           {!this.state.tableData ? <View></View> : <FlatList style={{width:'90%', marginLeft: '5%',marginTop: '5%'}}
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
+            // console.log(item)
              return (
               <View style={styles.plantListItem}>
                 {item.index % 2
                   ? <View style={styles.textView}>
                     <View>
                       <Text style={styles.title}>
-                        {item.item.name}
+                        {!item.item.commonName
+                          ? item.item.scientificName
+                          : item.item.commonName}
                       </Text>
                     </View>
                   </View>
                   : <View style={styles.textView2}>
                     <View>
                       <Text style={styles.title}>
-                      {item.item.name}
+                      {!item.item.commonName
+                          ? item.item.scientificName
+                          : item.item.commonName}
                       </Text>
                     </View>
                   </View>
@@ -133,16 +196,22 @@ class Post extends Component {
           this.state.tableData.length === 0
             ? <View></View>
             : <View style = {{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-around', marginTop: '5%', width: '70%', marginLeft: '15%'}}>
-                  <TouchableHighlight onPress={this.prevPage}>
+                  <TouchableHighlight onPress={this.prev}>
                   <View>
                   <AntDesign name="leftcircleo" size={40} color="green" />
                   </View>
                 </TouchableHighlight>
-                <TouchableHighlight onPress={this.nextPage}>
+                {this.state.tableData.length < this.state.limit/2
+                  ? <TouchableHighlight>
+                  <View>
+                  <AntDesign name="rightcircleo" size={40} color="grey" />
+                  </View>
+                </TouchableHighlight>
+                  : <TouchableHighlight onPress={this.next}>
                   <View>
                   <AntDesign name="rightcircleo" size={40} color="green" />
                   </View>
-                </TouchableHighlight>
+                </TouchableHighlight>}
                 </View>
               }
         </View>
