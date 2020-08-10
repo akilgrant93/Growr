@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, TouchableHighlight, Image, TouchableOpacity } from 'react-native'
+import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
 import firebase from '../fb'
 import ReactDOM from 'react-dom'
 import { postUserPlant } from '../actions'
 // import plants from '../plantseed'
+import { AntDesign } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import { connect } from 'react-redux'
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component'
 
@@ -11,11 +13,14 @@ class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: true,
+      fetching_from_server: false,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
       ]
     }
+    this.offset = 1;
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -23,7 +28,6 @@ class Post extends Component {
     var uniques = [];
     var itemsFound = {};
     for(var i = 0, l = arr.length; i < l; i++) {
-      // console.log(JSON.stringify(arr[i]))
         var stringified = JSON.stringify(arr[i].name);
         if(itemsFound[stringified]) { continue; }
         uniques.push(arr[i]);
@@ -32,13 +36,12 @@ class Post extends Component {
     return uniques;
   }
 
-  // db = firebase.firestore();
   searchByName = async ({
     search = '',
-    limit = 100,
+    limit = 50,
     lastNameOfLastPlant = ''
   } = {}) => {
-    console.log('search',search)
+
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
@@ -104,31 +107,46 @@ class Post extends Component {
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            console.log('item',item)
              return (
               <View style={styles.plantListItem}>
                 {item.index % 2
-                ? <View style={styles.textView}>
-                <View>
-                <Text style={styles.title}>
-                 {item.item.name}
-                </Text>
-                </View>
-                </View>
-                : <View style={styles.textView2}>
-                <View>
-                <Text style={styles.title}>
-                 {item.item.name}
-                </Text>
-                </View>
-                </View>
+                  ? <View style={styles.textView}>
+                    <View>
+                      <Text style={styles.title}>
+                        {item.item.name}
+                      </Text>
+                    </View>
+                  </View>
+                  : <View style={styles.textView2}>
+                    <View>
+                      <Text style={styles.title}>
+                      {item.item.name}
+                      </Text>
+                    </View>
+                  </View>
                 }
               </View>
             )
           }} />
         }
+        {
+          this.state.tableData.length === 0
+            ? <View></View>
+            : <View style = {{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-around', marginTop: '5%', width: '70%', marginLeft: '15%'}}>
+                  <TouchableHighlight onPress={this.prevPage}>
+                  <View>
+                  <AntDesign name="leftcircleo" size={40} color="green" />
+                  </View>
+                </TouchableHighlight>
+                <TouchableHighlight onPress={this.nextPage}>
+                  <View>
+                  <AntDesign name="rightcircleo" size={40} color="green" />
+                  </View>
+                </TouchableHighlight>
+                </View>
+              }
         </View>
-      </View>
+        </View>
     )
   }
 }
