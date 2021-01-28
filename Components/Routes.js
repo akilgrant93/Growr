@@ -41,7 +41,7 @@ const BottomTab = createBottomTabNavigator(
         if (routeName === 'Home') {
           return (
             <Image
-              source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445498922-SIG0SH6NSFOFAVYAS3B1/home.png?content-type=image%2Fpng}'}}
+              source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445498922-SIG0SH6NSFOFAVYAS3B1/home.png?content-type=image%2Fpng'}}
               style={{ width: 20, height: 20, }} />
           );
         } else {
