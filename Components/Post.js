@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator, Modal } from 'react-native'
 import firebase from '../fb'
 import ReactDOM from 'react-dom'
 import { postUserPlant } from '../actions'
@@ -18,12 +18,18 @@ class Post extends Component {
       startCursor: {},
       limit: 40,
       value:'Search',
+      isVisible: false,
       tableHead: ['Name'],
       tableData: [
       ]
     }
     this.offset = 1;
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  displayModal(show){
+    this.setState({isVisible: show})
+    console.log(this.state.isVisible)
   }
 
   multiDimensionalUnique(arr) {
@@ -147,9 +153,6 @@ class Post extends Component {
             color: '#004d00'
           }}
           clearButtonMode='always'
-          // clearTextOnFocus= {true}
-          // inlineImageLeft='search_icon'
-          // autoCapitalize="sentences"
           defaultValue="Search" onChangeText={name => this.setState({value:name})}
           //  value={this.state.name}
            />
@@ -170,22 +173,36 @@ class Post extends Component {
               <View style={styles.plantListItem}>
                 {item.index % 2
                   ? <View style={styles.textView}>
-                    <View>
+                      <Modal
+            animationType = {"slide"}
+            transparent={false}
+            visible={this.state.isVisible}
+            onRequestClose={() => {
+              Alert.alert('Modal has now been closed.');
+            }}>
+              <Text style = { styles.text }>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  Maecenas eget tempus augue, a convallis velit.</Text>
+              <Text
+                style={styles.closeText}
+                onPress={() => {
+                  this.displayModal(!this.state.isVisible);}}>Close Modal</Text>
+          </Modal>
+                      <TouchableOpacity onPress={() => {
+                this.displayModal(true)}}>
                       <Text style={styles.title}>
                         {!item.item.commonName
                           ? item.item.scientificName
                           : item.item.commonName}
                       </Text>
-                    </View>
+                      </TouchableOpacity>
                   </View>
                   : <View style={styles.textView2}>
-                    <View>
                       <Text style={styles.title}>
                       {!item.item.commonName
                           ? item.item.scientificName
                           : item.item.commonName}
                       </Text>
-                    </View>
                   </View>
                 }
               </View>
@@ -265,16 +282,16 @@ const styles = StyleSheet.create({
     fontWeight: '600'
   },
   textView2: {
-    paddingBottom: '1%',
-    paddingTop: '1%',
+    paddingBottom: '2%',
+    paddingTop: '2%',
     paddingLeft: '1%',
     backgroundColor:  '#fff',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   textView: {
-    paddingBottom: '1%',
-    paddingTop: '1%',
+    paddingBottom: '2%',
+    paddingTop: '2%',
     paddingLeft: '1%',
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -288,4 +305,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(null, { postUserPlant})(Post)
+export default connect(null, {postUserPlant})(Post)

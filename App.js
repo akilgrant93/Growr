@@ -9,6 +9,7 @@ import LoginForm from './Components/LoginForm'
 import firebase from 'firebase'
 import Loading from './Components/Loading'
 import {decode, encode} from 'base-64'
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 if (!global.btoa) {  global.btoa = encode }
 
@@ -51,10 +52,11 @@ export default class App extends Component {
     const state = createStore(reducers, {}, applyMiddleWare(ReduxThunk))
 
     return (
-
+      <SafeAreaProvider>
       <Provider store={state}>
         {this.renderContent()}
       </Provider>
+      </SafeAreaProvider>
     )
   }
 }
