@@ -2,6 +2,8 @@ import firebase from '../fb'
 let app = firebase.app()
 const db = firebase.firestore()
 
+//admin functions
+
 //gets all plants
 export function getAllPlants(){
   return(dispatch) => {
@@ -44,6 +46,8 @@ export function editPlant(name, type, key){
   }
 }
 
+//user functions
+
 //gets users plants
 export function getUserPlants(uid){
   return(dispatch) => {
@@ -65,7 +69,7 @@ export function getUserPlants(uid){
   }
 }
 
-//add a plant to a users list of tracked plants
+//add a plant to a users list of tracked plants will come with more settings other than "name" in the long term
 export function postUserPlant(name){
   // console.log(name)
   const uid = firebase.auth().currentUser.uid
@@ -75,3 +79,18 @@ export function postUserPlant(name){
   }
 }
 
+//delete a plant from the users list of tracked plants
+export function deleteUserPlant(key){
+  return (dispatch) => {
+    const uid = firebase.auth().currentUser.uid
+    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).remove()
+  }
+}
+
+//edit a plant on the users db - will be updated as functionality is added
+export function editUserPlant(name, type, key){
+  return (dispatch) => {
+    const uid = firebase.auth().currentUser.uid
+    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).update({name, type})
+  }
+}

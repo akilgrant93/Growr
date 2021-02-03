@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, TextInput, Picker, Button, TouchableHighlight } from 'react-native'
-import { editPlant } from '../actions'
+import { editUserPlant } from '../actions'
 import { connect } from 'react-redux'
 
 class Edit extends Component {
@@ -11,7 +11,7 @@ class Edit extends Component {
 
   }
   submit = () => {
-    this.props.editPlant(this.state.name, this.state.type, this.state.key)
+    this.props.editUserPlant(this.state.name, this.state.type, this.state.key)
     this.setState({
       name: "Type name here...",
       type: "",
@@ -87,4 +87,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(null, {editPlant})(Edit)
+export default connect(null, {editUserPlant})(Edit)

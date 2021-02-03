@@ -1,6 +1,6 @@
 import React, { Component, useState } from 'react'
 import { Text, View, StyleSheet, Button, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native'
-import { getUserPlants, deletePlant } from '../actions'
+import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Icon from 'react-native-vector-icons'
@@ -35,7 +35,7 @@ class Plants extends Component {
                       <Text style={styles.buttonText}>EDIT</Text>
                     </View>
                   </TouchableHighlight>
-                  <TouchableHighlight style={styles.imgFlex2} onPress={() => this.props.deletePlant(item.item.key) }>
+                  <TouchableHighlight style={styles.imgFlex2} onPress={() => this.props.deleteUserPlant(item.item.key) }>
                     <View >
                       <Text style={styles.buttonText2}>DELETE</Text>
                     </View>
@@ -130,6 +130,6 @@ function mapState(state){
   }
 }
 
-export default connect(mapState, {getUserPlants, deletePlant})(Plants)
+export default connect(mapState, {getUserPlants, deleteUserPlant})(Plants)
 
 
