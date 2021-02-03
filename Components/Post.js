@@ -2,15 +2,12 @@ import React, { Component } from 'react'
 import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator, Modal } from 'react-native'
 import firebase from '../fb'
 import ReactDOM from 'react-dom'
-import { postUserPlant } from '../actions'
 // import plants from '../plantseed'
 import { AntDesign } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-import { connect } from 'react-redux'
-import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component'
+import ListedPlant from './ListedPlant'
 //make header component - experiment w/ react navigation
 
-class Post extends Component {
+export default class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -18,18 +15,12 @@ class Post extends Component {
       startCursor: {},
       limit: 40,
       value:'Search',
-      isVisible: false,
       tableHead: ['Name'],
       tableData: [
       ]
     }
     this.offset = 1;
     this.handleChange = this.handleChange.bind(this);
-  }
-
-  displayModal(show){
-    this.setState({isVisible: show})
-    console.log(this.state.isVisible)
   }
 
   multiDimensionalUnique(arr) {
@@ -81,7 +72,7 @@ class Post extends Component {
     this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1]})
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data().name;
-      console.log('name',name)
+      // console.log('name',name)
       this.setState({
         tableData:
         this.multiDimensionalUnique(
@@ -124,21 +115,10 @@ class Post extends Component {
     await this.searchByName({search: this.state.value})
   }
 
-
-  submit = () => {
-    this.props.postUserPlant(this.state.name, this.state.type)
-    this.setState({
-      type:""
-    })
-    this.props.navigation.navigate('Home')
-  }
-
   render() {
-    // console.log('tabledata', this.state.tableData.length)
     return (
       <View style={styles.container}>
         <Text style={styles.text}> What kind of plant are you growing? </Text>
-
         <View style={{display:'flex',flexDirection:'row', justifyContent: 'center'}}>
         <TextInput
           id ='textBoxSearch'
@@ -154,7 +134,6 @@ class Post extends Component {
           }}
           clearButtonMode='always'
           defaultValue="Search" onChangeText={name => this.setState({value:name})}
-          //  value={this.state.name}
            />
            <TouchableHighlight style={styles.button} onPress={this.handleChange}>
             <View style={{flexDirection: 'column',padding: '5%'}}>
@@ -162,9 +141,8 @@ class Post extends Component {
             </View>
         </TouchableHighlight>
         </View>
-
         <View>
-           {!this.state.tableData ? <View></View> : <FlatList style={{width:'90%', marginLeft: '5%',marginTop: '5%'}}
+           {!this.state.tableData ? <View></View> : <FlatList style={{width:'100%',marginTop: '5%'}}
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
@@ -172,38 +150,8 @@ class Post extends Component {
              return (
               <View style={styles.plantListItem}>
                 {item.index % 2
-                  ? <View style={styles.textView}>
-                      <Modal
-            animationType = {"slide"}
-            transparent={false}
-            visible={this.state.isVisible}
-            onRequestClose={() => {
-              Alert.alert('Modal has now been closed.');
-            }}>
-              <Text style = { styles.text }>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Maecenas eget tempus augue, a convallis velit.</Text>
-              <Text
-                style={styles.closeText}
-                onPress={() => {
-                  this.displayModal(!this.state.isVisible);}}>Close Modal</Text>
-          </Modal>
-                      <TouchableOpacity onPress={() => {
-                this.displayModal(true)}}>
-                      <Text style={styles.title}>
-                        {!item.item.commonName
-                          ? item.item.scientificName
-                          : item.item.commonName}
-                      </Text>
-                      </TouchableOpacity>
-                  </View>
-                  : <View style={styles.textView2}>
-                      <Text style={styles.title}>
-                      {!item.item.commonName
-                          ? item.item.scientificName
-                          : item.item.commonName}
-                      </Text>
-                  </View>
+                  ? <ListedPlant item={item.item} style={1}/>
+                  : <ListedPlant item={item.item} style={2}/>
                 }
               </View>
             )
@@ -265,6 +213,18 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: '#f1f8ff'
   },
+  modal: {
+    display: 'flex',
+    marginTop: '25%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '75%',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 10,
+    padding: '2%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
   text2: {
     margin: 5,
     fontSize: 10,
@@ -304,5 +264,3 @@ const styles = StyleSheet.create({
     marginBottom: '2%'
   }
 })
-
-export default connect(null, {postUserPlant})(Post)

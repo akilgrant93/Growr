@@ -11,6 +11,7 @@ export default class EmailAndPassword extends Component {
     accountCreated: false
   }
 
+  //sign-in function
   onSubmit = () =>{
     firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
     .then(this.loginSucceeded)
@@ -22,7 +23,6 @@ export default class EmailAndPassword extends Component {
     })
 
   }
-
 
   onSignUp = () => {
     firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).catch(function(err) {

@@ -1,6 +1,7 @@
 import Plants from './Plants'
 import Edit from './Edit'
 import Post from './Post'
+import Articles from './Articles'
 import React, { Component } from 'react'
 import { Text, View, StyleSheet, Image } from 'react-native'
 import { createStackNavigator } from 'react-navigation-stack'
@@ -29,6 +30,9 @@ const BottomTab = createBottomTabNavigator(
     Home: {
       screen: Home
     },
+    // Articles: {
+    //   screen: Articles
+    // },
     Post: {
       screen: Post
     }

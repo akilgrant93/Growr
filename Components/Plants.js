@@ -4,10 +4,12 @@ import { getUserPlants, deletePlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import Icon from 'react-native-vector-icons'
+import firebase from 'firebase'
 
 class Plants extends Component {
   componentDidMount(){
-    this.props.getUserPlants()
+    const uid = firebase.auth().currentUser.uid
+    this.props.getUserPlants(uid)
   }
   render() {
     return (

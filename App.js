@@ -10,6 +10,7 @@ import firebase from 'firebase'
 import Loading from './Components/Loading'
 import {decode, encode} from 'base-64'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import userContext from './UserContext';
 
 if (!global.btoa) {  global.btoa = encode }
 
@@ -18,16 +19,15 @@ if (!global.atob) { global.atob = decode }
 export default class App extends Component {
   state={
     //toggle true to render routes supposed to be triggered in the firebase.auth function in the componentDidMount
+    uid: '',
     loggedIn: false
   }
   componentDidMount(){
     console.log('mounted!')
-    console.log('firebase!', firebase)
     firebase.auth().onAuthStateChanged(user => {
-          console.log(user)
          if(user){
             this.setState({
-              loggedIn:true
+              loggedIn:true, uid: user.uid
             })
          }else{
            this.setState({
@@ -38,7 +38,6 @@ export default class App extends Component {
   }
 
   renderContent = () => {
-    console.log(this)
     switch(this.state.loggedIn){
       case false:
         return <LoginForm />
@@ -53,9 +52,11 @@ export default class App extends Component {
 
     return (
       <SafeAreaProvider>
+      <userContext.Provider>
       <Provider store={state}>
         {this.renderContent()}
       </Provider>
+      </userContext.Provider>
       </SafeAreaProvider>
     )
   }
