@@ -51,7 +51,7 @@ export function getUserPlants(uid){
       type: "PLANTS_LOADING",
       paylod: true
     })
-    firebase.database().ref('/userPlants').child(`${uid}`).on('value', snapshot => {
+    firebase.database().ref(`/userPlants/${uid}/plants`).on('value', snapshot => {
       dispatch({
         type: "PLANTS_FETCH",
         payload: snapshot.val()

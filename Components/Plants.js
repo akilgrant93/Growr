@@ -20,15 +20,13 @@ class Plants extends Component {
           data={this.props.listOfPlants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
+            console.log(item)
              return (
               <View style={styles.plantListItem}>
                 <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
                 <View style={styles.textView}>
                 <Text style={styles.title}>
-                  {item.item.commonName}
-                </Text>
-                <Text style={styles.title}>
-                 {item.item.scientificName}
+                  {item.item.name}
                 </Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>

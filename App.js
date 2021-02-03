@@ -10,8 +10,6 @@ import firebase from 'firebase'
 import Loading from './Components/Loading'
 import {decode, encode} from 'base-64'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import userContext from './UserContext';
-
 if (!global.btoa) {  global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
@@ -52,11 +50,9 @@ export default class App extends Component {
 
     return (
       <SafeAreaProvider>
-      <userContext.Provider>
       <Provider store={state}>
         {this.renderContent()}
       </Provider>
-      </userContext.Provider>
       </SafeAreaProvider>
     )
   }
