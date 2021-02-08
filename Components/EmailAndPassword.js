@@ -29,7 +29,7 @@ export default class EmailAndPassword extends Component {
       this.setState({
         error: err.message
       })
-
+      console.log('There is already an account associated with this e-mail address.')
     });
     this.setState({
       accountCreated: true
