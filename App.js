@@ -15,6 +15,7 @@ import {decode, encode} from 'base-64'
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 Notifications.setNotificationHandler({
+  //when necessary edit this into a conditional function with where different kinds of notification properties in the following object format are returned, based upon some input
   handleNotification: async () => ({
     shouldShowAlert: true,
     shouldPlaySound: false,
@@ -35,7 +36,6 @@ if (!global.atob) { global.atob = decode }
 
     useEffect(() => {
       registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
       // This listener is fired whenever a notification is received while the app is foregrounded
       notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
         setNotification(notification);
@@ -68,7 +68,7 @@ if (!global.atob) { global.atob = decode }
       case false:
         return <LoginForm />
       case true:
-        return <Routes />
+        return <Routes token={expoPushToken}/>
         default:
           return <Loading />
     }

@@ -5,11 +5,15 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import Icon from 'react-native-vector-icons'
 import firebase from 'firebase'
+import * as Notifications from 'expo-notifications';
 
 class Plants extends Component {
-  componentDidMount(){
+  async componentDidMount(){
     const uid = firebase.auth().currentUser.uid
     this.props.getUserPlants(uid)
+    //easy way to pass pushtoken
+    const token = await Notifications.getExpoPushTokenAsync()
+    // console.log('token in component', token)
   }
   render() {
     return (

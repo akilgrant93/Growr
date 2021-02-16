@@ -1,5 +1,3 @@
-
-
 export default function (state={}, action){
   switch(action.type){
     case "PLANTS_FETCH":

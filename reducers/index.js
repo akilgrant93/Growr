@@ -4,7 +4,7 @@ import  LoadingReducer  from './LoadingReducer'
 
 const rootReducer = combineReducers({
   plantsList: PlantReducer,
-  loadingReducer: LoadingReducer
+  loadingReducer: LoadingReducer,
 })
 
 export default rootReducer;

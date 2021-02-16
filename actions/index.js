@@ -9,7 +9,7 @@ export function getAllPlants(){
   return(dispatch) => {
     dispatch({
       type: "PLANTS_LOADING",
-      paylod: true
+      payload: true
     })
     firebase.database().ref('/plants').on('value', snapshot => {
       dispatch({
@@ -19,7 +19,7 @@ export function getAllPlants(){
 
       dispatch({
         type: "PLANTS_LOADING",
-        paylod: false
+        payload: false
       })
     })
   }
@@ -53,7 +53,7 @@ export function getUserPlants(uid){
   return(dispatch) => {
     dispatch({
       type: "PLANTS_LOADING",
-      paylod: true
+      payload: true
     })
     firebase.database().ref(`/userPlants/${uid}/plants`).on('value', snapshot => {
       dispatch({
@@ -63,7 +63,7 @@ export function getUserPlants(uid){
 
       dispatch({
         type: "PLANTS_LOADING",
-        paylod: false
+        payload: false
       })
     })
   }
@@ -97,3 +97,4 @@ export function editUserPlant(name, type, key){
     firebase.database().ref(`/userPlants/${uid}/plants/${key}`).update({name, type})
   }
 }
+
