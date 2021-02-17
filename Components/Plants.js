@@ -12,7 +12,6 @@ class Plants extends Component {
     const uid = firebase.auth().currentUser.uid
     //easy way to pass pushtoken
     const token = await Notifications.getExpoPushTokenAsync()
-    // console.log('token in component', token)
     await this.props.getUserPlants(uid)
   }
   render() {
@@ -49,9 +48,6 @@ class Plants extends Component {
             )
           }} />
         }
-        <TouchableHighlight style={{padding: 20, backgroundColor: '#fff', borderRadius: 8, marginBottom: "3%"}}>
-            <Text style={{color: "red"}}>Logout</Text>
-          </TouchableHighlight>
       </View>
     )
   }
