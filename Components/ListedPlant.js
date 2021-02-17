@@ -30,13 +30,12 @@ class ListedPlant extends Component {
   postPlant(name){
     this.props.postUserPlant(this.props.item.commonName, this.state.isPotted, this.state.isIndoors)
     this.setState({isVisible: false, isPotted: undefined, isIndoors: undefined})
+    // console.log(this.props)
+    this.props.navigation.navigate('Home')
   }
   render() {
-    const uid = firebase.auth().currentUser.uid
     return (
-      <View style={this.props.style % 2
-        ? styles.textView
-        : styles.textView2} >
+      <View style={styles.textView}>
         <Modal
           animationType = {"slide"}
           transparent={true}
@@ -44,7 +43,7 @@ class ListedPlant extends Component {
           onRequestClose={() => {
           Alert.alert('Modal has now been closed.');}}>
             <View style={ styles.modal }>
-              <Text style = { styles.text }>
+              <Text style = { styles.text3 }>
                   {this.props.item.commonName} <Text style={{fontStyle: 'italic'}}>({this.props.item.scientificName})</Text>
               </Text>
 
@@ -68,8 +67,6 @@ class ListedPlant extends Component {
               </TouchableOpacity>
 
               <TouchableOpacity onPress={
-                // console.log(firebase.auth().currentUser.uid)
-                // this.props.postUserPlant.bind(this, this.props.item.commonName)
                 this.postPlant.bind(this, this.props.item.commonName)
               }
                 >
@@ -120,22 +117,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  textView2: {
-    paddingBottom: '2%',
-    paddingTop: '2%',
-    paddingLeft: '1%',
-    backgroundColor:  '#fff',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  textView: {
-    paddingBottom: '2%',
-    paddingTop: '2%',
-    paddingLeft: '1%',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-  text: {
+  text3: {
     fontSize: 14,
     color:  '#004d00',
     fontWeight: 'bold',

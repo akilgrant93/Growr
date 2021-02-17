@@ -16,9 +16,6 @@ class Plants extends Component {
     await this.props.getUserPlants(uid)
   }
   render() {
-    console.log('rendered')
-    // console.log(this.props.listOfPlants)
-    // console.log(this.props)
     return (
       <View style={styles.container}>
 

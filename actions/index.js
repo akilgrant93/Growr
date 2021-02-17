@@ -50,14 +50,12 @@ export function editPlant(name, type, key){
 
 //gets users plants
 export function getUserPlants(uid){
-  console.log('getting')
   return(dispatch) => {
     dispatch({
       type: "PLANTS_LOADING",
       payload: true
     })
     firebase.database().ref(`/userPlants/${uid}/plants`).on('value', snapshot => {
-      console.log('got')
       dispatch({
         type: "PLANTS_FETCH",
         payload: snapshot.val()
@@ -67,7 +65,6 @@ export function getUserPlants(uid){
         type: "PLANTS_LOADING",
         payload: false
       })
-      console.log(snapshot.val().length)
     })
   }
 }
@@ -78,8 +75,7 @@ export function postUserPlant(name, isPotted, isIndoors){
   const needsWater = false
   //timestamp needs to be translatedd into real date for calendar functions
   const lastWatered = firebase.database.ServerValue.TIMESTAMP
-  console.log(firebase.database.ServerValue.TIMESTAMP)
-  console.log('LAST WATERED', lastWatered)
+
   return (dispatch) => {
     firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater, lastWatered, isPotted, isIndoors})
   }

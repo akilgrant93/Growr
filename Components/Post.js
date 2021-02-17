@@ -1,16 +1,22 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator, Modal } from 'react-native'
+import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, Switch, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator, Modal } from 'react-native'
 import firebase from '../fb'
 import ReactDOM from 'react-dom'
 // import plants from '../plantseed'
 import { AntDesign } from '@expo/vector-icons';
-import ListedPlant from './ListedPlant'
+import { postUserPlant } from '../actions'
+import { connect } from 'react-redux'
+// import ListedPlant from './ListedPlant'
 //make header component - experiment w/ react navigation
 
-export default class Post extends Component {
+class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isVisible: false,
+      isPotted: false,
+      isIndoors: false,
+      selectedPlant: '',
       endCursor: {},
       startCursor: {},
       limit: 40,
@@ -20,9 +26,10 @@ export default class Post extends Component {
       ]
     }
     this.offset = 1;
-    this.handleChange = this.handleChange.bind(this);
+    this.submitPlantName = this.submitPlantName.bind(this);
   }
 
+  //removes uniques from the array results - may be removed with db cleanup
   multiDimensionalUnique(arr) {
     var uniques = [];
     var itemsFound = {};
@@ -35,6 +42,7 @@ export default class Post extends Component {
     return uniques;
   }
 
+  //pagination functions - the prev function has some render bug. may have to be replaced.
   prev = async({
     search = this.state.value,
   } = {}) => {
@@ -98,7 +106,6 @@ export default class Post extends Component {
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data().name;
       this.count++
-      // console.log(doc.data().name)
       this.setState({
         tableData:
         this.multiDimensionalUnique(
@@ -110,9 +117,32 @@ export default class Post extends Component {
     }, '');
   }
 
-  handleChange = async() => {
+  //submits plants name to search function
+  submitPlantName = async() => {
     this.setState({tableData: []})
     await this.searchByName({search: this.state.value})
+  }
+
+  //posting functions
+  togglePotted = (value) => {
+    this.setState({isPotted: value})
+ }
+
+  toggleIndoors = (value) => {
+    this.setState({isIndoors: value})
+}
+
+  async displayModal(show, plantId){
+    if(!show){
+      await this.setState({isVisible: show, selectedPlant: ''})
+    } else {
+      await this.setState({isVisible: show, selectedPlant: plantId})
+    }
+  }
+  postPlant(name){
+    this.props.postUserPlant(name, this.state.isPotted, this.state.isIndoors)
+    this.setState({isVisible: false, isPotted: false, isIndoors: false})
+    this.props.navigation.navigate('Home')
   }
 
   render() {
@@ -135,7 +165,7 @@ export default class Post extends Component {
           clearButtonMode='always'
           defaultValue="Search" onChangeText={name => this.setState({value:name})}
            />
-           <TouchableHighlight style={styles.button} onPress={this.handleChange}>
+           <TouchableHighlight style={styles.button} onPress={this.submitPlantName}>
             <View style={{flexDirection: 'column',padding: '5%'}}>
               <Text style={styles.buttonTxt}>SUBMIT</Text>
             </View>
@@ -146,12 +176,118 @@ export default class Post extends Component {
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            // console.log(item)
+            // console.log('ITEM KEY',item.item.key)
              return (
-              <View style={styles.plantListItem}>
+              <View>
                 {item.index % 2
-                  ? <ListedPlant item={item.item} style={1}/>
-                  : <ListedPlant item={item.item} style={2}/>
+                  ? <View style={styles.textView}>
+                  <Modal
+                    animationType = {"slide"}
+                    transparent={true}
+                    visible={this.state.selectedPlant === item.item.key ? this.state.isVisible : false}
+                    onRequestClose={() => {
+                    Alert.alert('Modal has now been closed.');}}>
+                      <View style={ styles.modal }>
+                        <Text style = { styles.text3 }>
+                            {item.item.commonName} <Text style={{fontStyle: 'italic'}}>({item.item.scientificName})</Text>
+                        </Text>
+
+                        <View style={styles.modalFooter}>
+                          <View>
+                            <Text>Potted?</Text>
+                            <Switch onValueChange = {this.togglePotted} value = {this.state.isPotted}/>
+                          </View>
+
+                          <View>
+                            <Text>Indoors?</Text>
+                            <Switch onValueChange = {this.toggleIndoors} value = {this.state.isIndoors}/>
+                          </View>
+                        </View>
+
+                        <View style={styles.modalFooter2}>
+
+                        <TouchableOpacity onPress={() => {this.displayModal(!this.state.isVisible);}}>
+                          <Text style={styles.closeText}>Close</Text>
+                          <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="close" size={12} color="black" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={
+                          this.postPlant.bind(this, item.item.commonName)
+                        }
+                          >
+                            <Text style={styles.closeText}>Track</Text>
+                            <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="plussquareo" size={12} color="black" />
+                        </TouchableOpacity>
+
+                        </View>
+                      </View>
+                    </Modal>
+
+                    <TouchableOpacity onPress={() => {
+                    this.displayModal(true, item.item.key)}}>
+                      <View style={styles.textView}>
+                        <Text style={styles.title}>
+                          {!item.item.commonName
+                            ? item.item.scientificName
+                            : item.item.commonName}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                </View>
+                  : <View style={styles.textView2}>
+                  <Modal
+                    animationType = {"slide"}
+                    transparent={true}
+                    visible={this.state.selectedPlant === item.item.key ? this.state.isVisible : false}
+                    onRequestClose={() => {
+                    Alert.alert('Modal has now been closed.');}}>
+                      <View style={ styles.modal }>
+                        <Text style = { styles.text3 }>
+                            {item.item.commonName} <Text style={{fontStyle: 'italic'}}>({item.item.scientificName})</Text>
+                        </Text>
+
+                        <View style={styles.modalFooter}>
+                          <View>
+                            <Text>Potted?</Text>
+                            <Switch onValueChange = {this.togglePotted} value = {this.state.isPotted}/>
+                          </View>
+
+                          <View>
+                            <Text>Indoors?</Text>
+                            <Switch onValueChange = {this.toggleIndoors} value = {this.state.isIndoors}/>
+                          </View>
+                        </View>
+
+                        <View style={styles.modalFooter2}>
+
+                        <TouchableOpacity onPress={() => {this.displayModal(!this.state.isVisible);}}>
+                          <Text style={styles.closeText}>Close</Text>
+                          <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="close" size={12} color="black" />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={
+                          this.postPlant.bind(this, item.item.commonName)
+                        }
+                          >
+                            <Text style={styles.closeText}>Track</Text>
+                            <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="plussquareo" size={12} color="black" />
+                        </TouchableOpacity>
+
+                        </View>
+                      </View>
+                    </Modal>
+
+                    <TouchableOpacity onPress={() => {
+                    this.displayModal(true, item.item.key)}}>
+                      <View style={styles.textView}>
+                        <Text style={styles.title}>
+                          {!item.item.commonName
+                            ? item.item.scientificName
+                            : item.item.commonName}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                </View>
                 }
               </View>
             )
@@ -262,5 +398,39 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: '2%'
+  },
+  modal: {
+    display: 'flex',
+    marginTop: '75%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '75%',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 10,
+    padding: '2%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+  },
+  modalFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  modalFooter2: {
+    display: 'flex',
+    paddingTop: '4%',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  text3: {
+    fontSize: 14,
+    color:  '#004d00',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: '2%',
+    paddingBottom: '5%',
+    paddingTop: '5%',
   }
 })
+
+export default connect(null, {postUserPlant})(Post)
