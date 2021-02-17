@@ -50,12 +50,14 @@ export function editPlant(name, type, key){
 
 //gets users plants
 export function getUserPlants(uid){
+  console.log('getting')
   return(dispatch) => {
     dispatch({
       type: "PLANTS_LOADING",
       payload: true
     })
     firebase.database().ref(`/userPlants/${uid}/plants`).on('value', snapshot => {
+      console.log('got')
       dispatch({
         type: "PLANTS_FETCH",
         payload: snapshot.val()
@@ -65,6 +67,7 @@ export function getUserPlants(uid){
         type: "PLANTS_LOADING",
         payload: false
       })
+      console.log(snapshot.val().length)
     })
   }
 }
