@@ -1,13 +1,20 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, Switch, TouchableHighlight, Image, TouchableOpacity, ActivityIndicator, Modal } from 'react-native'
+import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, Switch, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
+import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
-import ReactDOM from 'react-dom'
-// import plants from '../plantseed'
 import { AntDesign } from '@expo/vector-icons';
 import { postUserPlant } from '../actions'
 import { connect } from 'react-redux'
-// import ListedPlant from './ListedPlant'
-//make header component - experiment w/ react navigation
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () =>
+  ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 class Post extends Component {
   constructor(props) {
@@ -28,7 +35,9 @@ class Post extends Component {
     this.offset = 1;
     this.submitPlantName = this.submitPlantName.bind(this);
   }
-
+  componentDidMount(){
+    console.log('mounted')
+  }
   //removes uniques from the array results - may be removed with db cleanup
   multiDimensionalUnique(arr) {
     var uniques = [];
@@ -139,9 +148,17 @@ class Post extends Component {
       await this.setState({isVisible: show, selectedPlant: plantId})
     }
   }
-  postPlant(name){
+
+  async postPlant(name){
     this.props.postUserPlant(name, this.state.isPotted, this.state.isIndoors)
-    this.setState({isVisible: false, isPotted: false, isIndoors: false})
+    this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Water this plant!",
+        body: 'Now!',
+      },
+      trigger: null
+    })
     this.props.navigation.navigate('Home')
   }
 

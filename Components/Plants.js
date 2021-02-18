@@ -1,9 +1,8 @@
-import React, { Component, useState } from 'react'
-import { Text, View, StyleSheet, Button, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native'
+import React, { Component } from 'react'
+import { Text, View, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native'
 import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import Icon from 'react-native-vector-icons'
 import firebase from 'firebase'
 import * as Notifications from 'expo-notifications';
 
