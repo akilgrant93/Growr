@@ -4,6 +4,7 @@ import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import firebase from 'firebase'
+import { AntDesign } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 Notifications.setNotificationHandler({
@@ -104,11 +105,13 @@ async registerForPushNotificationsAsync() {
           </View>
           :
           <View styles={styles.buttonContainer}>
+
             {!this.props.listOfPlants.length
               ? <View style={{marginTop: '75%'}}>
               <Text style={styles.title2}>Add a plant!</Text>
               </View>
               : <Text></Text>}
+
             {!this.props.listOfPlants.length
             ?
             <TouchableOpacity style={styles.emptyButton} onPress={() => this.props.navigation.navigate('Post')}>
@@ -125,30 +128,30 @@ async registerForPushNotificationsAsync() {
               style={{ width: 30, height: 30, }} />
             </View>
           </TouchableOpacity>}
+
           <FlatList style={{width:'100%'}}
+          //there is a frontend bug on item.item.name
           data={this.props.listOfPlants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
              return (
               <View style={styles.plantListItem}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-                <View style={styles.textView}>
-                <Text style={styles.title}>
-                  {item.item.name}
-                </Text>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                  <TouchableHighlight style={styles.imgFlex} onPress={() => this.props.navigation.navigate('Edit', {...item})}>
-                    <View >
-                      <Text style={styles.buttonText}>EDIT</Text>
-                    </View>
-                  </TouchableHighlight>
-                  <TouchableHighlight style={styles.imgFlex2} onPress={() => this.props.deleteUserPlant(item.item.key) }>
-                    <View >
-                      <Text style={styles.buttonText2}>DELETE</Text>
-                    </View>
-                  </TouchableHighlight>
-                  </View>
+                <View>
+
+                  <TouchableOpacity style={{paddingLeft: '5%', paddingRight: '2.5%',flexDirection: 'row', justifyContent: 'space-between'}}onPress={() =>     this.props.navigation.navigate('Edit', {...item})}>
+                      <View style={{flexDirection: 'column',
+                      // justifyContent: 'flex-end'
+                      }}>
+                      <Text style={styles.plantName}>
+                      {item.item.name}
+                      </Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => this.props.deleteUserPlant(item.item.key) }>
+                        <AntDesign name="close" size={20} color="#004d00" style={{paddingTop: '2%'}}/>
+                      </TouchableOpacity>
+                  </TouchableOpacity>
+
                 </View>
               </View>
             )
@@ -226,7 +229,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    backgroundColor:'#90F890'
+    backgroundColor:'#90F890',
 
   },
   imgFlex2: {
@@ -239,18 +242,27 @@ const styles = StyleSheet.create({
   },
   plantListItem: {
     marginTop:10,
-    minHeight:35,
+    height:35,
     width: '90%',
+    paddingLeft: '5%',
+    paddingRight: '5%',
     marginLeft: '5%',
     borderRadius: 5,
     borderColor: '#004d00',
     backgroundColor: '#C0FBC0'
   },
+  plantName: {
+    textAlign: 'center',
+    color: '#004d00',
+    fontWeight: 'bold',
+    paddingTop: '3%',
+    paddingRight: '25%',
+  },
   title: {
     textAlign: 'center',
     color: '#004d00',
     fontWeight: 'bold',
-    paddingTop: '2%',
+    paddingTop: '3%',
   },
   title2: {
     textAlign: 'center',

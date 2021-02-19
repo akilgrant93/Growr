@@ -137,18 +137,19 @@ class Post extends Component {
     }
   }
 
+  //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
   async postPlant(name){
     this.props.postUserPlant(name, this.state.isPotted, this.state.isIndoors)
     this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Water this plant!",
-        body: 'Now!',
-      },
-      trigger: {
-        seconds: 5
-      }
-    })
+    // await Notifications.scheduleNotificationAsync({
+    //   content: {
+    //     title: "Water this plant!",
+    //     body: 'Now!',
+    //   },
+    //   trigger: {
+    //     seconds: 5
+    //   }
+    // })
     this.props.navigation.navigate('Plants')
   }
 
