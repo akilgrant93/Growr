@@ -35,9 +35,7 @@ class Post extends Component {
     this.offset = 1;
     this.submitPlantName = this.submitPlantName.bind(this);
   }
-  componentDidMount(){
-    console.log('mounted')
-  }
+
   //removes uniques from the array results - may be removed with db cleanup
   multiDimensionalUnique(arr) {
     var uniques = [];
@@ -152,14 +150,14 @@ class Post extends Component {
   async postPlant(name){
     this.props.postUserPlant(name, this.state.isPotted, this.state.isIndoors)
     this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Water this plant!",
-        body: 'Now!',
-      },
-      trigger: null
-    })
-    this.props.navigation.navigate('Home')
+    // await Notifications.scheduleNotificationAsync({
+    //   content: {
+    //     title: "Water this plant!",
+    //     body: 'Now!',
+    //   },
+    //   trigger: null
+    // })
+    this.props.navigation.navigate('Plants')
   }
 
   render() {

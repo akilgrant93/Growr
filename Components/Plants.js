@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native'
+import { Text, View, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -7,18 +7,42 @@ import firebase from 'firebase'
 import * as Notifications from 'expo-notifications';
 
 class Plants extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      token: '',
+      data: null,
+      origin: null,
+    }
+  }
+//replace that goofy ass activity indicated with a plant themed animation
   async componentDidMount(){
     const uid = firebase.auth().currentUser.uid
     //easy way to pass pushtoken
     const token = await Notifications.getExpoPushTokenAsync()
     await this.props.getUserPlants(uid)
+    console.log('mounted in plants component')
   }
+
   render() {
     return (
       <View style={styles.container}>
-
         {
-          this.props.loadingReducer ? <Text>Loading Please Wait</Text> : <FlatList style={{width:'100%'}}
+          this.props.loadingReducer
+          ? <View style={{marginTop: '-80%'}}>
+            <Text style={styles.loadText}>Loading</Text>
+            <ActivityIndicator color="#004d00" size="large" style={styles.activityIndicator}/>
+          </View>
+          :
+          <View styles={styles.buttonContainer}>
+            <TouchableOpacity style={styles.floatingButton} onPress={() => this.props.navigation.navigate('Post')}>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Image
+                source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'}}
+              style={{ width: 30, height: 30, }} />
+            </View>
+          </TouchableOpacity>
+          <FlatList style={{width:'100%'}}
           data={this.props.listOfPlants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
@@ -46,6 +70,7 @@ class Plants extends Component {
               </View>
             )
           }} />
+          </View>
         }
       </View>
     )
@@ -53,6 +78,31 @@ class Plants extends Component {
 }
 
 const styles = StyleSheet.create({
+  activityIndicator: {
+    height: 100
+  },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  floatingButton: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    position: 'absolute',
+    left:     '67.5%',
+    top:      '87.50%',
+    backgroundColor: '#fff',
+    padding: '3.5%',
+    shadowOpacity: .25,
+    shadowOffset: {
+      width: 2,
+      height: 3
+    },
+    borderRadius: 40,
+    zIndex: 5
+  },
   buttonText: {
   fontSize: 8,
   color:  '#004d00',
@@ -100,6 +150,11 @@ const styles = StyleSheet.create({
     color: '#004d00',
     fontWeight: 'bold',
     paddingTop: '2%',
+  },
+  loadText:{
+    color: '#004d00',
+    fontWeight: 'bold',
+    fontSize: 20,
   },
   subtitle: {
     textAlign: 'center',

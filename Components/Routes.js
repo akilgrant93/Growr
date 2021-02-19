@@ -21,51 +21,57 @@ const Home = createStackNavigator({
       headerTitle: 'Edit Plants'
     })
   },
+  Post: {
+    screen: Post,
+    navigationOptions: () => ({
+      headerTitle: 'Add a Plant'
+    })
+  }
 }, {
     headerTitleAlign: 'center'
 })
 
-const BottomTab = createBottomTabNavigator(
-  {
-    Home: {
-      screen: Home
-    },
-    // Articles: {
-    //   screen: Articles
-    // },
-    Post: {
-      screen: Post
-    }
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, horizontal, tintColor }) => {
-        const { routeName } = navigation.state;
-        // console.log('routeName', routeName)
-        if (routeName === 'Home') {
-          return (
-            <Image
-              source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445498922-SIG0SH6NSFOFAVYAS3B1/home.png?content-type=image%2Fpng'}}
-              style={{ width: 20, height: 20, }} />
-          );
-        } else {
-          return (
-            <Image
-              source={ {uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'} }
-              style={{ width: 20, height: 20 }} />
-          );
-        }
-      },
-    }),
-    tabBarOptions: {
-      activeTintColor: 'rgba(0, 77, 0, .25)',
-      inactiveTintColor: '#263238',
-    },
-  }
-)
+// const BottomTab = createBottomTabNavigator(
+//   {
+//     Home: {
+//       screen: Home
+//     },
+//     // Articles: {
+//     //   screen: Articles
+//     // },
+//     Post: {
+//       screen: Post
+//     }
+//   },
+//   {
+//     defaultNavigationOptions: ({ navigation }) => ({
+//       tabBarIcon: ({ focused, horizontal, tintColor }) => {
+//         const { routeName } = navigation.state;
+//         // console.log('routeName', routeName)
+//         if (routeName === 'Home') {
+//           return (
+//             <Image
+//               source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445498922-SIG0SH6NSFOFAVYAS3B1/home.png?content-type=image%2Fpng'}}
+//               style={{ width: 20, height: 20, }} />
+//           );
+//         } else {
+//           return (
+//             <Image
+//               source={ {uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'} }
+//               style={{ width: 20, height: 20 }} />
+//           );
+//         }
+//       },
+//     }),
+//     tabBarOptions: {
+//       activeTintColor: 'rgba(0, 77, 0, .25)',
+//       inactiveTintColor: '#263238',
+//     },
+//   }
+// )
 
 
 
 
-const Routes = createAppContainer(BottomTab)
+const Routes = createAppContainer(Home)
 export default Routes

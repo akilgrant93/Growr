@@ -78,7 +78,7 @@ if (!global.atob) { global.atob = decode }
 
   return (
       <SafeAreaProvider>
-      <Provider store={state}>
+      <Provider store={state} showsVerticalScrollIndicator={false}>
         {renderContent()}
       </Provider>
       </SafeAreaProvider>
