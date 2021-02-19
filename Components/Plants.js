@@ -1,28 +1,97 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { Text, View, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native'
 import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import firebase from 'firebase'
 import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 
 class Plants extends Component {
   constructor(props){
     super(props)
     this.state = {
+      notification: {},
       token: '',
       data: null,
       origin: null,
     }
   }
 //replace that goofy ass activity indicated with a plant themed animation
+//under "add a plant - include some kind of illustration"
+
+  askPermissions = async () => {
+    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      return false;
+    }
+    return true;
+};
+
+async registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      alert('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    alert('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
+
   async componentDidMount(){
     const uid = firebase.auth().currentUser.uid
-    //easy way to pass pushtoken
-    const token = await Notifications.getExpoPushTokenAsync()
+
     await this.props.getUserPlants(uid)
     console.log('mounted in plants component')
+    this.registerForPushNotificationsAsync();
+
+    Notifications.addNotificationReceivedListener(this._handleNotification);
+
+    Notifications.addNotificationResponseReceivedListener(this._handleNotificationResponse);
+
   }
+
+  _handleNotification = notification => {
+    this.setState({ notification: notification });
+  };
+
+  _handleNotificationResponse = response => {
+    console.log(response);
+  };
 
   render() {
     return (
@@ -36,10 +105,16 @@ class Plants extends Component {
           :
           <View styles={styles.buttonContainer}>
             {!this.props.listOfPlants.length
-            ?<TouchableOpacity style={styles.emptyButton} onPress={() => this.props.navigation.navigate('Post')}>
+              ? <View style={{marginTop: '75%'}}>
+              <Text style={styles.title2}>Add a plant!</Text>
+              </View>
+              : <Text></Text>}
+            {!this.props.listOfPlants.length
+            ?
+            <TouchableOpacity style={styles.emptyButton} onPress={() => this.props.navigation.navigate('Post')}>
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
               <Image
-                source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'}}
+                source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng' }}
               style={{ width: 30, height: 30, }} />
             </View>
           </TouchableOpacity>
@@ -99,7 +174,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     position: 'absolute',
-    left:     '25%',
+    //linked with left in floatingbutton
+    left:     '36%',
     top:      '87.50%',
     backgroundColor: '#fff',
     padding: '3.5%',
@@ -109,13 +185,13 @@ const styles = StyleSheet.create({
       height: 3
     },
     borderRadius: 40,
-    // zIndex: 5
   },
   floatingButton: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     position: 'absolute',
+    //some kind of toxic math going on here idk
     left:     '67.5%',
     top:      '87.50%',
     backgroundColor: '#fff',
@@ -175,6 +251,13 @@ const styles = StyleSheet.create({
     color: '#004d00',
     fontWeight: 'bold',
     paddingTop: '2%',
+  },
+  title2: {
+    textAlign: 'center',
+    color: '#004d00',
+    fontWeight: 'bold',
+    paddingTop: '2%',
+    fontSize: 20,
   },
   loadText:{
     color: '#004d00',

@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TextInput, Picker, Button, TouchableHighlight }
 import { editUserPlant } from '../actions'
 import { connect } from 'react-redux'
 
+//needs to change in correspondence with the post page, however that itself isn't worth cleaning until we change our db and know what kind of variables we will be dealing with
 class Edit extends Component {
   state={
     name:this.props.navigation.state.params.item.name,

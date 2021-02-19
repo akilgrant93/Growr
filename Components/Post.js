@@ -6,16 +6,6 @@ import { AntDesign } from '@expo/vector-icons';
 import { postUserPlant } from '../actions'
 import { connect } from 'react-redux'
 
-
-Notifications.setNotificationHandler({
-  handleNotification: async () =>
-  ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
-
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -150,13 +140,15 @@ class Post extends Component {
   async postPlant(name){
     this.props.postUserPlant(name, this.state.isPotted, this.state.isIndoors)
     this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
-    // await Notifications.scheduleNotificationAsync({
-    //   content: {
-    //     title: "Water this plant!",
-    //     body: 'Now!',
-    //   },
-    //   trigger: null
-    // })
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Water this plant!",
+        body: 'Now!',
+      },
+      trigger: {
+        seconds: 5
+      }
+    })
     this.props.navigation.navigate('Plants')
   }
 
