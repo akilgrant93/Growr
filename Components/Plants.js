@@ -35,13 +35,21 @@ class Plants extends Component {
           </View>
           :
           <View styles={styles.buttonContainer}>
-            <TouchableOpacity style={styles.floatingButton} onPress={() => this.props.navigation.navigate('Post')}>
+            {!this.props.listOfPlants.length
+            ?<TouchableOpacity style={styles.emptyButton} onPress={() => this.props.navigation.navigate('Post')}>
             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
               <Image
                 source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'}}
               style={{ width: 30, height: 30, }} />
             </View>
           </TouchableOpacity>
+            :<TouchableOpacity style={styles.floatingButton} onPress={() => this.props.navigation.navigate('Post')}>
+            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+              <Image
+                source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'}}
+              style={{ width: 30, height: 30, }} />
+            </View>
+          </TouchableOpacity>}
           <FlatList style={{width:'100%'}}
           data={this.props.listOfPlants}
           keyExtractor={(item) => item.key}
@@ -85,6 +93,23 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center'
+  },
+  emptyButton: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    position: 'absolute',
+    left:     '25%',
+    top:      '87.50%',
+    backgroundColor: '#fff',
+    padding: '3.5%',
+    shadowOpacity: .25,
+    shadowOffset: {
+      width: 2,
+      height: 3
+    },
+    borderRadius: 40,
+    // zIndex: 5
   },
   floatingButton: {
     display: 'flex',
