@@ -148,7 +148,7 @@ class Post extends Component {
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
   async postPlant(plant){
     console.log('plant in POSTPLANT', plant)
-    //if there's a common name refer to it
+    //if the common name is bugged
     if(typeof plant === 'string'){
       console.log(plant)
       this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors)
@@ -163,8 +163,14 @@ class Post extends Component {
         }
       })
     }
+    //if theres a common name
     if(plant.commonName){
-      this.props.postUserPlant(plant.commonName, this.state.isPotted, this.state.isIndoors)
+
+      this.props.postUserPlant(
+        plant.commonName,
+        this.state.isPotted,
+        this.state.isIndoors
+      )
       await Notifications.scheduleNotificationAsync({
         content: {
           title: `Water your ${plant.commonName}!`,
@@ -199,7 +205,7 @@ class Post extends Component {
         { !this.state.tableData.length
         ? <Fab
             direction="up"
-            containerStyle={{ }}
+            containerStyle={{ bottom: 35, right: 35 }}
             style={{ backgroundColor: '#1a5127'}}
             position="bottomRight"
             onPress={() => this.props.navigation.navigate('My Plants')}>
@@ -208,7 +214,7 @@ class Post extends Component {
           : <Fab
           active={this.state.active2}
           direction="left"
-          containerStyle={{ }}
+          containerStyle={{ bottom: 35, right: 35 }}
           style={{ backgroundColor: '#1a5127'}}
           position="bottomRight"
           onPress={() => this.setState({ active2: !this.state.active2 })}>
@@ -257,6 +263,7 @@ class Post extends Component {
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
             // console.log('ITEM',item)
+            //conver these to card components for visual effect
              return (
               <View>
                 {item.index % 2

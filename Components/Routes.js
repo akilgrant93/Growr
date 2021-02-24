@@ -11,9 +11,41 @@ function MyStack() {
   return (
     <NavigationContainer>
     <Stack.Navigator initialRouteName="My Plants">
-      <Stack.Screen name="My Plants" component={Plants} />
-      <Stack.Screen name="Plant Care" component={Edit} />
-      <Stack.Screen name="New Plants" component={Post} />
+      <Stack.Screen
+        name="My Plants"
+        component={Plants}
+        options={{
+          headerStyle: {
+            backgroundColor: '#99d1a7',
+          },
+          headerTintColor: '#1a5127',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          }}}/>
+      <Stack.Screen
+        name="Plant Care"
+        component={Edit}
+        options={{
+          headerStyle: {
+            backgroundColor: '#99d1a7',
+          },
+          headerTintColor: '#247237',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          }}}
+        />
+      <Stack.Screen
+        name="New Plants"
+        component={Post}
+        options={{
+          headerStyle: {
+            backgroundColor: '#99d1a7',
+          },
+          headerTintColor: '#247237',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          }}}
+        />
       {/* <Stack.Screen name="Settings" component={Settings} /> */}
       {/* <Stack.Screen name="My Calendar" component={Calendar} /> */}
     </Stack.Navigator>

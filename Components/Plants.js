@@ -92,7 +92,7 @@ async registerForPushNotificationsAsync() {
           <Fab
             active={this.state.active}
             direction="up"
-            containerStyle={{ }}
+            containerStyle={{ bottom: 35, right: 35 }}
             style={{ backgroundColor: '#1a5127'}}
             position="bottomRight"
             onPress={() => this.setState({ active: !this.state.active })}>
