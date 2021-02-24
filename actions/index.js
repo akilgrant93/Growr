@@ -76,6 +76,7 @@ export function postUserPlant(name, isPotted, isIndoors){
   //timestamp needs to be translatedd into real date for calendar functions
   const lastWatered = firebase.database.ServerValue.TIMESTAMP
 
+  console.log('name in postUserPlant',name)
   return (dispatch) => {
     firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater, lastWatered, isPotted, isIndoors})
   }

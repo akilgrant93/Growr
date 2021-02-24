@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native'
+import { Text, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native'
 import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -7,6 +7,9 @@ import firebase from 'firebase'
 import { AntDesign } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import { Container, Header, View, Button, Icon, Fab } from 'native-base'
+
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -21,6 +24,7 @@ class Plants extends Component {
     super(props)
     this.state = {
       notification: {},
+      active: false,
       token: '',
       data: null,
       origin: null,
@@ -28,19 +32,6 @@ class Plants extends Component {
   }
 //replace that goofy ass activity indicated with a plant themed animation
 //under "add a plant - include some kind of illustration"
-
-  askPermissions = async () => {
-    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      finalStatus = status;
-    }
-    if (finalStatus !== 'granted') {
-      return false;
-    }
-    return true;
-};
 
 async registerForPushNotificationsAsync() {
   let token;
@@ -96,7 +87,27 @@ async registerForPushNotificationsAsync() {
 
   render() {
     return (
-      <View style={styles.container}>
+      <Container style={styles.container}>
+        <View style={{ flex: 1 }}>
+          <Fab
+            active={this.state.active}
+            direction="up"
+            containerStyle={{ }}
+            style={{ backgroundColor: '#1a5127'}}
+            position="bottomRight"
+            onPress={() => this.setState({ active: !this.state.active })}>
+            <Icon name="add-outline" />
+            <Button style={{ backgroundColor: '#48ac60' }} onPress={() => this.props.navigation.navigate('New Plants')}>
+              <Icon name="leaf-outline" />
+            </Button>
+            <Button style={{ backgroundColor: '#2e9247' }}>
+              <Icon name="calendar-sharp" />
+            </Button>
+            <Button style={{ backgroundColor: '#247237' }}>
+              <Icon name="md-cog-sharp" />
+            </Button>
+          </Fab>
+
         {
           this.props.loadingReducer
           ? <View style={{marginTop: '-80%'}}>
@@ -112,23 +123,6 @@ async registerForPushNotificationsAsync() {
               </View>
               : <Text></Text>}
 
-            {!this.props.listOfPlants.length
-            ?
-            <TouchableOpacity style={styles.emptyButton} onPress={() => this.props.navigation.navigate('Post')}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <Image
-                source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng' }}
-              style={{ width: 30, height: 30, }} />
-            </View>
-          </TouchableOpacity>
-            :<TouchableOpacity style={styles.floatingButton} onPress={() => this.props.navigation.navigate('Post')}>
-            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
-              <Image
-                source={{ uri: 'https://images.squarespace-cdn.com/content/5363e3d1e4b0b6dbd37bcdd6/1584445483698-RRG2H8VCNCLB0QIGMXFJ/leaf.png?content-type=image%2Fpng'}}
-              style={{ width: 30, height: 30, }} />
-            </View>
-          </TouchableOpacity>}
-
           <FlatList style={{width:'100%'}}
           //there is a frontend bug on item.item.name
           data={this.props.listOfPlants}
@@ -138,7 +132,7 @@ async registerForPushNotificationsAsync() {
               <View style={styles.plantListItem}>
                 <View>
 
-                  <TouchableOpacity style={{paddingLeft: '5%', paddingRight: '2.5%',flexDirection: 'row', justifyContent: 'space-between'}}onPress={() =>     this.props.navigation.navigate('Edit', {...item})}>
+                  <TouchableOpacity style={{paddingLeft: '2.5%', paddingRight: '1.25%',flexDirection: 'row', minWidth: '85%',justifyContent: 'space-between'}}onPress={() =>     this.props.navigation.navigate('Edit', {...item})}>
                       <View style={{flexDirection: 'column',
                       // justifyContent: 'flex-end'
                       }}>
@@ -147,7 +141,9 @@ async registerForPushNotificationsAsync() {
                       </Text>
                       </View>
                       <TouchableOpacity
-                        onPress={() => this.props.deleteUserPlant(item.item.key) }>
+                        onPress={() =>
+                        //functionality to unsubcribe from repeating notifications inevtiably gets added here.
+                        this.props.deleteUserPlant(item.item.key) }>
                         <AntDesign name="close" size={20} color="#004d00" style={{paddingTop: '2%'}}/>
                       </TouchableOpacity>
                   </TouchableOpacity>
@@ -158,7 +154,8 @@ async registerForPushNotificationsAsync() {
           }} />
           </View>
         }
-      </View>
+        </View>
+      </Container>
     )
   }
 }
@@ -220,9 +217,6 @@ const styles = StyleSheet.create({
     padding: '3%',
     },
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#e6ffe6'
   },
   imgFlex: {

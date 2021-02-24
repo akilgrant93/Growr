@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import { Text, View, StyleSheet, FlatList, TextInput, Picker, Button, Switch, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
+import { Text, StyleSheet, FlatList, TextInput, Picker, Switch, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
 import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
 import { AntDesign } from '@expo/vector-icons';
 import { postUserPlant } from '../actions'
 import { connect } from 'react-redux'
+import { Container, Header, View, Button, Icon, Fab } from 'native-base'
+
 
 class Post extends Component {
   constructor(props) {
@@ -16,7 +18,7 @@ class Post extends Component {
       selectedPlant: '',
       endCursor: {},
       startCursor: {},
-      limit: 40,
+      limit: 25,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
@@ -120,6 +122,10 @@ class Post extends Component {
     await this.searchByName({search: this.state.value})
   }
 
+  cancelSearch = () => {
+    this.setState({tableData: [], value: 'Search', tableHead: ['Name']})
+  }
+
   //posting functions
   togglePotted = (value) => {
     this.setState({isPotted: value})
@@ -134,28 +140,94 @@ class Post extends Component {
       await this.setState({isVisible: show, selectedPlant: ''})
     } else {
       await this.setState({isVisible: show, selectedPlant: plantId})
+      // console.log(plantId)
+      // console.log('current plant in modal',await firebase.database().ref(`/plants/${plantId}/name`))
     }
   }
 
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
-  async postPlant(name){
-    this.props.postUserPlant(name, this.state.isPotted, this.state.isIndoors)
+  async postPlant(plant){
+    console.log('plant in POSTPLANT', plant)
+    //if there's a common name refer to it
+    if(typeof plant === 'string'){
+      console.log(plant)
+      this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors)
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Water your ${plant}!`,
+          body: 'Now!',
+        },
+        trigger: {
+          seconds: 5,
+          // repeats: true
+        }
+      })
+    }
+    if(plant.commonName){
+      this.props.postUserPlant(plant.commonName, this.state.isPotted, this.state.isIndoors)
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Water your ${plant.commonName}!`,
+          body: 'Now!',
+        },
+        trigger: {
+          seconds: 5,
+          // repeats: true
+        }
+      })
+    //otherwise refer to the scientific name
+    } else if(!plant.commonName && typeof plant !== 'string') {
+      this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors)
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `Water your ${plant.scientificName}!`,
+          body: 'Now!',
+        },
+        trigger: {
+          seconds: 5,
+          // repeats: true
+        }
+      })
+    }
     this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
-    // await Notifications.scheduleNotificationAsync({
-    //   content: {
-    //     title: "Water this plant!",
-    //     body: 'Now!',
-    //   },
-    //   trigger: {
-    //     seconds: 5
-    //   }
-    // })
-    this.props.navigation.navigate('Plants')
+    this.props.navigation.navigate('My Plants')
   }
 
   render() {
     return (
-      <View style={styles.container}>
+      <View style={!this.state.tableData.length ? styles.containerFlex : styles.container}>
+        { !this.state.tableData.length
+        ? <Fab
+            direction="up"
+            containerStyle={{ }}
+            style={{ backgroundColor: '#1a5127'}}
+            position="bottomRight"
+            onPress={() => this.props.navigation.navigate('My Plants')}>
+            <Icon name="ios-close" />
+          </Fab>
+          : <Fab
+          active={this.state.active2}
+          direction="left"
+          containerStyle={{ }}
+          style={{ backgroundColor: '#1a5127'}}
+          position="bottomRight"
+          onPress={() => this.setState({ active2: !this.state.active2 })}>
+          <Icon name="add-outline" />
+
+          <Button style={{ backgroundColor: '#247237' }} onPress={() => this.next()}>
+            <Icon name="arrow-forward-outline" />
+          </Button>
+
+          <Button style={{ backgroundColor: '#247237' }} onPress={()=> this.prev()}>
+            <Icon name="arrow-back-outline" />
+          </Button>
+
+          <Button style={{ backgroundColor: '#247237' }} onPress={() => this.cancelSearch()}>
+            <Icon name="ios-close" />
+          </Button>
+
+        </Fab> }
+
         <Text style={styles.text}> What kind of plant are you growing? </Text>
         <View style={{display:'flex',flexDirection:'row', justifyContent: 'center'}}>
         <TextInput
@@ -184,7 +256,7 @@ class Post extends Component {
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            // console.log('ITEM KEY',item.item.key)
+            // console.log('ITEM',item)
              return (
               <View>
                 {item.index % 2
@@ -214,13 +286,13 @@ class Post extends Component {
 
                         <View style={styles.modalFooter2}>
 
-                        <TouchableOpacity onPress={() => {this.displayModal(!this.state.isVisible);}}>
+                        <TouchableOpacity onPress={() => {this.displayModal(!this.state.isVisible)}}>
                           <Text style={styles.closeText}>Close</Text>
                           <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="close" size={12} color="black" />
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={
-                          this.postPlant.bind(this, item.item.commonName)
+                          this.postPlant.bind(this, item.item)
                         }
                           >
                             <Text style={styles.closeText}>Track</Text>
@@ -301,28 +373,6 @@ class Post extends Component {
             )
           }} />
         }
-        {
-          this.state.tableData.length === 0
-            ? <View></View>
-            : <View style = {{flexDirection: 'row', alignContent: 'center', justifyContent: 'space-around', marginTop: '5%', width: '70%', marginLeft: '15%'}}>
-                  <TouchableHighlight onPress={this.prev}>
-                  <View>
-                  <AntDesign name="leftcircleo" size={40} color="green" />
-                  </View>
-                </TouchableHighlight>
-                {this.state.tableData.length < this.state.limit/2
-                  ? <TouchableHighlight>
-                  <View>
-                  <AntDesign name="rightcircleo" size={40} color="grey" />
-                  </View>
-                </TouchableHighlight>
-                  : <TouchableHighlight onPress={this.next}>
-                  <View>
-                  <AntDesign name="rightcircleo" size={40} color="green" />
-                  </View>
-                </TouchableHighlight>}
-                </View>
-              }
         </View>
         </View>
     )
@@ -344,10 +394,18 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
-  container: {
+  containerFlex: {
     flex: 1,
     justifyContent: 'center',
-    padding: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
+    backgroundColor: '#e6ffe6'
+  },
+  container: {
+    flex: 1,
+    paddingTop: 30,
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: '#e6ffe6'
   },
   container2: {
