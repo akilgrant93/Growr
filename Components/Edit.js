@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Text, View, StyleSheet, TextInput, Picker, Button, TouchableHighlight } from 'react-native'
 import { editUserPlant } from '../actions'
 import { connect } from 'react-redux'
+import { HeaderHeightContext } from '@react-navigation/stack';
+
 
 //needs to change in correspondence with the post page, however that itself isn't worth cleaning until we change our db and know what kind of variables we will be dealing with
 class Edit extends Component {
