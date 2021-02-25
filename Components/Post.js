@@ -6,7 +6,12 @@ import { AntDesign } from '@expo/vector-icons';
 import { postUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
+import { HeaderHeightContext } from '@react-navigation/stack';
 
+
+const carnivorous = ['Byblis', 'Pinguicula','Genlisea', 'Utricularia', 'Philcoxia', 'Cephalotus', 'Stylidium', 'Drosophyllum', 'Aldrovanda', 'Dionaea', 'Drosera', 'Nepenthes', 'Roridula', 'Sarracenia', 'Darlingtonia', 'Heliamphora']
+
+const succulent = ['Zamioculcas', 'Azorella', 'Crithmum', 'Cussonia', 'Amaryllis', 'Boophane', 'Clivia', 'Crinum', 'Cryptostephanus', 'Cyrtanthus', 'Haemanthus', 'Rauhia', 'Scadoxus', 'Stenomesson', 'Agave', 'Beschorneria', 'Dracaena', 'Furcraea', 'Hesperaloe', 'Hesperoyucca', 'Manfreda', 'Polianthes', 'Yucca', 'Cordyline', 'Beaucarnea', 'Calibanus', 'Dasylirion', 'Nolina', 'Sansevieria', 'Albuca', 'Bowiea', 'Daubenya', 'Drimia', 'Eucomis', 'Lachenalia', 'Ledebouria', 'Massonia', 'Ornithogalum', 'Scilla', 'Urginea', 'Veltheimia', 'Doryanthes', 'Acampe', 'Aerangis', 'Ansellia', 'Bolusiella', 'Bulbophyllum', 'Cirrhopetalum', 'Calanthe', 'Cyrtorchis', 'Eulophia', 'Liparis', 'Oberonia', 'Oeceoclades', 'Polystachya', 'Tridactyle', 'Vanilla', 'Aloe', 'Astroloba', 'Tulista', 'Bulbine', 'Bulbinella', 'Chortolirion', 'Gasteria', 'Haworthia', 'Trachyandra', 'Xanthorrhoea', 'Arctotheca', 'Baeriopsis', 'Chrysanthemoides', 'Coulterella', 'Crassocephalum', 'Didelta', 'Emilia', 'Eremothamnus', 'Gymnodiscus', 'Gynur', 'Lopholaena', 'Monoculus', 'Nidorella', 'Osteospermum', 'Othonna', 'Phaneroglossa', 'Poecilolepis', 'Polyachyrus', 'Pteronia', 'Senecio', 'Solanecio', 'Tripteris', 'Brighamia', 'Moringa', 'Heliophila', 'Lepidium', 'Maerua', 'Corbichonia', 'Gisekia', 'Herreanthus', 'Limeum', 'Ophthalmophyllum', 'Saphesia', 'Acrosanthes', 'Aizoanthemum', 'Aizoon', 'Galenia', 'Gunniopsis', 'Plinthus', 'Tetragonia', 'Aptenia', 'Aridaria', 'Aspazoma', 'Brownanthus', 'Calamophyllum', 'Caulipsilon', 'Conophytum', 'Dactylopsis', 'Erepsia', 'Hameria', 'Hartmanthus', 'Hymenogyne', 'Marlothistela', 'Mesembryanthemum', 'Phiambolia', 'Phyllobolus', 'Prenia', 'Psilocaulon', 'Ruschiella', 'Sarozona', 'Sceletium', 'Synaptophyllum', 'Apatesia', 'Carpanthea', 'Caryotophora', 'Conicosia', 'Hymenogyne', 'Saphesia', 'Skiatophytum', 'Aethephyllum', 'Cleretum', 'Dorotheanthus', 'Acrodon', 'Aloinopsis', 'Amphibolia', 'Antegibbaeum', 'Antimima', 'Arenifera', 'Argyroderma', 'Astridia', 'Bergeranthus', 'Bijlia', 'Braunsia', 'Brianhuntleya', 'Carpobrotus', 'Carruanthus', 'Cephalophyllum', 'Cerochlamys', 'Chasmatophyllum', 'Cheiridopsis', 'Circandra', 'Conophytum', 'Corpuscularia', 'Cylindrophyllum', 'Delosperma', 'Dicrocaulon', 'Didymaotus', 'Dinteranthus', 'Diplosoma', 'Disphyma', 'Dracophilus', 'Drosanthemum', 'Eberlanzia', 'Ebracteola', 'Enarganthe', 'Erepsia', 'Esterhuysenia', 'Faucaria', 'Fenestraria', 'Frithia', 'Gibbaeum', 'Glottiphyllum', 'Hallianthus', 'Hereroa', 'Ihlenfeldtia', 'Imitaria', 'Jacobsenia', 'Jensenobotrya', 'Jordaaniella', 'Juttadinteria', 'Khadia', 'Lampranthus', 'Lapidaria', 'Leipoldtia', 'Lithops', 'Machairophyllum', 'Malephora', 'Mestoklema', 'Meyerophytum', 'Mitrophyllum', 'Monilaria', 'Mossia', 'Muiria', 'Namaquanthus', 'Namibia', 'Nananthus', 'Nelia', 'Neohenricia', 'Octopoma', 'Odontophorus', 'Oophytum', 'Ophthalmophyllum', 'Orthopterum', 'Oscularia', 'Ottosonderia', 'Pleiospilos', 'Polymita', 'Psammophora', 'Rabiea', 'Rhinephyllum', 'Rhombophyllum', 'Ruschia', 'Ruschianthemum', 'Ruschianthus', 'Schlechteranthus', 'Schwantesia', 'Scopelogena', 'Smicrostigma', 'Stayneria', 'Stoeberia', 'Stomatium', 'Tanquana', 'Titanopsis', 'Trichodiadema', 'Vanheerdea', 'Vanzijlia', 'Vlokia', 'Wooleya', 'Zeuktophyllum', 'Cypselea', 'Sesuvium', 'Trianthema', 'Tribulocarpus', 'Zaleya','Atriplex', 'Chenopodium', 'Dissocarpus', 'Einadia', 'Enchylaena', 'Eremophea', 'Halopeplis', 'Maireana', 'Malacocera', 'Neobassia', 'Osteocarpum', 'Rhagodia', 'Roycea', 'Halosarcia', 'Salicornia', 'Salsola', 'Sarcocornia', 'Sclerochlamys', 'Sclerolaena', 'Suaeda', 'Tecticornia', 'Threlkeldia', 'Anredera', 'Basella','Acanthocalycium', 'Acanthocereus', 'Ariocarpus', 'Armatocereus', 'Arrojadoa', 'Arthrocereus', 'Astrophytum', 'Austrocactus', 'Aztekium', 'Bergerocactus', 'Blossfeldia', 'Brachycereus', 'Browningia', 'Brasilicereus', 'Calymmanthium', 'Carnegiea', 'Cephalocereus', 'Cephalocleistocactus', 'Cereus', 'Cintia', 'Cipocereus', 'Cleistocactus', 'Coleocephalocereus', 'Copiapoa', 'Corryocactus', 'Coryphantha', 'Dendrocereus', 'Denmoza', 'Discocactus', 'Disocactus', 'Echinocactus', 'Echinocereus', 'Echinopsis', 'Epiphyllum', 'Epithelantha', 'Eriosyce', 'Escobaria', 'Escontria', 'Espostoa', 'Espostoopsis', 'Eulychnia', 'Facheiroa', 'Ferocactus', 'Frailea', 'Geohintonia', 'Gymnocalycium', 'Haageocereus', 'Harrisia', 'Hatiora', 'Hylocereus', 'Jasminocereus', 'Lasiocereus', 'Leocereus', 'Lepismium', 'Leptocereus', 'Leuchtenbergia', 'Lophophora', 'Maihuenia', 'Malacocarpus', 'Mammillaria', 'Mammilloydia', 'Matucana', 'Melocactus', 'Micranthocereus', 'Mila', 'Monvillea', 'Myrtillocactus', 'Neobuxbaumia', 'Neolloydia', 'Neoraimondia', 'Neowerdermannia', 'Obregonia', 'Opuntia', 'Oreocereus', 'Oroya', 'Ortegocactus', 'Pachycereus', 'Parodia', 'Pediocactus', 'Pelecyphora', 'Peniocereus', 'Pereskia', 'Pereskiopsis', 'Pilosocereus', 'Polaskia', 'Praecereus', 'Pseudoacanthocereus', 'Pseudorhipsalis', 'Pterocactus', 'Pygmaeocereus', 'Quiabentia', 'Rauhocereus', 'Rebutia', 'Rhipsalis', 'Samaipaticereus', 'Schlumbergera', 'Sclerocactus', 'Selenicereus', 'Stenocactus', 'Stenocereus', 'Stephanocereus', 'Stetsonia', 'Strombocactus', 'Tacinga', 'Thelocactus','Trichocereus', 'Turbinicarpus', 'Uebelmannia', 'Weberbauerocereus', 'Weberocereus', 'Yungasocereus', 'Alluaudia', 'Alluaudiopsis', 'Decaria', 'Didierea', 'Hypertelis', 'Amphipetalum', 'Anacampseros', 'Avonia', 'Calyptrotheca', 'Ceraria', 'Cistanthe', 'Calandrinia', 'Dendroportulaca', 'Grahamia', 'Lewisia', 'Parakeelya', 'Portulaca', 'Portulacaria', 'Schreiteria', 'Talinella', 'Talinum', 'Acanthosicyos', 'Apodanthera', 'Brandegea', 'Cephalopentandra', 'Ceratosanthes', 'Coccinia', 'Corallocarpus', 'Cyclantheropsis', 'Dactyliandra', 'Dendrosicyos', 'Doyera', 'Eureindra', 'Fevillea', 'Gerrandanthus', 'Gynostemma', 'Halosicyos', 'Ibervilla', 'Kedostris', 'Lagenaria', 'Marah', 'Momordica', 'Neoalsomitra', 'Odosicyos', 'Parasicyos', 'Syrigia', 'Telfairia', 'Trochomeria', 'Trochomeriopsis', 'Tumamoca', 'Xerosicyos', 'Zehneria', 'Zygosicyos', 'Impatiens', 'Fouquieria','Delonix', 'Dolichos', 'Erythrina', 'Lotononis', 'Neorautanenia', 'Pachyrhizus', 'Tylosema', 'Adenium', 'Mandevilla', 'Pachypodium', 'Plumeria', 'Absolmsia', 'Australluma', 'Aspidoglossum', 'Aspidonepsis', 'Baynesia', 'Brachystelma', 'Ceropegia', 'Chlorocyathus', 'Cibirhiza', 'Cordylogyne', 'Cynanchum', 'Dischidia', 'Dischidiopsis', 'Duvaliandra', 'Eustegia', 'Fanninia', 'Fockea', 'Glossostelma', 'Hoya', 'Ischnolepis', 'Lavrania', 'Marsdenia', 'Miraglossum', 'Odontostelma', 'Ophionella', 'Orbeanthus', 'Pachycarpus', 'Parapodium', 'Periglossum', 'Petopentia', 'Raphionacme', 'Riocreuxia', 'Sarcorrhiza', 'Schizoglossum', 'Schlechterella', 'Stathmostelma', 'Stenostelma', 'Stomatostemma', 'Trachycalymma', 'Trichocaulon', 'Tylophora', 'Woodia', 'Xysmalobium', 'Angolluma', 'Caralluma', 'Desmidorchis', 'Duvalia', 'Echidnopsis', 'Edithcolea', 'Frerea', 'Hoodia', 'Huernia', 'Huerniopsis', 'Larryleachia', 'Notechidnopsis', 'Orbea', 'Orbeopsis', 'Piaranthus', 'Pachycymbium', 'Pectinaria', 'Pseudolithos', 'Pseudopectinaria', 'Quaqua', 'Rhytidocaulon', 'Stapelia', 'Stapelianthus', 'Stapeliopsis', 'Tavaresia', 'Tridentea', 'Tromotriche', 'Whitesloanea', 'Adansonia', 'Cavanillesia', 'Ceiba', 'Pseudobombax', 'Abromeitiella', 'Aechmea', 'Ananas', 'Catopsis', 'Connellia', 'Dyckia', 'Hechtia', 'Neoregelia', 'Puya', 'Tillandsia', 'Vriesea', 'Dorstenia', 'Ficus','Pachycormus', 'Adromischus', 'Aeonium', 'Aichryson', 'Cotyledon', 'Crassula', 'Cremnophila', 'Dudleya', 'Echeveria', 'Graptopetalum', 'Greenovia', 'Hylotelephium', 'Kalanchoe', 'Kungia', 'Lenophyllum', 'Meterostachys', 'Monanthes', 'Mucizonia', 'Orostachys', 'Pachyphytum', 'Perrierosedum', 'Petrosedum', 'Phedimus', 'Pistorinia', 'Prometheum', 'Pseudosedum', 'Rhodiola', 'Rosularia', 'Sedella', 'Sedum', 'Sempervivum', 'Sinocrassula', 'Thompsonella', 'Tylecodon', 'Umbilicus', 'Villadia', 'Cissus', 'Cyphostemma']
 
 class Post extends Component {
   constructor(props) {
@@ -201,6 +206,8 @@ class Post extends Component {
 
   render() {
     return (
+      <HeaderHeightContext.Consumer>
+  {headerHeight => (
       <View style={!this.state.tableData.length ? styles.containerFlex : styles.container}>
         { !this.state.tableData.length
         ? <Fab
@@ -233,6 +240,9 @@ class Post extends Component {
           </Button>
 
         </Fab> }
+        <View style={{ marginTop: headerHeight }}>
+
+
 
         <Text style={styles.text}> What kind of plant are you growing? </Text>
         <View style={{display:'flex',flexDirection:'row', justifyContent: 'center'}}>
@@ -257,6 +267,8 @@ class Post extends Component {
             </View>
         </TouchableHighlight>
         </View>
+
+
         <View>
            {!this.state.tableData ? <View></View> : <FlatList style={{width:'100%',marginTop: '5%'}}
           data={this.state.tableData}
@@ -381,7 +393,11 @@ class Post extends Component {
           }} />
         }
         </View>
+
         </View>
+        </View>
+        )}
+        </HeaderHeightContext.Consumer>
     )
   }
 }

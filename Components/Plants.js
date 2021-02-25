@@ -8,6 +8,8 @@ import { AntDesign } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
+import { HeaderHeightContext } from '@react-navigation/stack';
+
 
 
 Notifications.setNotificationHandler({
@@ -65,6 +67,7 @@ async registerForPushNotificationsAsync() {
 }
 
   async componentDidMount(){
+
     const uid = firebase.auth().currentUser.uid
 
     await this.props.getUserPlants(uid)
@@ -87,8 +90,13 @@ async registerForPushNotificationsAsync() {
 
   render() {
     return (
-      <Container style={styles.container}>
-        <View style={{ flex: 1 }}>
+      <HeaderHeightContext.Consumer>
+  {headerHeight => (
+      <Container
+      // style={styles.container}
+      style={{backgroundColor: '#e6ffe6' }}
+      >
+        <View style={{ flex: 1, marginTop: headerHeight  }}>
           <Fab
             active={this.state.active}
             direction="up"
@@ -156,6 +164,8 @@ async registerForPushNotificationsAsync() {
         }
         </View>
       </Container>
+  )}
+  </HeaderHeightContext.Consumer>
     )
   }
 }
@@ -216,9 +226,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: '3%',
     },
-  container: {
-    backgroundColor: '#e6ffe6'
-  },
+  // container: {
+  //   backgroundColor: '#e6ffe6'
+  // },
   imgFlex: {
     display: 'flex',
     flexDirection: 'column',

@@ -7,6 +7,12 @@ import { NavigationContainer } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
+const forFade = ({ current }) => ({
+  cardStyle: {
+    opacity: current.progress,
+  },
+});
+
 function MyStack() {
   return (
     <NavigationContainer>
@@ -15,36 +21,27 @@ function MyStack() {
         name="My Plants"
         component={Plants}
         options={{
-          headerStyle: {
-            backgroundColor: '#99d1a7',
-          },
-          headerTintColor: '#1a5127',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }}}/>
+          cardStyleInterpolator: forFade,
+          headerTransparent: true,
+          headerTintColor: '#1a5127'
+          }}/>
       <Stack.Screen
         name="Plant Care"
         component={Edit}
         options={{
-          headerStyle: {
-            backgroundColor: '#99d1a7',
-          },
-          headerTintColor: '#247237',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }}}
+          cardStyleInterpolator: forFade,
+          headerTransparent: true,
+          headerTintColor: '#247237'
+        }}
         />
       <Stack.Screen
         name="New Plants"
         component={Post}
         options={{
-          headerStyle: {
-            backgroundColor: '#99d1a7',
-          },
-          headerTintColor: '#247237',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          }}}
+          cardStyleInterpolator: forFade,
+          headerTransparent: true,
+          headerTintColor: '#247237'
+        }}
         />
       {/* <Stack.Screen name="Settings" component={Settings} /> */}
       {/* <Stack.Screen name="My Calendar" component={Calendar} /> */}
