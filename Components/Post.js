@@ -8,11 +8,6 @@ import { connect } from 'react-redux'
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
 
-
-const carnivorous = ['Byblis', 'Pinguicula','Genlisea', 'Utricularia', 'Philcoxia', 'Cephalotus', 'Stylidium', 'Drosophyllum', 'Aldrovanda', 'Dionaea', 'Drosera', 'Nepenthes', 'Roridula', 'Sarracenia', 'Darlingtonia', 'Heliamphora']
-
-const succulent = ['Zamioculcas', 'Azorella', 'Crithmum', 'Cussonia', 'Amaryllis', 'Boophane', 'Clivia', 'Crinum', 'Cryptostephanus', 'Cyrtanthus', 'Haemanthus', 'Rauhia', 'Scadoxus', 'Stenomesson', 'Agave', 'Beschorneria', 'Dracaena', 'Furcraea', 'Hesperaloe', 'Hesperoyucca', 'Manfreda', 'Polianthes', 'Yucca', 'Cordyline', 'Beaucarnea', 'Calibanus', 'Dasylirion', 'Nolina', 'Sansevieria', 'Albuca', 'Bowiea', 'Daubenya', 'Drimia', 'Eucomis', 'Lachenalia', 'Ledebouria', 'Massonia', 'Ornithogalum', 'Scilla', 'Urginea', 'Veltheimia', 'Doryanthes', 'Acampe', 'Aerangis', 'Ansellia', 'Bolusiella', 'Bulbophyllum', 'Cirrhopetalum', 'Calanthe', 'Cyrtorchis', 'Eulophia', 'Liparis', 'Oberonia', 'Oeceoclades', 'Polystachya', 'Tridactyle', 'Vanilla', 'Aloe', 'Astroloba', 'Tulista', 'Bulbine', 'Bulbinella', 'Chortolirion', 'Gasteria', 'Haworthia', 'Trachyandra', 'Xanthorrhoea', 'Arctotheca', 'Baeriopsis', 'Chrysanthemoides', 'Coulterella', 'Crassocephalum', 'Didelta', 'Emilia', 'Eremothamnus', 'Gymnodiscus', 'Gynur', 'Lopholaena', 'Monoculus', 'Nidorella', 'Osteospermum', 'Othonna', 'Phaneroglossa', 'Poecilolepis', 'Polyachyrus', 'Pteronia', 'Senecio', 'Solanecio', 'Tripteris', 'Brighamia', 'Moringa', 'Heliophila', 'Lepidium', 'Maerua', 'Corbichonia', 'Gisekia', 'Herreanthus', 'Limeum', 'Ophthalmophyllum', 'Saphesia', 'Acrosanthes', 'Aizoanthemum', 'Aizoon', 'Galenia', 'Gunniopsis', 'Plinthus', 'Tetragonia', 'Aptenia', 'Aridaria', 'Aspazoma', 'Brownanthus', 'Calamophyllum', 'Caulipsilon', 'Conophytum', 'Dactylopsis', 'Erepsia', 'Hameria', 'Hartmanthus', 'Hymenogyne', 'Marlothistela', 'Mesembryanthemum', 'Phiambolia', 'Phyllobolus', 'Prenia', 'Psilocaulon', 'Ruschiella', 'Sarozona', 'Sceletium', 'Synaptophyllum', 'Apatesia', 'Carpanthea', 'Caryotophora', 'Conicosia', 'Hymenogyne', 'Saphesia', 'Skiatophytum', 'Aethephyllum', 'Cleretum', 'Dorotheanthus', 'Acrodon', 'Aloinopsis', 'Amphibolia', 'Antegibbaeum', 'Antimima', 'Arenifera', 'Argyroderma', 'Astridia', 'Bergeranthus', 'Bijlia', 'Braunsia', 'Brianhuntleya', 'Carpobrotus', 'Carruanthus', 'Cephalophyllum', 'Cerochlamys', 'Chasmatophyllum', 'Cheiridopsis', 'Circandra', 'Conophytum', 'Corpuscularia', 'Cylindrophyllum', 'Delosperma', 'Dicrocaulon', 'Didymaotus', 'Dinteranthus', 'Diplosoma', 'Disphyma', 'Dracophilus', 'Drosanthemum', 'Eberlanzia', 'Ebracteola', 'Enarganthe', 'Erepsia', 'Esterhuysenia', 'Faucaria', 'Fenestraria', 'Frithia', 'Gibbaeum', 'Glottiphyllum', 'Hallianthus', 'Hereroa', 'Ihlenfeldtia', 'Imitaria', 'Jacobsenia', 'Jensenobotrya', 'Jordaaniella', 'Juttadinteria', 'Khadia', 'Lampranthus', 'Lapidaria', 'Leipoldtia', 'Lithops', 'Machairophyllum', 'Malephora', 'Mestoklema', 'Meyerophytum', 'Mitrophyllum', 'Monilaria', 'Mossia', 'Muiria', 'Namaquanthus', 'Namibia', 'Nananthus', 'Nelia', 'Neohenricia', 'Octopoma', 'Odontophorus', 'Oophytum', 'Ophthalmophyllum', 'Orthopterum', 'Oscularia', 'Ottosonderia', 'Pleiospilos', 'Polymita', 'Psammophora', 'Rabiea', 'Rhinephyllum', 'Rhombophyllum', 'Ruschia', 'Ruschianthemum', 'Ruschianthus', 'Schlechteranthus', 'Schwantesia', 'Scopelogena', 'Smicrostigma', 'Stayneria', 'Stoeberia', 'Stomatium', 'Tanquana', 'Titanopsis', 'Trichodiadema', 'Vanheerdea', 'Vanzijlia', 'Vlokia', 'Wooleya', 'Zeuktophyllum', 'Cypselea', 'Sesuvium', 'Trianthema', 'Tribulocarpus', 'Zaleya','Atriplex', 'Chenopodium', 'Dissocarpus', 'Einadia', 'Enchylaena', 'Eremophea', 'Halopeplis', 'Maireana', 'Malacocera', 'Neobassia', 'Osteocarpum', 'Rhagodia', 'Roycea', 'Halosarcia', 'Salicornia', 'Salsola', 'Sarcocornia', 'Sclerochlamys', 'Sclerolaena', 'Suaeda', 'Tecticornia', 'Threlkeldia', 'Anredera', 'Basella','Acanthocalycium', 'Acanthocereus', 'Ariocarpus', 'Armatocereus', 'Arrojadoa', 'Arthrocereus', 'Astrophytum', 'Austrocactus', 'Aztekium', 'Bergerocactus', 'Blossfeldia', 'Brachycereus', 'Browningia', 'Brasilicereus', 'Calymmanthium', 'Carnegiea', 'Cephalocereus', 'Cephalocleistocactus', 'Cereus', 'Cintia', 'Cipocereus', 'Cleistocactus', 'Coleocephalocereus', 'Copiapoa', 'Corryocactus', 'Coryphantha', 'Dendrocereus', 'Denmoza', 'Discocactus', 'Disocactus', 'Echinocactus', 'Echinocereus', 'Echinopsis', 'Epiphyllum', 'Epithelantha', 'Eriosyce', 'Escobaria', 'Escontria', 'Espostoa', 'Espostoopsis', 'Eulychnia', 'Facheiroa', 'Ferocactus', 'Frailea', 'Geohintonia', 'Gymnocalycium', 'Haageocereus', 'Harrisia', 'Hatiora', 'Hylocereus', 'Jasminocereus', 'Lasiocereus', 'Leocereus', 'Lepismium', 'Leptocereus', 'Leuchtenbergia', 'Lophophora', 'Maihuenia', 'Malacocarpus', 'Mammillaria', 'Mammilloydia', 'Matucana', 'Melocactus', 'Micranthocereus', 'Mila', 'Monvillea', 'Myrtillocactus', 'Neobuxbaumia', 'Neolloydia', 'Neoraimondia', 'Neowerdermannia', 'Obregonia', 'Opuntia', 'Oreocereus', 'Oroya', 'Ortegocactus', 'Pachycereus', 'Parodia', 'Pediocactus', 'Pelecyphora', 'Peniocereus', 'Pereskia', 'Pereskiopsis', 'Pilosocereus', 'Polaskia', 'Praecereus', 'Pseudoacanthocereus', 'Pseudorhipsalis', 'Pterocactus', 'Pygmaeocereus', 'Quiabentia', 'Rauhocereus', 'Rebutia', 'Rhipsalis', 'Samaipaticereus', 'Schlumbergera', 'Sclerocactus', 'Selenicereus', 'Stenocactus', 'Stenocereus', 'Stephanocereus', 'Stetsonia', 'Strombocactus', 'Tacinga', 'Thelocactus','Trichocereus', 'Turbinicarpus', 'Uebelmannia', 'Weberbauerocereus', 'Weberocereus', 'Yungasocereus', 'Alluaudia', 'Alluaudiopsis', 'Decaria', 'Didierea', 'Hypertelis', 'Amphipetalum', 'Anacampseros', 'Avonia', 'Calyptrotheca', 'Ceraria', 'Cistanthe', 'Calandrinia', 'Dendroportulaca', 'Grahamia', 'Lewisia', 'Parakeelya', 'Portulaca', 'Portulacaria', 'Schreiteria', 'Talinella', 'Talinum', 'Acanthosicyos', 'Apodanthera', 'Brandegea', 'Cephalopentandra', 'Ceratosanthes', 'Coccinia', 'Corallocarpus', 'Cyclantheropsis', 'Dactyliandra', 'Dendrosicyos', 'Doyera', 'Eureindra', 'Fevillea', 'Gerrandanthus', 'Gynostemma', 'Halosicyos', 'Ibervilla', 'Kedostris', 'Lagenaria', 'Marah', 'Momordica', 'Neoalsomitra', 'Odosicyos', 'Parasicyos', 'Syrigia', 'Telfairia', 'Trochomeria', 'Trochomeriopsis', 'Tumamoca', 'Xerosicyos', 'Zehneria', 'Zygosicyos', 'Impatiens', 'Fouquieria','Delonix', 'Dolichos', 'Erythrina', 'Lotononis', 'Neorautanenia', 'Pachyrhizus', 'Tylosema', 'Adenium', 'Mandevilla', 'Pachypodium', 'Plumeria', 'Absolmsia', 'Australluma', 'Aspidoglossum', 'Aspidonepsis', 'Baynesia', 'Brachystelma', 'Ceropegia', 'Chlorocyathus', 'Cibirhiza', 'Cordylogyne', 'Cynanchum', 'Dischidia', 'Dischidiopsis', 'Duvaliandra', 'Eustegia', 'Fanninia', 'Fockea', 'Glossostelma', 'Hoya', 'Ischnolepis', 'Lavrania', 'Marsdenia', 'Miraglossum', 'Odontostelma', 'Ophionella', 'Orbeanthus', 'Pachycarpus', 'Parapodium', 'Periglossum', 'Petopentia', 'Raphionacme', 'Riocreuxia', 'Sarcorrhiza', 'Schizoglossum', 'Schlechterella', 'Stathmostelma', 'Stenostelma', 'Stomatostemma', 'Trachycalymma', 'Trichocaulon', 'Tylophora', 'Woodia', 'Xysmalobium', 'Angolluma', 'Caralluma', 'Desmidorchis', 'Duvalia', 'Echidnopsis', 'Edithcolea', 'Frerea', 'Hoodia', 'Huernia', 'Huerniopsis', 'Larryleachia', 'Notechidnopsis', 'Orbea', 'Orbeopsis', 'Piaranthus', 'Pachycymbium', 'Pectinaria', 'Pseudolithos', 'Pseudopectinaria', 'Quaqua', 'Rhytidocaulon', 'Stapelia', 'Stapelianthus', 'Stapeliopsis', 'Tavaresia', 'Tridentea', 'Tromotriche', 'Whitesloanea', 'Adansonia', 'Cavanillesia', 'Ceiba', 'Pseudobombax', 'Abromeitiella', 'Aechmea', 'Ananas', 'Catopsis', 'Connellia', 'Dyckia', 'Hechtia', 'Neoregelia', 'Puya', 'Tillandsia', 'Vriesea', 'Dorstenia', 'Ficus','Pachycormus', 'Adromischus', 'Aeonium', 'Aichryson', 'Cotyledon', 'Crassula', 'Cremnophila', 'Dudleya', 'Echeveria', 'Graptopetalum', 'Greenovia', 'Hylotelephium', 'Kalanchoe', 'Kungia', 'Lenophyllum', 'Meterostachys', 'Monanthes', 'Mucizonia', 'Orostachys', 'Pachyphytum', 'Perrierosedum', 'Petrosedum', 'Phedimus', 'Pistorinia', 'Prometheum', 'Pseudosedum', 'Rhodiola', 'Rosularia', 'Sedella', 'Sedum', 'Sempervivum', 'Sinocrassula', 'Thompsonella', 'Tylecodon', 'Umbilicus', 'Villadia', 'Cissus', 'Cyphostemma']
-
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +18,7 @@ class Post extends Component {
       selectedPlant: '',
       endCursor: {},
       startCursor: {},
-      limit: 25,
+      limit: 12,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
@@ -33,19 +28,6 @@ class Post extends Component {
     this.submitPlantName = this.submitPlantName.bind(this);
   }
 
-  //removes uniques from the array results - may be removed with db cleanup
-  multiDimensionalUnique(arr) {
-    var uniques = [];
-    var itemsFound = {};
-    for(var i = 0, l = arr.length; i < l; i++) {
-      var stringified = JSON.stringify(arr[i].commonName)+JSON.stringify(arr[i].scientificName);
-      if(itemsFound[stringified]) { continue; }
-      uniques.push(arr[i]);
-      itemsFound[stringified] = true;
-    }
-    return uniques;
-  }
-
   //pagination functions - the prev function has some render bug. may have to be replaced.
   prev = async({
     search = this.state.value,
@@ -53,20 +35,18 @@ class Post extends Component {
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
-      .orderBy('name.scientificName','desc')
+      .orderBy('scientificName','desc')
       .limit(this.state.limit)
       .startAfter(this.state.startCursor)
       .get();
     this.setState({tableData: [], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0]})
     return snapshot.docs.reverse().reduce((acc, doc) => {
-      const name = doc.data().name;
+      const name = doc.data();
       this.setState({
         tableData:
-        this.multiDimensionalUnique(
             [...this.state.tableData,
               {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
             ]
-          )
         })
     }, '');
   }
@@ -77,21 +57,19 @@ class Post extends Component {
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
-      .orderBy('name.scientificName')
+      .orderBy('scientificName')
       .limit(this.state.limit)
       .startAfter(this.state.endCursor)
       .get();
     this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1]})
     return snapshot.docs.reduce((acc, doc) => {
-      const name = doc.data().name;
+      const name = doc.data();
       // console.log('name',name)
       this.setState({
         tableData:
-        this.multiDimensionalUnique(
           [...this.state.tableData,
             {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
           ]
-          )
         })
     }, '');
   }
@@ -101,22 +79,32 @@ class Post extends Component {
   } = {}) => {
 
     const db = firebase.firestore();
+
+    const exactNameSnapshot = await db.collection('plants').where('commonName', '==', `${search}`).get();
+
     const snapshot = await db.collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
-      .orderBy('name.scientificName')
+      .orderBy('scientificName')
       .limit(this.state.limit)
       .get();
-    this.state.endCursor = snapshot.docs[snapshot.docs.length-1]
+
+    this.setState({
+      endCursor:
+        snapshot.docs[snapshot.docs.length-1]
+      })
+    exactNameSnapshot.forEach(doc =>{
+      const name = doc.data();
+      this.setState({
+          tableData: [{commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
+        })
+    })
     return snapshot.docs.reduce((acc, doc) => {
-      const name = doc.data().name;
+      const name = doc.data();
       this.count++
       this.setState({
         tableData:
-        this.multiDimensionalUnique(
           [...this.state.tableData,
-            {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
-          ]
-          )
+            {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
         })
     }, '');
   }
@@ -274,7 +262,7 @@ class Post extends Component {
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            // console.log('ITEM',item)
+            console.log('ITEM',item)
             //conver these to card components for visual effect
              return (
               <View>
