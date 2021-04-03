@@ -18,7 +18,7 @@ class Post extends Component {
       selectedPlant: '',
       endCursor: {},
       startCursor: {},
-      limit: 12,
+      count: 0,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
@@ -32,14 +32,31 @@ class Post extends Component {
   prev = async({
     search = this.state.value,
   } = {}) => {
+    let limit
+    if (this.state.count <= 2){
+      limit = 11
+    } else {
+      limit = 12
+    }
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName','desc')
-      .limit(this.state.limit)
+      .limit(limit)
       .startAfter(this.state.startCursor)
       .get();
-    this.setState({tableData: [], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0]})
+
+    const exactNameSnapshot = await db.collection('plants').where('commonName', '==', `${search}`).get();
+    if(this.state.count <= 2){
+      exactNameSnapshot.forEach(doc =>{
+        const name = doc.data();
+        this.setState({tableData: [{commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0], count: this.state.count-1})
+        // console.log(name)
+      })
+
+    } else {
+      this.setState({tableData: [], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0], count: this.state.count-1})
+    }
     return snapshot.docs.reverse().reduce((acc, doc) => {
       const name = doc.data();
       this.setState({
@@ -48,6 +65,7 @@ class Post extends Component {
               {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
             ]
         })
+        console.log(this.state.count)
     }, '');
   }
 
@@ -58,10 +76,10 @@ class Post extends Component {
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(this.state.limit)
+      .limit(12)
       .startAfter(this.state.endCursor)
       .get();
-    this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1]})
+    this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1], count: this.state.count+1})
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data();
       // console.log('name',name)
@@ -71,6 +89,7 @@ class Post extends Component {
             {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
           ]
         })
+        console.log(this.state.count)
     }, '');
   }
 
@@ -85,12 +104,12 @@ class Post extends Component {
     const snapshot = await db.collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(this.state.limit)
+      .limit(11)
       .get();
 
     this.setState({
       endCursor:
-        snapshot.docs[snapshot.docs.length-1]
+        snapshot.docs[snapshot.docs.length-1], count: this.state.count+1
       })
     exactNameSnapshot.forEach(doc =>{
       const name = doc.data();
@@ -100,8 +119,8 @@ class Post extends Component {
     })
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data();
-      this.count++
       this.setState({
+        count: this.state.count++,
         tableData:
           [...this.state.tableData,
             {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
@@ -219,9 +238,10 @@ class Post extends Component {
             <Icon name="arrow-forward-outline" />
           </Button>
 
-          <Button style={{ backgroundColor: '#247237' }} onPress={()=> this.prev()}>
-            <Icon name="arrow-back-outline" />
-          </Button>
+          { this.state.count > 1
+            ? <Button style={{ backgroundColor: '#247237' }} onPress={()=> this.prev()}><Icon name="arrow-back-outline" /></Button>
+            : <Button style={{ backgroundColor: '#A9A9A9' }}><Icon name="arrow-back-outline" /></Button>
+          }
 
           <Button style={{ backgroundColor: '#247237' }} onPress={() => this.cancelSearch()}>
             <Icon name="ios-close" />
@@ -262,7 +282,7 @@ class Post extends Component {
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            console.log('ITEM',item)
+            // console.log('ITEM',item)
             //conver these to card components for visual effect
              return (
               <View>
