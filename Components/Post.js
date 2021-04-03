@@ -50,8 +50,21 @@ class Post extends Component {
     if(this.state.count <= 2){
       exactNameSnapshot.forEach(doc =>{
         const name = doc.data();
-        this.setState({tableData: [{commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0], count: this.state.count-1})
-        // console.log(name)
+        this.setState({tableData: [{
+          commonName: name.commonName,
+          scientificName: name.scientificName,
+          carnivorous: name.carnivorous,
+          diseases:
+          name.diseases,
+          edible: name.edible,
+          familyName: name.familyName,
+          freshWaterAquatic: name.freshWaterAquatic,
+          herb: name.herb,
+          medicinalUse: name.medicinalUse,
+          poisonous: name.poisonous,
+          succulent: name.succulent,
+          tags: name.tags,
+          key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}], startCursor: snapshot.docs[snapshot.docs.length-1], endCursor: snapshot.docs[0], count: this.state.count-1})
       })
 
     } else {
@@ -62,10 +75,23 @@ class Post extends Component {
       this.setState({
         tableData:
             [...this.state.tableData,
-              {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
+              {
+                commonName: name.commonName,
+                scientificName: name.scientificName,
+                carnivorous: name.carnivorous,
+                diseases:
+                name.diseases,
+                edible: name.edible,
+                familyName: name.familyName,
+                freshWaterAquatic: name.freshWaterAquatic,
+                herb: name.herb,
+                medicinalUse: name.medicinalUse,
+                poisonous: name.poisonous,
+                succulent: name.succulent,
+                tags: name.tags,
+                key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
             ]
         })
-        console.log(this.state.count)
     }, '');
   }
 
@@ -82,14 +108,26 @@ class Post extends Component {
     this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1], count: this.state.count+1})
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data();
-      // console.log('name',name)
       this.setState({
         tableData:
           [...this.state.tableData,
-            {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
+            {
+              commonName: name.commonName,
+              scientificName: name.scientificName,
+              carnivorous: name.carnivorous,
+              diseases:
+              name.diseases,
+              edible: name.edible,
+              familyName: name.familyName,
+              freshWaterAquatic: name.freshWaterAquatic,
+              herb: name.herb,
+              medicinalUse: name.medicinalUse,
+              poisonous: name.poisonous,
+              succulent: name.succulent,
+              tags: name.tags,
+              key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}
           ]
         })
-        console.log(this.state.count)
     }, '');
   }
 
@@ -114,16 +152,45 @@ class Post extends Component {
     exactNameSnapshot.forEach(doc =>{
       const name = doc.data();
       this.setState({
-          tableData: [{commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
+          tableData: [{
+          commonName: name.commonName,
+          scientificName: name.scientificName,
+          carnivorous: name.carnivorous,
+          diseases:
+          name.diseases,
+          edible: name.edible,
+          familyName: name.familyName,
+          freshWaterAquatic: name.freshWaterAquatic,
+          herb: name.herb,
+          medicinalUse: name.medicinalUse,
+          poisonous: name.poisonous,
+          succulent: name.succulent,
+          tags: name.tags,
+          key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
         })
     })
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data();
+      // console.log(name)
       this.setState({
         count: this.state.count++,
         tableData:
           [...this.state.tableData,
-            {commonName: name.commonName, scientificName: name.scientificName, key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
+            {
+              commonName: name.commonName,
+              scientificName: name.scientificName,
+              carnivorous: name.carnivorous,
+              diseases:
+              name.diseases,
+              edible: name.edible,
+              familyName: name.familyName,
+              freshWaterAquatic: name.freshWaterAquatic,
+              herb: name.herb,
+              medicinalUse: name.medicinalUse,
+              poisonous: name.poisonous,
+              succulent: name.succulent,
+              tags: name.tags,
+              key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
         })
     }, '');
   }
@@ -152,17 +219,13 @@ class Post extends Component {
       await this.setState({isVisible: show, selectedPlant: ''})
     } else {
       await this.setState({isVisible: show, selectedPlant: plantId})
-      // console.log(plantId)
-      // console.log('current plant in modal',await firebase.database().ref(`/plants/${plantId}/name`))
     }
   }
 
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
   async postPlant(plant){
-    console.log('plant in POSTPLANT', plant)
     //if the common name is bugged
     if(typeof plant === 'string'){
-      console.log(plant)
       this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors)
       await Notifications.scheduleNotificationAsync({
         content: {
@@ -282,7 +345,6 @@ class Post extends Component {
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            // console.log('ITEM',item)
             //conver these to card components for visual effect
              return (
               <View>
@@ -319,7 +381,8 @@ class Post extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={
-                          this.postPlant.bind(this, item.item)
+                          console.log(item)
+                          // this.postPlant.bind(this, item.item)
                         }
                           >
                             <Text style={styles.closeText}>Track</Text>
@@ -373,7 +436,8 @@ class Post extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={
-                          this.postPlant.bind(this, item.item.commonName)
+                          console.log(item)
+                          // this.postPlant.bind(this, item.item.commonName)
                         }
                           >
                             <Text style={styles.closeText}>Track</Text>
