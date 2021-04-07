@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, FlatList, TextInput, Picker, Switch, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
+import { Text, StyleSheet, FlatList, TextInput, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
 import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { postUserPlant } from '../actions'
 import { connect } from 'react-redux'
-import { Container, Header, View, Button, Icon, Fab } from 'native-base'
+import { Container, Header, View, Button, Icon, Fab, CheckBox} from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
 
 class Post extends Component {
@@ -19,6 +19,7 @@ class Post extends Component {
       endCursor: {},
       startCursor: {},
       count: 0,
+      active: false,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
@@ -32,17 +33,11 @@ class Post extends Component {
   prev = async({
     search = this.state.value,
   } = {}) => {
-    let limit
-    if (this.state.count <= 2){
-      limit = 11
-    } else {
-      limit = 12
-    }
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName','desc')
-      .limit(limit)
+      .limit(7)
       .startAfter(this.state.startCursor)
       .get();
 
@@ -102,7 +97,7 @@ class Post extends Component {
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(12)
+      .limit(8)
       .startAfter(this.state.endCursor)
       .get();
     this.setState({tableData: [], startCursor: snapshot.docs[0],endCursor: snapshot.docs[snapshot.docs.length-1], count: this.state.count+1})
@@ -142,7 +137,7 @@ class Post extends Component {
     const snapshot = await db.collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(11)
+      .limit(7)
       .get();
 
     this.setState({
@@ -171,7 +166,6 @@ class Post extends Component {
     })
     return snapshot.docs.reduce((acc, doc) => {
       const name = doc.data();
-      // console.log(name)
       this.setState({
         count: this.state.count++,
         tableData:
@@ -206,12 +200,20 @@ class Post extends Component {
   }
 
   //posting functions
-  togglePotted = (value) => {
-    this.setState({isPotted: value})
+  togglePotted = () => {
+    if(this.state.isPotted === false){
+      this.setState({isPotted: true})
+    } else {
+      this.setState({isPotted: false})
+    }
  }
 
-  toggleIndoors = (value) => {
-    this.setState({isIndoors: value})
+  toggleIndoors = () => {
+    if(this.state.isIndoors === false){
+      this.setState({isIndoors: true})
+    } else {
+      this.setState({isIndoors: false})
+    }
 }
 
   async displayModal(show, plantId){
@@ -220,10 +222,13 @@ class Post extends Component {
     } else {
       await this.setState({isVisible: show, selectedPlant: plantId})
     }
+
+    const db = firebase.firestore();
   }
 
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
   async postPlant(plant){
+    console.log(plant)
     //if the common name is bugged
     if(typeof plant === 'string'){
       this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors)
@@ -289,19 +294,19 @@ class Post extends Component {
             <Icon name="ios-close" />
           </Fab>
           : <Fab
-          active={this.state.active2}
+          active={this.state.active}
           direction="left"
           containerStyle={{ bottom: 35, right: 35 }}
           style={{ backgroundColor: '#1a5127'}}
           position="bottomRight"
-          onPress={() => this.setState({ active2: !this.state.active2 })}>
+          onPress={() => this.setState({ active: !this.state.active })}>
           <Icon name="add-outline" />
 
           <Button style={{ backgroundColor: '#247237' }} onPress={() => this.next()}>
             <Icon name="arrow-forward-outline" />
           </Button>
 
-          { this.state.count > 1
+          { this.state.count >= 1
             ? <Button style={{ backgroundColor: '#247237' }} onPress={()=> this.prev()}><Icon name="arrow-back-outline" /></Button>
             : <Button style={{ backgroundColor: '#A9A9A9' }}><Icon name="arrow-back-outline" /></Button>
           }
@@ -344,12 +349,16 @@ class Post extends Component {
            {!this.state.tableData ? <View></View> : <FlatList style={{width:'100%',marginTop: '5%'}}
           data={this.state.tableData}
           keyExtractor={(item) => item.key}
+          scrollEnabled={false}
           renderItem={(item) => {
             //conver these to card components for visual effect
+            // console.log(item)
              return (
               <View>
-                {item.index % 2
-                  ? <View style={styles.textView}>
+                <View style={{paddingBottom: '1%',
+                paddingTop: '1%',
+                flexDirection: 'column',
+                justifyContent: 'space-between'}}>
                   <Modal
                     animationType = {"slide"}
                     transparent={true}
@@ -357,19 +366,56 @@ class Post extends Component {
                     onRequestClose={() => {
                     Alert.alert('Modal has now been closed.');}}>
                       <View style={ styles.modal }>
+                        <View style = {{width: '90%', marginLeft: 'auto', marginRight:'auto'}}>
                         <Text style = { styles.text3 }>
                             {item.item.commonName} <Text style={{fontStyle: 'italic'}}>({item.item.scientificName})</Text>
                         </Text>
+                        {item.item.medicinalUse ? <Text style={{fontSize: 11}}>{item.item.medicinalUse}</Text> : <View/>}
+                        <View>
+                        {item.item.diseases.map(disease => { const diseaseImpacts = disease.split(':')
+                        const diseases = ['rootRot:root rot','canker:canker','verticilliumWilt:verticillium wilt','mosaicVirus:mosaic virus','leafBlight:leaf blight','blackSpot:black spot','powderyMildew:powdery mildew','blackDot:Black Dot','caneBlight:cane blight']
+                        const status = diseaseImpacts[1].charAt(0).toUpperCase() + diseaseImpacts[1].slice(1);
+                        for(let i = 0; i < diseases.length; i++){
+                          const currDisease = diseases[i].split(':')[0]
+                          const formatted = diseases[i].split(':')[1]
+                          if(currDisease === diseaseImpacts[0]){
+                            return <Text style={{fontSize: 10, paddingBottom: '2%',paddingTop: '2%'}} key = {Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}>{status} to {formatted}.</Text>
+                          }
+                        }
+                        })}
 
+                        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+                        {item.item.tags.map(tag => {
+                          console.log(tag)
+                          return <View key = {Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)} style={{backgroundColor: '#004d00', padding: '1.5%', marginLeft: '2%', borderRadius: '2.5%'}}><Text style={{ fontSize:9 ,color: '#fff'}}>{tag}</Text></View>
+                        })}
+                        </View>
+                        </View>
+
+                        </View>
+                        <View
+                          style={{
+                            width: '90%',
+                            borderBottomColor: '#E5E4E2',
+                            borderBottomWidth: 1,
+                            marginLeft: 'auto',
+                            marginRight: 'auto',
+                            marginTop: '3%',
+                            marginBottom: '3%'
+                            }}/>
                         <View style={styles.modalFooter}>
-                          <View>
-                            <Text>Potted?</Text>
-                            <Switch onValueChange = {this.togglePotted} value = {this.state.isPotted}/>
+                          <View style={{flexDirection:'row'}}>
+                            <CheckBox color = {'#004d00'} onPress = {this.togglePotted} checked = {this.state.isPotted}/>
+                            <View style={{marginLeft: '15%', flexDirection: 'column', justifyContent: 'center'}}>
+                            <Text style={{fontSize:9}}>Potted</Text>
+                            </View>
                           </View>
 
-                          <View>
-                            <Text>Indoors?</Text>
-                            <Switch onValueChange = {this.toggleIndoors} value = {this.state.isIndoors}/>
+                          <View style={{flexDirection:'row'}}>
+                          <CheckBox color = {'#004d00'} onPress = {this.toggleIndoors} checked = {this.state.isIndoors}/>
+                            <View style={{marginLeft: '15%', flexDirection: 'column', justifyContent: 'center'}}>
+                            <Text style={{fontSize:9}}>Indoors</Text>
+                            </View>
                           </View>
                         </View>
 
@@ -381,8 +427,7 @@ class Post extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={
-                          console.log(item)
-                          // this.postPlant.bind(this, item.item)
+                          this.postPlant.bind(this, item.item)
                         }
                           >
                             <Text style={styles.closeText}>Track</Text>
@@ -395,71 +440,31 @@ class Post extends Component {
 
                     <TouchableOpacity onPress={() => {
                     this.displayModal(true, item.item.key)}}>
-                      <View style={styles.textView}>
-                        <Text style={styles.title}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between',
+                      shadowOpacity: .25,
+                      width: '99%',shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
+                        <View style={styles.textView}>
+                        <Text style={{fontSize: 18}}>
                           {!item.item.commonName
                             ? item.item.scientificName
                             : item.item.commonName}
                         </Text>
+                          <Text style={{fontSize: 10}}>{item.item.familyName}</Text>
+                        </View>
+
+                        <View style={{ flexDirection: 'column', justifyContent: 'center'}}>
+                        <View style={{ flexDirection: 'row', marginRight: '2%'}}>
+                          {item.item.poisonous ? <FontAwesome5  name="skull-crossbones" size={25} color="black"/> : <View></View>}
+                          {item.item.edible || item.item.tags.includes('Edible')  ? <MaterialCommunityIcons  name="silverware-fork-knife" size={25} color="black"/> : <View></View>}
+                          {item.item.tags.includes('Herbal') || item.item.herbal ? <MaterialCommunityIcons  name="medical-bag" size={25} color="black"/> : <View></View>}
+                          {item.item.tags.includes('Cactus') || item.item.tags.includes('Succulent') || item.item.familyName === 'Cactaceae'  || item.item.succulent ? <MaterialCommunityIcons  name="cactus" size={25} color="black"/> : <View></View>}
+                          {item.item.tags.includes('Aquatic - Freshwater') || item.item.freshWaterAquatic ? <Entypo  name="drop" size={25} color="black"/> : <View></View>}
+                        </View>
+                        </View>
                       </View>
                     </TouchableOpacity>
                 </View>
-                  : <View style={styles.textView2}>
-                  <Modal
-                    animationType = {"slide"}
-                    transparent={true}
-                    visible={this.state.selectedPlant === item.item.key ? this.state.isVisible : false}
-                    onRequestClose={() => {
-                    Alert.alert('Modal has now been closed.');}}>
-                      <View style={ styles.modal }>
-                        <Text style = { styles.text3 }>
-                            {item.item.commonName} <Text style={{fontStyle: 'italic'}}>({item.item.scientificName})</Text>
-                        </Text>
 
-                        <View style={styles.modalFooter}>
-                          <View>
-                            <Text>Potted?</Text>
-                            <Switch onValueChange = {this.togglePotted} value = {this.state.isPotted}/>
-                          </View>
-
-                          <View>
-                            <Text>Indoors?</Text>
-                            <Switch onValueChange = {this.toggleIndoors} value = {this.state.isIndoors}/>
-                          </View>
-                        </View>
-
-                        <View style={styles.modalFooter2}>
-
-                        <TouchableOpacity onPress={() => {this.displayModal(!this.state.isVisible);}}>
-                          <Text style={styles.closeText}>Close</Text>
-                          <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="close" size={12} color="black" />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={
-                          console.log(item)
-                          // this.postPlant.bind(this, item.item.commonName)
-                        }
-                          >
-                            <Text style={styles.closeText}>Track</Text>
-                            <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="plussquareo" size={12} color="black" />
-                        </TouchableOpacity>
-
-                        </View>
-                      </View>
-                    </Modal>
-
-                    <TouchableOpacity onPress={() => {
-                    this.displayModal(true, item.item.key)}}>
-                      <View style={styles.textView}>
-                        <Text style={styles.title}>
-                          {!item.item.commonName
-                            ? item.item.scientificName
-                            : item.item.commonName}
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
-                </View>
-                }
               </View>
             )
           }} />
@@ -511,8 +516,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f1f8ff'
   },
   modal: {
+    shadowOpacity: .5,
+    shadowOffset: {width:2,height:2},
+    shadowRadius: 2,
     display: 'flex',
-    marginTop: '25%',
+    marginTop: '50%',
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '75%',
@@ -547,10 +555,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   textView: {
-    paddingBottom: '2%',
-    paddingTop: '2%',
-    paddingLeft: '1%',
-    flexDirection: 'row',
+    paddingBottom: '3%',
+    paddingTop: '3%',
+    marginLeft: '2%',
+    flexDirection: 'column',
     justifyContent: 'space-between'
   },
   text: {
@@ -589,8 +597,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: '2%',
-    paddingBottom: '5%',
-    paddingTop: '5%',
+    paddingBottom: '2%',
+    paddingTop: '4%',
   }
 })
 
