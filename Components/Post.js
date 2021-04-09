@@ -15,6 +15,9 @@ class Post extends Component {
       isVisible: false,
       isPotted: false,
       isIndoors: false,
+      isHydroponic: false,
+      isSucculent: false,
+      potSize: 0,
       selectedPlant: '',
       endCursor: {},
       startCursor: {},
@@ -33,6 +36,9 @@ class Post extends Component {
   prev = async({
     search = this.state.value,
   } = {}) => {
+    if(search[search.length-1] === ' '){
+      search = search.slice(0,search.length-1)
+    }
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
@@ -93,6 +99,9 @@ class Post extends Component {
   next = async({
     search = this.state.value,
   } = {}) => {
+    if(search[search.length-1] === ' '){
+      search = search.slice(0,search.length-1)
+    }
     const db = firebase.firestore();
     const snapshot = await db.collection('plants')
     .where('keywords', 'array-contains', search.toLowerCase())
@@ -129,7 +138,9 @@ class Post extends Component {
   searchByName = async ({
     search = '',
   } = {}) => {
-
+    if(search[search.length-1] === ' '){
+      search = search.slice(0,search.length-1)
+    }
     const db = firebase.firestore();
 
     const exactNameSnapshot = await db.collection('plants').where('commonName', '==', `${search}`).get();
@@ -210,10 +221,18 @@ class Post extends Component {
 
   toggleIndoors = () => {
     if(this.state.isIndoors === false){
-      this.setState({isIndoors: true})
+      this.setState({isIndoors: true, isPotted: true})
     } else {
-      this.setState({isIndoors: false})
+      this.setState({isIndoors: false })
     }
+}
+
+toggleHydroponic = () => {
+  if(this.state.isHydroponic === false){
+    this.setState({isHydroponic: true, isPotted: true})
+  } else {
+    this.setState({isHydroponic: false })
+  }
 }
 
   async displayModal(show, plantId){
@@ -227,50 +246,121 @@ class Post extends Component {
   }
 
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
-  async postPlant(plant){
+  async postPlant(plant, indoor, potted, hydroponic){
+
+    let indoorStatus = ''
+    let pottedStatus = ''
+    let hydroponicStatus = ''
+    let succulent
+
+    if(indoor){
+      indoorStatus = "Indoor"
+    } else {
+      indoorStatus = "Outdoor"
+    }
+    if(potted){
+      pottedStatus = "Potted"
+    } else {
+      pottedStatus = "In-Ground"
+    }
+    if(hydroponic){
+      hydroponicStatus = 'Hydroponic'
+      pottedStatus = ''
+    }
+
     console.log(plant)
+
+    if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){
+      succulent = true
+    } else {
+      succulent = false
+    }
+
+    let base = 0
+
+    if(hydroponic){
+      base = 14
+    }
+
+    //
+    if(succulent){
+      //if indoors
+      if(indoors){
+        base = 14
+      }
+      //if outdoors and potted
+      else if (!indoors && potted){
+        base = 7
+      }
+      //outdoors in the ground
+      else if (!indoors && !potted){
+        base = 28
+      }
+    }
+
+    //if potted
+    else if(potted){
+      //if succulent and outdoors
+      if(succulent && !indoors){
+        base = 7
+      //if succulent and indoors
+      } else if (succulent && indoors) {
+        base = 14
+      //if outdoors and not succulent
+      } else if (!suculent && !indoors){
+        base = 3
+      //if indoors not succulent
+      } else {
+        base = 7
+      }
+      }
     //if the common name is bugged
     if(typeof plant === 'string'){
-      this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors)
+      this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors,
+      this.state.isHydroponic,
+      succulent)
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: `Water your ${plant}!`,
-          body: 'Now!',
+          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant}`,
+          body: 'Needs water.',
         },
         trigger: {
-          seconds: 5,
+          seconds: base,
           // repeats: true
         }
       })
     }
     //if theres a common name
     if(plant.commonName){
-
       this.props.postUserPlant(
         plant.commonName,
         this.state.isPotted,
-        this.state.isIndoors
+        this.state.isIndoors,
+        this.state.isHydroponic,
+        succulent
       )
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: `Water your ${plant.commonName}!`,
-          body: 'Now!',
+          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.commonName}`,
+          body: 'Needs water.',
         },
         trigger: {
-          seconds: 5,
+          seconds: base,
           // repeats: true
         }
       })
     //otherwise refer to the scientific name
     } else if(!plant.commonName && typeof plant !== 'string') {
-      this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors)
+      this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors,
+      this.state.isHydroponic,
+      succulent)
       await Notifications.scheduleNotificationAsync({
         content: {
-          title: `Water your ${plant.scientificName}!`,
-          body: 'Now!',
+          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.scientificName}`,
+          body: 'Needs water.',
         },
         trigger: {
-          seconds: 5,
+          seconds: base,
           // repeats: true
         }
       })
@@ -386,7 +476,6 @@ class Post extends Component {
 
                         <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                         {item.item.tags.map(tag => {
-                          console.log(tag)
                           return <View key = {Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)} style={{backgroundColor: '#004d00', padding: '1.5%', marginLeft: '2%', borderRadius: '2.5%'}}><Text style={{ fontSize:9 ,color: '#fff'}}>{tag}</Text></View>
                         })}
                         </View>
@@ -407,16 +496,24 @@ class Post extends Component {
                           <View style={{flexDirection:'row'}}>
                             <CheckBox color = {'#004d00'} onPress = {this.togglePotted} checked = {this.state.isPotted}/>
                             <View style={{marginLeft: '15%', flexDirection: 'column', justifyContent: 'center'}}>
-                            <Text style={{fontSize:9}}>Potted</Text>
+                            <Text style={{fontSize:10}}>Potted</Text>
                             </View>
                           </View>
 
                           <View style={{flexDirection:'row'}}>
                           <CheckBox color = {'#004d00'} onPress = {this.toggleIndoors} checked = {this.state.isIndoors}/>
                             <View style={{marginLeft: '15%', flexDirection: 'column', justifyContent: 'center'}}>
-                            <Text style={{fontSize:9}}>Indoors</Text>
+                            <Text style={{fontSize:10}}>Indoors</Text>
                             </View>
                           </View>
+
+                          <View style={{flexDirection:'row'}}>
+                          <CheckBox color = {'#004d00'} onPress = {this.toggleHydroponic} checked = {this.state.isHydroponic}/>
+                            <View style={{marginLeft: '15%', flexDirection: 'column', justifyContent: 'center'}}>
+                            <Text style={{fontSize:10}}>Hydroponic</Text>
+                            </View>
+                          </View>
+
                         </View>
 
                         <View style={styles.modalFooter2}>
@@ -427,7 +524,7 @@ class Post extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity onPress={
-                          this.postPlant.bind(this, item.item)
+                          this.postPlant.bind(this, item.item, this.state.isIndoors, this.state.isPotted, this.state.isHydroponic)
                         }
                           >
                             <Text style={styles.closeText}>Track</Text>
@@ -569,12 +666,15 @@ const styles = StyleSheet.create({
     marginBottom: '2%'
   },
   modal: {
+    shadowOpacity: .25,
+    shadowOffset: {width:1,height:1},
+    shadowRadius: 2,
     display: 'flex',
     marginTop: '75%',
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '75%',
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    backgroundColor: 'rgba(250, 255, 250, 0.95)',
     borderRadius: 10,
     padding: '2%',
     flexDirection: 'column',

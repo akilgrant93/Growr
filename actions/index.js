@@ -70,7 +70,7 @@ export function getUserPlants(uid){
 }
 
 //add a plant to a users list of tracked plants will come with more settings other than "name" in the long term
-export function postUserPlant(name, isPotted, isIndoors){
+export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent){
   const uid = firebase.auth().currentUser.uid
   const needsWater = false
   //timestamp needs to be translatedd into real date for calendar functions
@@ -78,7 +78,7 @@ export function postUserPlant(name, isPotted, isIndoors){
 
   console.log('name in postUserPlant',name)
   return (dispatch) => {
-    firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater, lastWatered, isPotted, isIndoors})
+    firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent})
   }
 }
 
