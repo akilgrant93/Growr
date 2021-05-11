@@ -23,7 +23,7 @@
     "expo-updates": "~0.4.1",
     "firebase": "^8.0.0",
     "fs": "0.0.1-security",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "native-base": "^2.15.2",
     "react": "16.13.1",
     "react-dom": "16.13.1",
