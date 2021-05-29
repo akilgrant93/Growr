@@ -6,6 +6,7 @@ import _ from 'lodash'
 import firebase from 'firebase'
 import { AntDesign } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
+import Weather from './Weather'
 import Constants from 'expo-constants';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
@@ -162,6 +163,8 @@ async registerForPushNotificationsAsync() {
           }} />
           </View>
         }
+
+        <Weather/>
         </View>
       </Container>
   )}
