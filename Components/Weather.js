@@ -11,6 +11,14 @@ const weather = () => {
 
   const [forecast, setForecast] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [geocode, setGeocode] = useState(null)
+  const [location, setLocation] = useState(null)
+
+  const getGeocodeAsync= async (location) => {
+    let geocode = await Location.reverseGeocodeAsync(location)
+    setGeocode(geocode)
+    console.log(geocode)
+  }
 
   const loadForecast = async () => {
     setRefreshing(true);
@@ -21,7 +29,9 @@ const weather = () => {
     }
 
     let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true});
-
+    const { latitude , longitude } = location.coords
+    getGeocodeAsync({latitude, longitude})
+    setLocation({latitude, longitude})
     const response = await fetch( `${url}&lat=${location.coords.latitude}&lon=${location.coords.longitude}`);
     const data = await response.json();
 
@@ -30,7 +40,6 @@ const weather = () => {
     } else {
       setForecast(data);
     }
-    console.log(data.current)
     setRefreshing(false);
   }
 
