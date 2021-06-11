@@ -10,6 +10,7 @@ import Weather from './Weather'
 import Constants from 'expo-constants';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
+import Carousell from './carousel'
 
 
 
@@ -81,6 +82,7 @@ async registerForPushNotificationsAsync() {
 
   }
 
+
   _handleNotification = notification => {
     this.setState({ notification: notification });
   };
@@ -101,7 +103,7 @@ async registerForPushNotificationsAsync() {
           <Fab
             active={this.state.active}
             direction="up"
-            containerStyle={{ bottom: 35, right: 35 }}
+            containerStyle={{ bottom: 65, right: 25 }}
             style={{ backgroundColor: '#1a5127'}}
             position="bottomRight"
             onPress={() => this.setState({ active: !this.state.active })}>
@@ -163,7 +165,6 @@ async registerForPushNotificationsAsync() {
           }} />
           </View>
         }
-
         <Weather/>
         </View>
       </Container>
