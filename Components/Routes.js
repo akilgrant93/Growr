@@ -1,6 +1,7 @@
 import Plants from './Plants'
 import Edit from './Edit'
 import Post from './Post'
+import MyCalendar from './Calendar'
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -44,7 +45,7 @@ function MyStack() {
         }}
         />
       {/* <Stack.Screen name="Settings" component={Settings} /> */}
-      {/* <Stack.Screen name="My Calendar" component={Calendar} /> */}
+      <Stack.Screen name="My Calendar" component={MyCalendar} />
     </Stack.Navigator>
     </NavigationContainer>
   );

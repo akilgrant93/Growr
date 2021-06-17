@@ -11,7 +11,7 @@ import Constants from 'expo-constants';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
 import Carousell from './carousel'
-
+import * as Location from 'expo-location';
 
 
 Notifications.setNotificationHandler({
@@ -37,15 +37,22 @@ class Plants extends Component {
 //replace that goofy ass activity indicated with a plant themed animation
 //under "add a plant - include some kind of illustration"
 
+
+//change permissions async as per notifications module guidelines (on expo docs)
 async registerForPushNotificationsAsync() {
   let token;
   if (Constants.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== 'granted') {
-      const { status } = await Notifications.requestPermissionsAsync();
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
       finalStatus = status;
     }
+
     if (finalStatus !== 'granted') {
       alert('Failed to get push token for push notification!');
       return;
@@ -112,7 +119,8 @@ async registerForPushNotificationsAsync() {
               <Icon name="leaf-outline" />
             </Button>
             <Button style={{ backgroundColor: '#2e9247' }}>
-              <Icon name="calendar-sharp" />
+              <Icon name="calendar-sharp"
+              onPress={() => this.props.navigation.navigate('My Calendar')}/>
             </Button>
             <Button style={{ backgroundColor: '#247237' }}>
               <Icon name="md-cog-sharp" />

@@ -23,10 +23,11 @@ const weather = () => {
   const loadForecast = async () => {
     setRefreshing(true);
 
-    const { status } = await Location.requestPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission to access location was denied');
-    }
+    let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
 
     let location = await Location.getCurrentPositionAsync({enableHighAccuracy: true});
     const { latitude , longitude } = location.coords
