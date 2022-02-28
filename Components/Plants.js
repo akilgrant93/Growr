@@ -10,7 +10,6 @@ import Weather from './Weather'
 import Constants from 'expo-constants';
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
-import Carousell from './carousel'
 import * as Location from 'expo-location';
 
 
@@ -142,18 +141,17 @@ async registerForPushNotificationsAsync() {
               </View>
               : <Text></Text>}
 
-          <FlatList style={{width:'100%'}}
+          <FlatList style={{width:'100%', maxHeight: '87.5%'}}
           //there is a frontend bug on item.item.name
           data={this.props.listOfPlants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
+            console.log('item',item)
              return (
               <View style={styles.plantListItem}>
                 <View>
-
-                  <TouchableOpacity style={{paddingLeft: '2.5%', paddingRight: '1.25%',flexDirection: 'row', minWidth: '85%',justifyContent: 'space-between'}}onPress={() =>     this.props.navigation.navigate('Edit', {...item})}>
+                  <TouchableOpacity style={{paddingLeft: '2.5%', paddingRight: '1.25%',flexDirection: 'row', minWidth: '85%',justifyContent: 'space-between'}}onPress={() =>     this.props.navigation.navigate('Plant Care', {...item})}>
                       <View style={{flexDirection: 'column',
-                      // justifyContent: 'flex-end'
                       }}>
                       <Text style={styles.plantName}>
                       {item.item.name}
@@ -173,6 +171,7 @@ async registerForPushNotificationsAsync() {
           }} />
           </View>
         }
+
         <Weather/>
         </View>
       </Container>
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   emptyButton: {
     display: 'flex',

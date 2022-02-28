@@ -1,54 +1,77 @@
-import React, { Component } from 'react'
+import React, { Component, useState } from 'react'
 import {Calendar, CalendarList, Agenda, LocaleConfig, Arrow} from 'react-native-calendars';
 import { View } from 'native-base'
+import { Text, TouchableOpacity } from 'react-native';
 
-export default class UserCalendar extends Component {
-  render() {
-    return (
-      <View>
-        <Calendar
-  // Initially visible month. Default = Date()
-  current={new Date()}
-
-  // Handler which gets executed on day press. Default = undefined
-  onDayPress={(day) => {console.log('selected day', day)}}
-  // Handler which gets executed on day long press. Default = undefined
-  onDayLongPress={(day) => {console.log('selected day', day)}}
-  // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
-  monthFormat={'yyyy MM'}
-  // Handler which gets executed when visible month changes in calendar. Default = undefined
-  onMonthChange={(month) => {console.log('month changed', month)}}
-  // Hide month navigation arrows. Default = false
-  hideArrows={true}
-  // Replace default arrows with custom ones (direction can be 'left' or 'right')
-  renderArrow={(direction) => (<Arrow/>)}
-  // Do not show days of other months in month page. Default = false
-  hideExtraDays={true}
-  // If hideArrows=false and hideExtraDays=false do not switch month when tapping on greyed out
-  // day from another month that is visible in calendar page. Default = false
-  disableMonthChange={true}
-  // If firstDay=1 week starts from Monday. Note that dayNames and dayNamesShort should still start from Sunday.
-  firstDay={1}
-  // Hide day names. Default = false
-  hideDayNames={true}
-  // Show week numbers to the left. Default = false
-  showWeekNumbers={true}
-  // Handler which gets executed when press arrow icon left. It receive a callback can go back month
-  onPressArrowLeft={subtractMonth => subtractMonth()}
-  // Handler which gets executed when press arrow icon right. It receive a callback can go next month
-  onPressArrowRight={addMonth => addMonth()}
-  // Disable left arrow. Default = false
-  disableArrowLeft={true}
-  // Disable right arrow. Default = false
-  disableArrowRight={true}
-  // Disable all touch events for disabled days. can be override with disableTouchEvent in markedDates
-  disableAllTouchEventsForDisabledDays={true}
-  // Replace default month and year title with custom one. the function receive a date as parameter.
-  renderHeader={(date) => {/*Return JSX*/}}
-  // Enable the option to swipe between months. Default = false
-  enableSwipeMonths={true}
-/>
-      </View>
-    )
-  }
+const timeToString= (time) => {
+    const date = new Date(time);
+    return date.toISOString().split('T')[0];
 }
+
+export default function UserCalendar() {
+  const [items, setItems] = useState({});
+  const [userHasCalendar, setUserHasCalendar] = useState(false)
+
+  const loadItems = (day) => {
+    // if(!userHasCalendar){
+      console.log('DAY',day)
+      setTimeout(() => {
+        for (let i = -15; i < 85; i++) {
+          const time = day.timestamp + i * 24 * 60 * 60 * 500;
+          const strTime = timeToString(time);
+          // console.log('CURRENT TIME.......',time)
+          // console.log('STR TIME.......',strTime)
+          // console.log()
+          //does nothing except adds second loop to push in data.
+          // if (!items[strTime]) {
+          //   items[strTime] = [];
+          //   const numItems = Math.floor(Math.random() * 3 + 1);
+
+          //   for (let j = 0; j < numItems; j++) {
+          //     items[strTime].push({
+          //       name: 'Item for ' + strTime + ' #' + j,
+          //       height: Math.max(50, Math.floor(Math.random() * 150)),
+          //     });
+          //   }
+
+          // }
+        }
+        const newItems = {};
+        Object.keys(items).forEach((key) => {
+          newItems[key] = items[key];
+        });
+        setItems(newItems);
+      }, 1000);
+    // }
+
+  };
+
+  const renderItem = (item) => {
+    return (
+      <TouchableOpacity style={{marginRight: 10, marginTop: 17}}>
+        <View>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}>
+              <Text>{item.name}</Text>
+            </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  return (
+    <View style={{flex: 1}}>
+      <Agenda
+        items={items}
+        loadItemsForMonth={loadItems}
+        selected={new Date()}
+        renderItem={renderItem}
+      />
+    </View>
+  );
+};
+

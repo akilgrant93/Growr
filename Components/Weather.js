@@ -84,6 +84,8 @@ const styles = StyleSheet.create({
     marginLeft: '2.5%',
     marginBottom: '5%',
     borderRadius: 5,
+    position: "absolute",
+    top:'57.5%',
     alignItems: 'center',
     justifyContent: 'flex-start',
   },

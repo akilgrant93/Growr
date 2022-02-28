@@ -18,7 +18,7 @@ import {
 
     componentDidMount(){
       this.getDays()
-      console.log(this.state.carouselItems)
+      // console.log(this.state.carouselItems)
     }
 
     titleCase = (str) => {

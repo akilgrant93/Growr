@@ -3,7 +3,7 @@ import { Text, StyleSheet, FlatList, TextInput, TouchableHighlight, Image, Touch
 import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { postUserPlant } from '../actions'
+import { postUserPlant, plantNeedsWater } from '../actions'
 import { connect } from 'react-redux'
 import { Container, Header, View, Button, Icon, Fab, CheckBox} from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
@@ -245,6 +245,14 @@ toggleHydroponic = () => {
     const db = firebase.firestore();
   }
 
+  resolveAfterTime = function(time, key) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        plantNeedsWater(key)
+      }, time * 1000);
+    });
+  }
+
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
   async postPlant(plant, indoor, potted, hydroponic){
 
@@ -276,7 +284,7 @@ toggleHydroponic = () => {
       succulent = false
     }
 
-    let base = 0
+    let base = 7
 
     if(hydroponic){
       base = 14
@@ -316,10 +324,7 @@ toggleHydroponic = () => {
       }
     //if the common name is bugged
     if(typeof plant === 'string'){
-      this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors,
-      this.state.isHydroponic,
-      succulent)
-      await Notifications.scheduleNotificationAsync({
+      let notificationID = await Notifications.scheduleNotificationAsync({
         content: {
           title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant}`,
           body: 'Needs water.',
@@ -329,17 +334,16 @@ toggleHydroponic = () => {
           // repeats: true
         }
       })
-    }
+
+      this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors,
+        this.state.isHydroponic,
+        succulent, '', base, notificationID)
+      this.resolveAfterTime(base);
+      }
+
     //if theres a common name
     if(plant.commonName){
-      this.props.postUserPlant(
-        plant.commonName,
-        this.state.isPotted,
-        this.state.isIndoors,
-        this.state.isHydroponic,
-        succulent
-      )
-      await Notifications.scheduleNotificationAsync({
+      let notificationID = await Notifications.scheduleNotificationAsync({
         content: {
           title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.commonName}`,
           body: 'Needs water.',
@@ -349,12 +353,17 @@ toggleHydroponic = () => {
           // repeats: true
         }
       })
+      this.props.postUserPlant(
+        plant.commonName,
+        this.state.isPotted,
+        this.state.isIndoors,
+        this.state.isHydroponic,
+        succulent, '', base, notificationID
+      )
+      this.resolveAfterTime(base);
     //otherwise refer to the scientific name
     } else if(!plant.commonName && typeof plant !== 'string') {
-      this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors,
-      this.state.isHydroponic,
-      succulent)
-      await Notifications.scheduleNotificationAsync({
+      let notificationID = await Notifications.scheduleNotificationAsync({
         content: {
           title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.scientificName}`,
           body: 'Needs water.',
@@ -364,6 +373,10 @@ toggleHydroponic = () => {
           // repeats: true
         }
       })
+      this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors,
+        this.state.isHydroponic,
+        succulent, '', base, notificationID)
+      this.resolveAfterTime(base);
     }
     this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
     this.props.navigation.navigate('My Plants')
