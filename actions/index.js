@@ -1,7 +1,4 @@
 import firebase from '../fb'
-let app = firebase.app()
-const db = firebase.firestore()
-
 //admin functions
 
 //gets all plants
@@ -55,7 +52,7 @@ export function getUserPlants(uid){
       type: "PLANTS_LOADING",
       payload: true
     })
-    firebase.database().ref(`/userPlants/${uid}/plants`).on('value', snapshot => {
+    firebase.database().ref(`/users/${uid}/userPlants`).on('value', snapshot => {
       dispatch({
         type: "PLANTS_FETCH",
         payload: snapshot.val()
@@ -74,14 +71,18 @@ export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSuccule
   const uid = firebase.auth().currentUser.uid
 
   //timestamp needs to be translatedd into real date for calendar functions
-  const lastWatered = firebase.database.ServerValue.TIMESTAMP
+  // const lastWatered = () => {}
 
   return (dispatch) => {
-    const newPlant = firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater: false, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent, notes})
+    const today = new Date()
+
+    const newPlant = firebase.database().ref(`/users/${uid}/userPlants/`).push({name, isThirsty: false, initialized: today, isPotted, isIndoors, isHydroponic, isSucculent, notes})
 
     const key = newPlant.key
 
-    firebase.database().ref(`/userCalendar/${uid}/dates/${key}`).push({plantId:key, [date]:false, notificationId})
+    firebase.database().ref(`users/${uid}/calendar/dates/${key}`).push({ [date]:false, notificationId, initialized: today, name,})
+
+  //   firebase.database().ref(`/userCalendar/${uid}/dates/${key}`).push({plantId:key, initialized: new Date(),[date]:false, notificationId})
   }
 }
 
@@ -95,12 +96,12 @@ export function updateUserPlant(key, isPotted, isIndoors, isHydroponic, notes){
 }
 
 //triggers with notification
-export function plantNeedsWater(key){
+export function plantNeedsWaterNotif(key){
   const uid = firebase.auth().currentUser.uid
   //timestamp needs to be translatedd into real date for calendar functions
 
   return (dispatch) => {
-    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).update({ needsWater: true})
+    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).update({ isThirsty: true})
   }
 }
 
@@ -111,7 +112,7 @@ export function waterUserPlant(key, date){
   const lastWatered = firebase.database.ServerValue.TIMESTAMP
 
   return (dispatch) => {
-    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).update({lastWatered: lastWatered, needsWater: false})
+    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).update({lastWatered: lastWatered, isThirsty: false})
 
     firebase.database().ref(`/userCalendar/${uid}/dates/${key}/${date}`).update({plantId:key, [date]:false})
   }
@@ -121,8 +122,8 @@ export function waterUserPlant(key, date){
 export function deleteUserPlant(key){
   return (dispatch) => {
     const uid = firebase.auth().currentUser.uid
-    firebase.database().ref(`/userPlants/${uid}/plants/${key}`).remove()
-    firebase.database().ref(`/userPlants/${uid}/dates/${key}`).remove()
+    firebase.database().ref(`/users/${uid}/userPlants/${key}`).remove()
+    firebase.database().ref(`users/${uid}/calendar/dates/${key}`).remove()
   }
 }
 
@@ -131,7 +132,7 @@ export function createUserCalendar(){
   const uid = firebase.auth().currentUser.uid
 
   return (dispatch) => {
-    const newPlant = firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater: false, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent, notes})
+    const newPlant = firebase.database().ref(`/userPlants/${uid}/plants`).push({name, isThirsty: false, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent, notes})
 
     const key = newPlant.key
 
@@ -139,18 +140,7 @@ export function createUserCalendar(){
   }
 }
 
+//water needs calculation function
+export function needsWater(){
 
-// export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, date, notificationId){
-//   const uid = firebase.auth().currentUser.uid
-
-//   //timestamp needs to be translatedd into real date for calendar functions
-//   const lastWatered = firebase.database.ServerValue.TIMESTAMP
-
-//   return (dispatch) => {
-//     const newPlant = firebase.database().ref(`/userPlants/${uid}/plants`).push({name, needsWater: false, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent, notes})
-
-//     const key = newPlant.key
-
-//     firebase.database().ref(`/userCalendar/${uid}/dates/${key}`).push({plantId:key, [date]:false, notificationId})
-//   }
-// }
+}

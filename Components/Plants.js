@@ -5,30 +5,17 @@ import { connect } from 'react-redux'
 import _ from 'lodash'
 import firebase from 'firebase'
 import { AntDesign } from '@expo/vector-icons';
-import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
-import Constants from 'expo-constants';
+import MyNotifications from './notifications'
 import { Container, Header, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
 import * as Location from 'expo-location';
-
-
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
-
 
 class Plants extends Component {
   constructor(props){
     super(props)
     this.state = {
-      notification: {},
       active: false,
-      token: '',
       data: null,
       origin: null,
     }
@@ -36,66 +23,10 @@ class Plants extends Component {
 //replace that goofy ass activity indicated with a plant themed animation
 //under "add a plant - include some kind of illustration"
 
-
-//change permissions async as per notifications module guidelines (on expo docs)
-async registerForPushNotificationsAsync() {
-  let token;
-  if (Constants.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-    if (existingStatus !== 'granted') {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-      finalStatus = status;
-    }
-
-    if (finalStatus !== 'granted') {
-      alert('Failed to get push token for push notification!');
-      return;
-    }
-    token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
-  } else {
-    alert('Must use physical device for Push Notifications');
-  }
-
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
-    });
-  }
-
-  return token;
-}
-
   async componentDidMount(){
-
     const uid = firebase.auth().currentUser.uid
-
     await this.props.getUserPlants(uid)
-    console.log('mounted in plants component')
-    this.registerForPushNotificationsAsync();
-
-    Notifications.addNotificationReceivedListener(this._handleNotification);
-
-    Notifications.addNotificationResponseReceivedListener(this._handleNotificationResponse);
-
   }
-
-
-  _handleNotification = notification => {
-    this.setState({ notification: notification });
-  };
-
-  _handleNotificationResponse = response => {
-    console.log(response);
-  };
 
   render() {
     return (
@@ -106,6 +37,7 @@ async registerForPushNotificationsAsync() {
       style={{backgroundColor: '#e6ffe6' }}
       >
         <View style={{ flex: 1, marginTop: headerHeight  }}>
+          <MyNotifications/>
           <Fab
             active={this.state.active}
             direction="up"

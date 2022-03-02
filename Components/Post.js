@@ -3,7 +3,7 @@ import { Text, StyleSheet, FlatList, TextInput, TouchableHighlight, Image, Touch
 import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
-import { postUserPlant, plantNeedsWater } from '../actions'
+import { postUserPlant, plantNeedsWaterNotif } from '../actions'
 import { connect } from 'react-redux'
 import { Container, Header, View, Button, Icon, Fab, CheckBox} from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
@@ -241,27 +241,25 @@ toggleHydroponic = () => {
     } else {
       await this.setState({isVisible: show, selectedPlant: plantId})
     }
-
-    const db = firebase.firestore();
   }
 
   resolveAfterTime = function(time, key) {
     return new Promise(resolve => {
       setTimeout(() => {
-        plantNeedsWater(key)
+        plantNeedsWaterNotif(key)
       }, time * 1000);
     });
   }
 
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
-  async postPlant(plant, indoor, potted, hydroponic){
+  async postPlant(plant, indoors, potted, hydroponic){
 
     let indoorStatus = ''
     let pottedStatus = ''
     let hydroponicStatus = ''
     let succulent
 
-    if(indoor){
+    if(indoors){
       indoorStatus = "Indoor"
     } else {
       indoorStatus = "Outdoor"
