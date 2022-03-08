@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { View } from 'native-base'
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -13,7 +13,9 @@ Notifications.setNotificationHandler({
 //the token likely needs to be added to firebase in order to setup notification cancellation
 export default function MyNotifications() {
   const [notification, setNotification] = useState({});
-  const [token, setToken] = useState({});
+  const [expoPushToken, setExpoPushToken] = useState({});
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
   //change permissions async as per notifications module guidelines (on expo docs)
 
@@ -49,22 +51,27 @@ export default function MyNotifications() {
         lightColor: '#FF231F7C',
       });
     }
-    setToken(token)
+    console.log('TOKEN TOKEN TOKEN TOKEN TOKEN',token)
     return token;
   }
 
-  const _handleNotification = notification => {
-    setNotification({ notification });
-  };
-
-  const _handleNotificationResponse = response => {
-    console.log(response);
-  };
-
   useEffect( () => {
-    registerForPushNotificationsAsync();
-    Notifications.addNotificationReceivedListener(_handleNotification);
-    Notifications.addNotificationResponseReceivedListener(_handleNotificationResponse);
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+    // This listener is fired whenever a notification is received while the app is foregrounded
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response);
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
   }, [])
 
   return (

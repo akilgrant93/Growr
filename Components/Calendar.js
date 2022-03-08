@@ -64,6 +64,7 @@ export default function UserCalendar() {
 
   return (
     <View style={styles.safe}>
+      <MyNotifications/>
       <Agenda items={items} renderItem={renderItem} />
     </View>
   );
