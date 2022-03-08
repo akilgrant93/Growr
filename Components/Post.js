@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Text, StyleSheet, FlatList, TextInput, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
 import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
+import MyNotifications from './notifications'
 import { AntDesign, Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 import { postUserPlant, plantNeedsWaterNotif } from '../actions'
 import { connect } from 'react-redux'
@@ -243,6 +244,7 @@ toggleHydroponic = () => {
     }
   }
 
+  //this needs to be tooled with the math to actually make sense rather than a few seconds as it works now
   resolveAfterTime = function(time, key) {
     return new Promise(resolve => {
       setTimeout(() => {
@@ -273,8 +275,6 @@ toggleHydroponic = () => {
       hydroponicStatus = 'Hydroponic'
       pottedStatus = ''
     }
-
-    console.log(plant)
 
     if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){
       succulent = true
@@ -385,6 +385,7 @@ toggleHydroponic = () => {
       <HeaderHeightContext.Consumer>
   {headerHeight => (
       <View style={!this.state.tableData.length ? styles.containerFlex : styles.container}>
+        <MyNotifications/>
         { !this.state.tableData.length
         ? <Fab
             direction="up"
@@ -453,7 +454,6 @@ toggleHydroponic = () => {
           scrollEnabled={false}
           renderItem={(item) => {
             //conver these to card components for visual effect
-            // console.log(item)
              return (
               <View>
                 <View style={{paddingBottom: '1%',

@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Agenda } from 'react-native-calendars';
 import { View } from 'native-base'
 import { Text, StyleSheet, TouchableOpacity } from 'react-native';
-import {addDays, format} from 'date-fns';
 import firebase from '../fb'
+import {addDays, format} from 'date-fns';
+import MyNotifications from './notifications'
 
 const timeToString = (time) => {
     const date = new Date(time);
@@ -14,39 +15,32 @@ export default function UserCalendar() {
   const [items, setItems] = useState({});
 
   useEffect(() => {
-    // run once
-
     const getData = async () => {
+      const uid = firebase.auth().currentUser.uid
+      let response = null
 
+      firebase.database().ref(`/users/${uid}/userPlants`).on('value', (snapshot) => {
+        response = Object.entries(snapshot.val())
+      }, (errorObject) => {
+        console.log('The read failed: ' + errorObject.name);
+      });
 
-      // ref.on('value', (snapshot) => {
-      //   console.log(snapshot.val());
-      // }, (errorObject) => {
-      //   console.log('The read failed: ' + errorObject.name);
-      // });
-
-
-
-
-
-
-      const response = await fetch(
-        'https://jsonplaceholder.typicode.com/posts',
-      );
-      const data = await response.json();
-
-      const mappedData = data.map((post, index) => {
-        const date = addDays(new Date(), index);
-
+      const mappedData = response.map((post, index) => {
+        const date = timeToString(post[1].initialized)
         return {
           ...post,
-          date: format(date, 'yyyy-MM-dd'),
+          date: date
         };
       });
 
-      const reduced = mappedData.reduce(function (acc, currentItem){
+      const reduced = mappedData.reduce(
+        (acc, currentItem) => {
           const {date, ...coolItem} = currentItem;
-          acc[date] = [coolItem];
+          if(acc[date] === undefined){
+            acc[date] = [coolItem];
+          } else {
+            acc[date] = [...acc[date], coolItem]
+          }
           return acc;
         },
         {},
@@ -59,10 +53,11 @@ export default function UserCalendar() {
   }, []);
 
   const renderItem = (item) => {
+    console.log('ITEM!!!!!!!!!!!!      ',item)
     return (
       <View style={styles.itemContainer}>
-        <Text>{item.name}</Text>
-        {/* <Text>{item.cookies ? `🍪` : `😋`}</Text> */}
+        <Text>{item[1].name}</Text>
+        <Text>{item.cookies ? `🍪` : `😋`}</Text>
       </View>
     );
   };
@@ -87,4 +82,3 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 });
-

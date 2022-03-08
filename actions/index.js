@@ -67,22 +67,22 @@ export function getUserPlants(uid){
 }
 
 //add a plant to a users list of tracked plants will come with more settings other than "name" in the long term
-export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, date, notificationId){
+export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, notificationInterval, notificationId){
   const uid = firebase.auth().currentUser.uid
 
   //timestamp needs to be translatedd into real date for calendar functions
   // const lastWatered = () => {}
 
   return (dispatch) => {
-    const today = new Date()
+    const today = firebase.database.ServerValue.TIMESTAMP
 
     const newPlant = firebase.database().ref(`/users/${uid}/userPlants/`).push({name, isThirsty: false, initialized: today, isPotted, isIndoors, isHydroponic, isSucculent, notes})
 
     const key = newPlant.key
 
-    firebase.database().ref(`users/${uid}/calendar/dates/${key}`).push({ [date]:false, notificationId, initialized: today, name,})
+    firebase.database().ref(`users/${uid}/calendar/dates/${key}`).push({ notificationId, name, 'notificationInterval':notificationInterval})
 
-  //   firebase.database().ref(`/userCalendar/${uid}/dates/${key}`).push({plantId:key, initialized: new Date(),[date]:false, notificationId})
+    // firebase.database().ref(`users/${uid}/calendar`).push({currentDate: today,initialized: today})
   }
 }
 
