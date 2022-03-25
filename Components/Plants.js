@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, Image, ActivityIndicator, Platform } from 'react-native'
+import { Text, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { getUserPlants, deleteUserPlant } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
@@ -7,9 +7,8 @@ import firebase from 'firebase'
 import { AntDesign } from '@expo/vector-icons';
 import Weather from './Weather'
 import MyNotifications from './notifications'
-import { Container, Header, View, Button, Icon, Fab } from 'native-base'
+import { Container, View, Button, Icon, Fab } from 'native-base'
 import { HeaderHeightContext } from '@react-navigation/stack';
-import * as Location from 'expo-location';
 
 class Plants extends Component {
   constructor(props){
@@ -20,6 +19,7 @@ class Plants extends Component {
       origin: null,
     }
   }
+
 //replace that goofy ass activity indicated with a plant themed animation
 //under "add a plant - include some kind of illustration"
 
@@ -32,10 +32,7 @@ class Plants extends Component {
     return (
       <HeaderHeightContext.Consumer>
   {headerHeight => (
-      <Container
-      // style={styles.container}
-      style={{backgroundColor: '#e6ffe6' }}
-      >
+      <Container style={{backgroundColor: '#e6ffe6' }}>
         <View style={{ flex: 1, marginTop: headerHeight  }}>
           <MyNotifications/>
           <Fab
@@ -82,7 +79,9 @@ class Plants extends Component {
              return (
               <View style={styles.plantListItem}>
                 <View>
-                  <TouchableOpacity style={{paddingLeft: '2.5%', paddingRight: '1.25%',flexDirection: 'row', minWidth: '85%',justifyContent: 'space-between'}}onPress={() =>     this.props.navigation.navigate('Plant Care', {...item})}>
+                  <TouchableOpacity style={{paddingLeft: '2.5%', paddingRight: '1.25%',flexDirection: 'row', minWidth: '85%',justifyContent: 'space-between'}}
+                  //this onpress may need some work regarding the contents of the item
+                  onPress={() =>     this.props.navigation.navigate('Plant Care', {...item})}>
                       <View style={{flexDirection: 'column',
                       }}>
                       <Text style={styles.plantName}>
@@ -91,7 +90,6 @@ class Plants extends Component {
                       </View>
                       <TouchableOpacity
                         onPress={() =>
-                        //functionality to unsubcribe from repeating notifications inevtiably gets added here.
                         this.props.deleteUserPlant(item.item.key) }>
                         <AntDesign name="close" size={20} color="#004d00" style={{paddingTop: '2%'}}/>
                       </TouchableOpacity>
@@ -104,7 +102,7 @@ class Plants extends Component {
           </View>
         }
 
-        <Weather/>
+        {/* <Weather/> */}
         </View>
       </Container>
   )}

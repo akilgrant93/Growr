@@ -1,7 +1,9 @@
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
+import firebase from '../fb'
 import React, { useState, useEffect, useRef } from 'react'
 import { View } from 'native-base'
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -51,7 +53,18 @@ export default function MyNotifications() {
         lightColor: '#FF231F7C',
       });
     }
-    console.log('TOKEN TOKEN TOKEN TOKEN TOKEN',token)
+
+    const uid = firebase.auth().currentUser.uid
+
+    firebase.database().ref(`/users/${uid}/token`).on('value', (snapshot) => {
+      if (snapshot.val() === null){
+        firebase.database().ref(`/users/${uid}/token`).push(token)
+      }
+    }, (errorObject) => {
+      console.log('The read failed: ' + errorObject.name);
+    })
+
+    console.log('TOKEN',token)
     return token;
   }
 

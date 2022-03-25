@@ -1,4 +1,5 @@
 import firebase from '../fb'
+import * as Notifications from 'expo-notifications';
 //admin functions
 
 //gets all plants
@@ -70,8 +71,8 @@ export function getUserPlants(uid){
 export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, notificationInterval, notificationId){
   const uid = firebase.auth().currentUser.uid
 
-  //timestamp needs to be translatedd into real date for calendar functions
-  // const lastWatered = () => {}
+  //will take a value 0-7 and calculate the isThirsty property of the newPlant variable accordingly
+  // const lastWatered = (days) => {}
 
   return (dispatch) => {
     const today = firebase.database.ServerValue.TIMESTAMP
@@ -81,8 +82,6 @@ export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSuccule
     const key = newPlant.key
 
     firebase.database().ref(`users/${uid}/calendar/dates/${key}`).push({ notificationId, name, 'notificationInterval':notificationInterval})
-
-    // firebase.database().ref(`users/${uid}/calendar`).push({currentDate: today,initialized: today})
   }
 }
 
@@ -118,27 +117,41 @@ export function waterUserPlant(key, date){
   }
 }
 
-//delete a plant from the users list of tracked plants
+//delete a plant from the users list of tracked plants, and removes future notification alerts
 export function deleteUserPlant(key){
   return (dispatch) => {
+
     const uid = firebase.auth().currentUser.uid
+    let ref = firebase.database().ref()
+    ref.child(`users/${uid}/calendar/dates`).child(`${key}`).get().then((snapshot) => {
+      if (snapshot.exists()) {
+        console.log('notificationId ',Object.entries(snapshot.val())[0][1].notificationId);
+        Notifications.cancelScheduledNotificationAsync(Object.entries(snapshot.val())[0][1].notificationId)
+      } else {
+        console.log("No data available");
+      }
+    }).catch((error) => {
+      console.error(error);
+    });
+
     firebase.database().ref(`/users/${uid}/userPlants/${key}`).remove()
     firebase.database().ref(`users/${uid}/calendar/dates/${key}`).remove()
+
   }
 }
 
+//adds plant to users calendar entries
+// export function createUserCalendar(){
+//   const uid = firebase.auth().currentUser.uid
 
-export function createUserCalendar(){
-  const uid = firebase.auth().currentUser.uid
+//   return (dispatch) => {
+//     const newPlant = firebase.database().ref(`/userPlants/${uid}/plants`).push({name, isThirsty: false, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent, notes})
 
-  return (dispatch) => {
-    const newPlant = firebase.database().ref(`/userPlants/${uid}/plants`).push({name, isThirsty: false, lastWatered, isPotted, isIndoors, isHydroponic, isSucculent, notes})
+//     const key = newPlant.key
 
-    const key = newPlant.key
-
-    firebase.database().ref(`/userCalendar/${uid}/dates/${key}`).push({plantId:key, [date]:false, notificationId})
-  }
-}
+//     firebase.database().ref(`/userCalendar/${uid}/dates/${key}`).push({plantId:key, [date]:false, notificationId})
+//   }
+// }
 
 //water needs calculation function
 export function needsWater(){

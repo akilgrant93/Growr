@@ -320,6 +320,7 @@ toggleHydroponic = () => {
         base = 7
       }
       }
+
     //if the common name is bugged
     if(typeof plant === 'string'){
       let notificationID = await Notifications.scheduleNotificationAsync({
@@ -328,8 +329,8 @@ toggleHydroponic = () => {
           body: 'Needs water.',
         },
         trigger: {
-          seconds: base,
-          // repeats: true
+          seconds: base*20,
+          repeats: true
         }
       })
 
@@ -347,8 +348,8 @@ toggleHydroponic = () => {
           body: 'Needs water.',
         },
         trigger: {
-          seconds: base,
-          // repeats: true
+          seconds: base*20,
+          repeats: true
         }
       })
       this.props.postUserPlant(
@@ -367,8 +368,8 @@ toggleHydroponic = () => {
           body: 'Needs water.',
         },
         trigger: {
-          seconds: base,
-          // repeats: true
+          seconds: base*20,
+          repeats: true
         }
       })
       this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors,
