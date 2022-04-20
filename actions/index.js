@@ -44,6 +44,7 @@ export function editPlant(name, type, key){
   }
 }
 
+
 //user functions
 
 //gets users plants
@@ -68,7 +69,7 @@ export function getUserPlants(uid){
 }
 
 //add a plant to a users list of tracked plants will come with more settings other than "name" in the long term
-export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, notificationInterval, notificationId){
+export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, notificationInterval, notificationId, firestoreID){
   const uid = firebase.auth().currentUser.uid
 
   //will take a value 0-7 and calculate the isThirsty property of the newPlant variable accordingly
@@ -77,7 +78,7 @@ export function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSuccule
   return (dispatch) => {
     const today = firebase.database.ServerValue.TIMESTAMP
 
-    const newPlant = firebase.database().ref(`/users/${uid}/userPlants/`).push({name, isThirsty: false, initialized: today, isPotted, isIndoors, isHydroponic, isSucculent, notes})
+    const newPlant = firebase.database().ref(`/users/${uid}/userPlants/`).push({name, isThirsty: false, initialized: today, isPotted, isIndoors, isHydroponic, isSucculent, firestoreID, notes})
 
     const key = newPlant.key
 

@@ -18,7 +18,6 @@ class Post extends Component {
       isIndoors: false,
       isHydroponic: false,
       isSucculent: false,
-      potSize: 0,
       selectedPlant: '',
       endCursor: {},
       startCursor: {},
@@ -156,6 +155,7 @@ class Post extends Component {
       endCursor:
         snapshot.docs[snapshot.docs.length-1], count: this.state.count+1
       })
+
     exactNameSnapshot.forEach(doc =>{
       const name = doc.data();
       this.setState({
@@ -196,6 +196,7 @@ class Post extends Component {
               poisonous: name.poisonous,
               succulent: name.succulent,
               tags: name.tags,
+              firestoreID: doc.id,
               key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}]
         })
     }, '');
@@ -211,7 +212,7 @@ class Post extends Component {
     this.setState({tableData: [], value: 'Search', tableHead: ['Name']})
   }
 
-  //posting functions
+  //modal functions
   togglePotted = () => {
     if(this.state.isPotted === false){
       this.setState({isPotted: true})
@@ -336,7 +337,7 @@ toggleHydroponic = () => {
 
       this.props.postUserPlant(plant, this.state.isPotted, this.state.isIndoors,
         this.state.isHydroponic,
-        succulent, '', base, notificationID)
+        succulent, '', base, notificationID, plant.firestoreID)
       this.resolveAfterTime(base);
       }
 
@@ -357,7 +358,7 @@ toggleHydroponic = () => {
         this.state.isPotted,
         this.state.isIndoors,
         this.state.isHydroponic,
-        succulent, '', base, notificationID
+        succulent, '', base, notificationID, plant.firestoreID
       )
       this.resolveAfterTime(base);
     //otherwise refer to the scientific name
@@ -374,7 +375,7 @@ toggleHydroponic = () => {
       })
       this.props.postUserPlant(plant.scientificName, this.state.isPotted, this.state.isIndoors,
         this.state.isHydroponic,
-        succulent, '', base, notificationID)
+        succulent, '', base, notificationID, notificationIDplant.firestoreID)
       this.resolveAfterTime(base);
     }
     this.setState({isVisible: false, isPotted: false, isIndoors: false, tableHead: ['Name'], tableData: []})
@@ -454,7 +455,8 @@ toggleHydroponic = () => {
           keyExtractor={(item) => item.key}
           scrollEnabled={false}
           renderItem={(item) => {
-            //conver these to card components for visual effect
+            console.log('ITEM ITEM ITEM ITEM ITEM',item)
+            //convert these to card components for visual effect
              return (
               <View>
                 <View style={{paddingBottom: '1%',
