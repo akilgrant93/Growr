@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, FlatList, TextInput, TouchableHighlight, Image, TouchableOpacity, Modal } from 'react-native'
+import Slider from '@react-native-community/slider';
 import * as Notifications from 'expo-notifications';
 import firebase from '../fb'
 import MyNotifications from './notifications'
@@ -23,6 +24,9 @@ class Post extends Component {
       startCursor: {},
       count: 0,
       active: false,
+      sliderValue: 0,
+      slidingState: 'inactive',
+      hoverValue: 0,
       value:'Search',
       tableHead: ['Name'],
       tableData: [
@@ -225,7 +229,7 @@ class Post extends Component {
     if(this.state.isIndoors === false){
       this.setState({isIndoors: true, isPotted: true})
     } else {
-      this.setState({isIndoors: false })
+      this.setState({isIndoors: false , isPotted: false})
     }
 }
 
@@ -233,7 +237,7 @@ toggleHydroponic = () => {
   if(this.state.isHydroponic === false){
     this.setState({isHydroponic: true, isPotted: true})
   } else {
-    this.setState({isHydroponic: false })
+    this.setState({isHydroponic: false, isPotted: false })
   }
 }
 
@@ -252,6 +256,12 @@ toggleHydroponic = () => {
         plantNeedsWaterNotif(key)
       }, time * 1000);
     });
+  }
+
+  handleSliderChange = function(value) {
+    this.setState({
+      sliderValue: value
+    })
   }
 
   //message needs to contain more info about plant and user requirements to influence reminders, will be taken as args
@@ -488,6 +498,68 @@ toggleHydroponic = () => {
                         }
                         })}
 
+
+                        {!this.state.isHydroponic
+                        ?
+                        //regular watering slider
+                          <View>
+                            <Text>{this.state.sliderValue === 1 ? `Last watered ${this.state.sliderValue} day ago.` : (this.state.sliderValue === 0 ? "Last watered today." : (this.state.sliderValue === 8 ?"Last watered over a week ago.":`Last watered ${this.state.sliderValue} days ago.`))}</Text>
+                            <Slider
+                            minimumTrackTintColor={'#004d00'}
+                            maximumValue={8}
+                            minimumValue={0}
+                            value={0}
+                            onValueChange={value =>
+                              this.setState({sliderValue: parseInt(value)})}
+                            onSlidingStart={value =>
+                              this.setState({hoverValue: parseInt(value)})}
+                            onSlidingComplete={value =>     console.log(this.state.sliderValue)}
+                            step={1}
+                            ></Slider>
+                        </View>
+                        :
+                        //succulent watering slider
+                        (item.item.tags.includes('Succulent')
+                        ? <View>
+                        <Text>{this.state.sliderValue === 1 ? `Last watered ${this.state.sliderValue} day ago.` : (this.state.sliderValue === 0 ? "Last watered today." : (this.state.sliderValue === 8 ?"Last watered over a week ago.":`Last watered ${this.state.sliderValue} days ago.`))}</Text>
+                        <Slider
+                        minimumTrackTintColor={'#004d00'}
+                        maximumValue={8}
+                        minimumValue={0}
+                        value={0}
+                        onValueChange={value =>
+                          this.setState({sliderValue: parseInt(value)})}
+                        onSlidingStart={value =>
+                          this.setState({hoverValue: parseInt(value)})}
+                        onSlidingComplete={value =>     console.log(this.state.sliderValue)}
+                        step={1}
+                        ></Slider>
+                    </View>
+                        :
+                        //hydroponic resevior change slider
+                        <View>
+                          <Text>{this.state.sliderValue === 1 ? `Last resevior change ${this.state.sliderValue} day ago.` : (this.state.sliderValue === 0
+                            ? "Resevior last changed today." : (this.state.sliderValue >= 8
+                              ? "Last resevior change over a week ago."
+                              :(this.state.sliderValue === 14   ?'Last resevior change 2 weeks ago.'
+                                :(this.state.sliderValue === 15
+                                  ?"Last resevior change over 2 weeks ago."
+                                  :`Last resevior change ${this.state.sliderValue} days ago.`))))}</Text>
+                        <Slider
+                        minimumTrackTintColor={'#004d00'}
+                        maximumValue={15}
+                        minimumValue={0}
+                        value={0}
+                        onValueChange={value =>
+                          this.setState({sliderValue: parseInt(value)})}
+                        onSlidingStart={value =>
+                          this.setState({hoverValue: parseInt(value)})}
+                        onSlidingComplete={value => console.log(this.state.sliderValue)}
+                        step={1}
+                        ></Slider>
+                        </View>)
+                        }
+
                         <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
                         {item.item.tags.map(tag => {
                           return <View key = {Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)} style={{backgroundColor: '#004d00', padding: '1.5%', marginLeft: '2%', borderRadius: '2.5%'}}><Text style={{ fontSize:9 ,color: '#fff'}}>{tag}</Text></View>
@@ -522,7 +594,7 @@ toggleHydroponic = () => {
                           </View>
 
                           <View style={{flexDirection:'row'}}>
-                          <CheckBox color = {'#004d00'} onPress = {this.toggleHydroponic} checked = {this.state.isHydroponic}/>
+                          {item.item.tags.includes('Succulent') ? <CheckBox color = {'#808080'} isDisabled/>: <CheckBox color = {'#004d00'} onPress = {this.toggleHydroponic} checked = {this.state.isHydroponic}/>}
                             <View style={{marginLeft: '15%', flexDirection: 'column', justifyContent: 'center'}}>
                             <Text style={{fontSize:10}}>Hydroponic</Text>
                             </View>

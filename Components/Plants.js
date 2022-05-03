@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Text, StyleSheet, FlatList, TouchableHighlight, ScrollView, TextInput, TouchableOpacity, ActivityIndicator, Modal } from 'react-native'
-import { getUserPlants, deleteUserPlant } from '../actions'
+import { getUserPlants, updateUserPlant, deleteUserPlant, plantNeedsWaterNotif } from '../actions'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import firebase from 'firebase'
@@ -12,17 +12,20 @@ import { HeaderHeightContext } from '@react-navigation/stack';
 
 class Plants extends Component {
   constructor(props){
-    super(props)
-    this.state = {
-      active: false,
-      isVisible: false,
-      isPotted: false,
-      isIndoors: false,
-      isHydroponic: false,
-      selectedPlant: '',
-      selectedPlantData: [],
-    }
-  }
+        super(props)
+        this.state = {
+          active: false,
+          isVisible: false,
+          isPotted: false,
+          isIndoors: false,
+          isHydroponic: false,
+          notificationInterval: '',
+          selectedPlant: '',
+          notes: '',
+          needsWater: false,
+          selectedPlantData: [],
+        }
+      }
 
 //replace that goofy ass activity indicated with a plant themed animation
 //under "add a plant - include some kind of illustration"
@@ -41,41 +44,161 @@ class Plants extends Component {
     }
  }
 
-  toggleIndoors = () => {
-    if(this.state.isIndoors === false){
-      this.setState({isIndoors: true, isPotted: true})
-    } else {
-      this.setState({isIndoors: false })
-    }
-}
-
-toggleHydroponic = () => {
-  if(this.state.isHydroponic === false){
-    this.setState({isHydroponic: true, isPotted: true})
-  } else {
-    this.setState({isHydroponic: false })
+  toggleIndoors = () => {
+      if(this.state.isIndoors === false){
+        this.setState({isIndoors: true, isPotted: true})
+      } else {
+        this.setState({isIndoors: false, isPotted: false})
+      }
   }
-}
 
-  async displayModal(show, plantId, firestoreID){
-    if(!show){
-      await this.setState({isVisible: show, selectedPlant: '', selectedPlantData: []})
-    } else {
-      const db = firebase.firestore()
-      const plantfireStoreRef = db.collection("plants").doc(firestoreID);
-
-      plantfireStoreRef.get().then((doc) => {
-      if (doc.exists) {
-          this.setState({selectedPlantData: doc.data(),isVisible: show, selectedPlant: plantId})
-      } else {
-          console.log("No such document!");
-      }
-      }).catch((error) => {
-      console.log("Error getting document:", error);
-      });
+  toggleHydroponic = () => {
+      if(this.state.isHydroponic === false){
+        this.setState({isHydroponic: true, isPotted: true})
+      } else {
+        this.setState({isHydroponic: false, isPotted: false})
+      }
     }
 
-  }
+  async displayModal(show, plantId, firestoreID){
+        // console.log(plantId)
+          const db = firebase.firestore()
+          const rtdb = firebase.database()
+          const uid = firebase.auth().currentUser.uid
+
+          const plantfireStoreRef = db.collection("plants").doc(firestoreID);
+          const plantsRealtimeRef = rtdb.ref()
+
+          if(!show){
+            await this.setState({isVisible: show, selectedPlant: '', selectedPlantData: []})
+          } else {
+            plantfireStoreRef.get().then((doc) => {
+            if (doc.exists) {
+                this.setState({selectedPlantData: doc.data(),isVisible: show, selectedPlant: plantId,})
+            } else {
+                console.log("No such document!");
+            }
+            }).catch((error) => {
+            console.log("Error getting document:", error);
+            });
+            plantsRealtimeRef.child(`users/${uid}/userPlants/${plantId}`).get().then((snapshot) => {
+              if (snapshot.exists()){
+
+                //return to this
+                console.log(snapshot.val())
+
+                this.setState({isPotted: snapshot.val().isPotted, isHydroponic: snapshot.val().isHydroponic, isIndoors: snapshot.val().isIndoors, notes: snapshot.val().notes, notificationInterval: snapshot.val().notificationInterval})
+              } else {
+                console.log("No data available")
+              }
+            }).catch((error) => {
+              console.error(error)
+            })
+          }
+
+        }
+
+  resolveAfterTime = function(time, key) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        plantNeedsWaterNotif(key)
+      }, time * 1000);
+    });
+  }
+
+  async updatePlant(plant, indoors, potted, hydroponic, wasWatered){
+
+      console.log('plant',plant)
+
+      let indoorStatus = this.state.isIndoors
+      let pottedStatus = this.state.isIndoors
+      let hydroponicStatus = this.state.isIndoors
+      let notes = this.state.notes
+      let succulent
+
+      Notifications.cancelScheduledNotificationAsync(plant.notificationId)
+
+      if(indoors){
+        indoorStatus = "Indoor"
+      } else {
+        indoorStatus = "Outdoor"
+      }
+      if(potted){
+        pottedStatus = "Potted"
+      } else {
+        pottedStatus = "In-Ground"
+      }
+      if(hydroponic){
+        hydroponicStatus = 'Hydroponic'
+        pottedStatus = ''
+      }
+
+      if(this.state.selectedPlantData.tags.includes('Succulent') || this.state.selectedPlantData.tags.includes('Cactus') || plant.name === 'Cactaceae'){
+        succulent = true
+      } else {
+        succulent = false
+      }
+
+      let daysBetweenWatering = 7
+
+      //hyrdroponic water resevior replacement schedule
+      if(hydroponic){
+        daysBetweenWatering = 14
+      }
+
+      //succulent plants watering schedules
+      if(succulent){
+        if(indoors){
+          daysBetweenWatering = 14
+        }
+        else if (!indoors && potted){
+          daysBetweenWatering = 7
+        }
+        else if (!indoors && !potted){
+          daysBetweenWatering = 28
+        }
+      }
+
+      //potted plants watering schedules
+      else if(potted){
+        if(succulent && !indoors){
+          daysBetweenWatering = 7
+        } else if (succulent && indoors) {
+          daysBetweenWatering = 14
+        } else if (!suculent && !indoors){
+          daysBetweenWatering = 3
+        //if indoors not succulent
+        } else {
+          daysBetweenWatering = 7
+        }
+        }
+
+      if(typeof plant.name === 'string'){
+        console.log(`${indoorStatus} ${hydroponicStatus ? hydroponicStatus :''}${pottedStatus ? pottedStatus :''} ${plant.name}`)
+        let notificationID = await Notifications.scheduleNotificationAsync({
+          content: {
+            title: `${indoorStatus} ${hydroponicStatus ? hydroponicStatus :''}${pottedStatus ? pottedStatus :''} ${plant.name}`,
+            body: 'Needs water.',
+          },
+          trigger: {
+            seconds: daysBetweenWatering*20,
+          }
+        })
+
+        //daysbetweenwatering output needs to be converted into a format to feed into resolveaftertime properly - use a function, maybe one exists already as a method.
+
+        this.props.updateUserPlant(
+          plant.key,
+          this.state.isPotted,
+          this.state.isIndoors,
+          this.state.isHydroponic,
+          notes, daysBetweenWatering, notificationID)
+        this.resolveAfterTime(daysBetweenWatering);
+        }
+
+      this.setState({isVisible: false, isPotted: false, isIndoors: false, isHydroponic: false})
+      this.displayModal(false)
+    }
 
   render() {
     //make the FAB component into a responsive functional component to reduce complexity
@@ -214,14 +337,11 @@ toggleHydroponic = () => {
                           <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="close" size={12} color="black" />
                         </TouchableOpacity>
 
-                        {/* <TouchableOpacity onPress={
-                          this.postPlant.bind(this, item.item, this.state.isIndoors, this.state.isPotted, this.state.isHydroponic)
-                        }
-                          >
-                            <Text style={styles.closeText}>Track</Text>
-                            <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="plussquareo" size={12} color="black" />
-                        </TouchableOpacity> */}
-
+                        <TouchableOpacity onPress={this.updatePlant.bind(this, item.item, this.state.isIndoors, this.state.isPotted, this.state.isHydroponic)
+                        }>
+  <Text style={styles.closeText}>Edit</Text>
+  <AntDesign style={{marginLeft: 'auto', marginRight: 'auto'}} name="plussquareo" size={12} color="black" />
+  </TouchableOpacity>
                         </View>
                       </View>
                     </Modal>
