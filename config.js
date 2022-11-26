@@ -1,5 +1,7 @@
-import * as firebase from 'firebase'
-import 'firebase/firestore';
+//firebase config key setep
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import 'firebase/compat/firestore'
 
 export let firebaseConfig = {
   apiKey: "AIzaSyB_f7-flGSfGXOzc3BpwTErFnf1fOoDRP4",
@@ -10,8 +12,11 @@ export let firebaseConfig = {
   messagingSenderId: "522687291798",
   appId: "1:522687291798:web:c620a83a8450debbe4bdb7",
   measurementId: "G-KP6D7PCWPZ"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+}
 
-export default firebase
+// Initialize Firebase
+if(!firebase.apps.length){
+  firebase.initializeApp(firebaseConfig)
+}
+
+export { firebase };
