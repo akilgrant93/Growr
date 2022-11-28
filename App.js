@@ -3,10 +3,10 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { useState, useEffect } from "react";
 import { firebase } from './config'
 
-import Login from "./src/Login";
+import Signin from "./src/Signin";
 import Registration from "./src/Registration";
 import Dashboard from "./src/Dashboard";
-import Header from "./components/Header";
+import Header from "./src/Header";
 
 const Stack = createStackNavigator()
 
@@ -31,8 +31,8 @@ function App(){
     return (
       <Stack.Navigator>
         <Stack.Screen
-        name="Login"
-        component={Login}
+        name="Sign In"
+        component={Signin}
         options={{
           headerTitle: () => <Header name="Growr"/>,
           headerStyle: {

@@ -3,22 +3,32 @@ import React, {useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../config'
 
-const Login = () => {
+const Signin = () => {
   const navigation = useNavigation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const loginUser = async(email, password) => {
+  const signinUser = async(email, password) => {
     try {
       await firebase.auth().signInWithEmailAndPassword(email, password)
     } catch (error) {
-      alert(error.message)
+      alert('Unable to sign in')
     }
   }
 
+  const forgotPassword = () => {
+    firebase.auth().sendPasswordResetEmail(email)
+    .then(() => {
+      alert('Password reset email sent')
+    }).catch((error) => {
+      alert('Enter a valid email address')
+    })
+  }
+
   return (
-    <View styles={styles.container}>
-      <Text style={{fontWeight: 'bold', fontSize:26, textAlign:'center'}}>Login</Text>
+    <View style={styles.container} >
+      {/* replace title text with lottiefile */}
+      <Text style={{fontWeight: 'bold', fontSize:26, textAlign:'center'}}>Sign In</Text>
       <View style={{marginTop:40}}>
         <TextInput
           style={styles.textInput}
@@ -36,21 +46,29 @@ const Login = () => {
           secureTextEntry={true}
         />
       </View>
-      <View style={{flex:1, alignItems:'center'}}>
+      <View>
       <TouchableOpacity
-        onPress={() => loginUser(email, password)}
+        onPress={() => signinUser(email, password)}
         style={styles.button}
       >
         <Text style={{fontWeight: 'bold', fontSize:22}}>
-          Login
+          Sign In
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('Registration')}
         style={{marginTop:20}}
       >
-        <Text style={{fontWeight: 'bold', fontSize:16}}>
+        <Text style={{fontWeight: 'bold', fontSize:16, textAlign:'center'}}>
           Don't have an account? Register Now
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {forgotPassword()}}
+        style={{marginTop:20}}
+      >
+        <Text style={{fontWeight: 'bold', fontSize:16, textAlign:'center'}}>
+          Forgot Password?
         </Text>
       </TouchableOpacity>
       </View>
@@ -58,14 +76,11 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Signin
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 150
+    flex:1, justifyContent:'center', alignItems:'center'
   },
   textInput: {
     paddingTop: 20,
@@ -84,5 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#026efd',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center',
+    borderRadius: 50
   }
 })
