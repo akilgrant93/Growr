@@ -69,17 +69,17 @@ function App(){
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
-        options={{
-          headerTitle: () => <Header name="Dashboard"/>,
-          headerStyle: {
-            height: 150,
-            borderBottomLeftRadius: 50,
-            borderBottomRightRadius: 50,
-            backgroundColor: '#00e4d0',
-            shadowColor: '#000',
-            elevation: 25,
-          }
-        }}
+        // options={{
+        //   headerTitle: () => <Header name="Dashboard"/>,
+        //   headerStyle: {
+        //     height: 150,
+        //     borderBottomLeftRadius: 50,
+        //     borderBottomRightRadius: 50,
+        //     backgroundColor: '#00e4d0',
+        //     shadowColor: '#000',
+        //     elevation: 25,
+        //   }
+        // }}
         />
     </Stack.Navigator>
   )
