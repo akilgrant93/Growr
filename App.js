@@ -5,6 +5,7 @@ import { firebase } from './config'
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
+import Detail from "./src/Detail";
 import Dashboard from "./src/Dashboard";
 import Header from "./src/Header";
 
@@ -69,6 +70,21 @@ function App(){
       <Stack.Screen
         name="Dashboard"
         component={Dashboard}
+        // options={{
+        //   headerTitle: () => <Header name="Dashboard"/>,
+        //   headerStyle: {
+        //     height: 150,
+        //     borderBottomLeftRadius: 50,
+        //     borderBottomRightRadius: 50,
+        //     backgroundColor: '#00e4d0',
+        //     shadowColor: '#000',
+        //     elevation: 25,
+        //   }
+        // }}
+        />
+        <Stack.Screen
+        name="Detail"
+        component={Detail}
         // options={{
         //   headerTitle: () => <Header name="Dashboard"/>,
         //   headerStyle: {

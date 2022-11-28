@@ -1,9 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, SafeAreaView, FlatList, Keyboard, TextInput } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, SafeAreaView, FlatList, View, Keyboard, TextInput } from 'react-native'
 import React, {useState,useEffect} from 'react'
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import { View } from 'react-native-web'
 import { Pressable } from 'react-native'
 
 const Dashboard = () => {
