@@ -17,7 +17,7 @@ const PostPlant = () => {
   const [slidingState, setSlidingState]=useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
   const [value, setValue]=useState('Search')
-  const [tableHead, setTableHead]= (['Name'])
+  // const [tableHead, setTableHead]= (['Name'])
   const [tableData, setTableData]= useState([])
   const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
@@ -33,7 +33,7 @@ const PostPlant = () => {
       .collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(7)
+      .limit(13)
       .get();
 
       exactNameSnapshot.forEach(doc =>{
@@ -58,8 +58,9 @@ const PostPlant = () => {
 
       return snapshot.docs.reduce((acc, doc) => {
         const name = doc.data();
+        // console.log(tableData)
         setCount(count+1)
-        setTableData([...tableData, {
+        setTableData(tableData => [...tableData, {
           commonName: name.commonName,
           scientificName: name.scientificName,
           carnivorous: name.carnivorous,
@@ -78,18 +79,19 @@ const PostPlant = () => {
       }, '');
     }
 
-    const cancelSearch = () => {
-      setValue('Search')
-      setTableHead(['Name'])
-      setTableData([])
-    }
-
     const submitSearch = async () => {
       setTableData([])
-      console.log(value)
       await searchByName({search:value})
     }
 
+    const cancelSearch = () => {
+      setValue('Search')
+      // setTableHead(['Name'])
+      setTableData([])
+    }
+
+
+    //leave unfinished until we complete search function and modal page
     const addPlant = () => {
       if(addData && addData.length > 0){
        //timestamp
@@ -117,12 +119,12 @@ const PostPlant = () => {
       {!tableData
            ? <View></View>
            :
-       <FlatList style={{flexDirection:'column', width:'100%',marginTop: '5%'}}
+       <FlatList style={{flexDirection:'column', width:'100%',marginTop: '1%'}}
           data={tableData}
           keyExtractor={(item) => item.key}
           scrollEnabled={false}
           renderItem={(item) => {
-            // console.log('ITEM ITEM ITEM ITEM ITEM',item)
+            // console.log('ITEM ITEM ITEM ITEM ITEM',tableData.length)
             //convert these to card components for visual effect
              return (
               <View>
@@ -170,9 +172,13 @@ const PostPlant = () => {
         underlineColorAndroid='transparent'
         autoCapitalize='none'
       />
+      <TouchableOpacity style={styles.button}onPress={cancelSearch}>
+         <Text style={{color:'white', fontWeight:'bold'}}>X</Text>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.button2}onPress={submitSearch}>
          <Text style={styles.buttonText}>Search</Text>
       </TouchableOpacity>
+
       </View>
       </View>
 
@@ -189,23 +195,33 @@ export default PostPlant
 const styles = StyleSheet.create({
   input: {
     height: 28,
-    borderRadius: 5,
+    marginLeft: 5,
+    borderTopLeftRadius:5,
+    borderBottomLeftRadius: 5,
     overflow: 'hidden',
     backgroundColor: 'white',
     paddingLeft: 16,
+    width: '60%',
+    marginTop: '1%',
+  },
+  button: {
+    height: 28,
+    borderTopRightRadius:5,
+    borderBottomRightRadius: 5,
+    backgroundColor: 'red',
+    width: '10%',
+    marginTop: '1%',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 5,
-    marginTop: 50,
-    width: '70%',
   },
   button2: {
     height: 28,
     borderRadius: 5,
     backgroundColor: '#788eec',
-    width: 100,
-    marginTop: 50,
+    marginTop: '1%',
     alignItems: 'center',
     width: '25%',
     justifyContent: 'center',
   },
-
 })
