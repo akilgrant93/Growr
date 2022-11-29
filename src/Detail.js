@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../config'
 
 const Detail = ({route, navigation}) => {

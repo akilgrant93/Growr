@@ -2,8 +2,8 @@ import { StyleSheet, View, Text, SafeAreaView, TextInput, TouchableOpacity, Keyb
 import React, {useState} from 'react'
 import { firebase } from '../config'
 
-const PostPlant = () => {
-  const [isVisible, setIsVisible] = useState(false)
+const PostPlant = ({route, navigation}) => {
+  const [isVisible, setIsVisible]= useState(false)
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)
@@ -14,12 +14,12 @@ const PostPlant = () => {
   const [count, setCount]= useState(0)
   const [active, setActive]= useState(false)
   const [sliderValue, setSliderValue]= useState(0)
-  const [slidingState, setSlidingState]=useState('inactive')
+  const [slidingState, setSlidingState]= useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
-  const [value, setValue]=useState('Search')
+  const [value, setValue]= useState('Search')
   // const [tableHead, setTableHead]= (['Name'])
   const [tableData, setTableData]= useState([])
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+  const plantsRef= firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
     //add a plant from users list of plant entries
     const searchByName =  async ({search = ''}) => {
@@ -132,8 +132,8 @@ const PostPlant = () => {
                 paddingTop: '1%',
                 flexDirection: 'column',
                 justifyContent: 'space-between'}}>
-                    <TouchableOpacity onPress={() => {
-                    displayModal(true, item.item.key)}}>
+                    <TouchableOpacity
+                    onPress={() => navigation.navigate('PostPlant',item)}>
                       <View style={{ flexDirection: 'row', justifyContent: 'space-between',
                       shadowOpacity: .25,
                       width: '99%',shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
@@ -172,13 +172,13 @@ const PostPlant = () => {
         underlineColorAndroid='transparent'
         autoCapitalize='none'
       />
+      {/* make cancel color style responsive to whether or not base text has been changed*/}
       <TouchableOpacity style={styles.button}onPress={cancelSearch}>
          <Text style={{color:'white', fontWeight:'bold'}}>X</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button2}onPress={submitSearch}>
          <Text style={styles.buttonText}>Search</Text>
       </TouchableOpacity>
-
       </View>
       </View>
 

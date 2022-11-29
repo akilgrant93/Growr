@@ -15,6 +15,7 @@ import Settings from "./src/Settings";
 // import Weather from "./src/Weather";
 import Calendar from "./src/Calendar";
 import PostPlant from "./src/PostPlant";
+import PostModal from "./src/PostModal";
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -119,6 +120,10 @@ function App(){
         //     elevation: 25,
         //   }
         // }}
+        />
+        <Stack.Screen
+        name="PostPlant"
+        component={PostModal}
         />
         </Stack.Group>
     </Stack.Navigator>
