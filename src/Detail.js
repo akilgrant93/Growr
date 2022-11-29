@@ -1,12 +1,11 @@
 import { StyleSheet, Text, View, TextInput, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../config'
 
-const Detail = ({route}) => {
+const Detail = ({route, navigation}) => {
   const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
   const [textHeading, onChangeHeadingText] = useState(route.params.item.name)
-  const navigation = useNavigation()
 
   const updatePlant = () => {
     if(textHeading && textHeading.length > 0){
@@ -22,8 +21,13 @@ const Detail = ({route}) => {
     }
   }
 
+  useEffect(() => {
+    console.log(route)
+  }, [])
+
   return (
     <View style={styles.container}>
+      <Text style={{textAlign:'center'}}>{route.params.item.heading[0].toUpperCase()+route.params.item.heading.slice(1)}</Text>
       <TextInput
         style={styles.textField}
         onChangeText={onChangeHeadingText}

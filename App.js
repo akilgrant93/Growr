@@ -1,15 +1,32 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from "react";
 import { firebase } from './config'
+
+
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
 import Detail from "./src/Detail";
 import Dashboard from "./src/Dashboard";
 import Header from "./src/Header";
+import Settings from "./src/Settings";
+// import Weather from "./src/Weather";
+import Calendar from "./src/Calendar";
 
 const Stack = createStackNavigator()
+const Tab = createBottomTabNavigator();
+
+function Home() {
+  return (
+    <Tab.Navigator>
+      <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="Calendar" component={Calendar} />
+      <Tab.Screen name="Settings" component={Settings} />
+    </Tab.Navigator>
+  );
+}
 
 function App(){
   const [initializing, setInitializing] = useState(true)
@@ -66,10 +83,12 @@ function App(){
   }
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Group>
       <Stack.Screen
-        name="Dashboard"
-        component={Dashboard}
+        name="Home"
+        component={Home}
+
         // options={{
         //   headerTitle: () => <Header name="Dashboard"/>,
         //   headerStyle: {
@@ -82,6 +101,8 @@ function App(){
         //   }
         // }}
         />
+        </Stack.Group>
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
         <Stack.Screen
         name="Detail"
         component={Detail}
@@ -97,6 +118,7 @@ function App(){
         //   }
         // }}
         />
+        </Stack.Group>
     </Stack.Navigator>
   )
 }
