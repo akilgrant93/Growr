@@ -1,8 +1,10 @@
-import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, TextInput, TouchableOpacity, Keyboard } from 'react-native'
 import React, {useState} from 'react'
+import { firebase } from '../config'
 
 const PostPlant = () => {
   const [addData, setAddData] = useState('')
+  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
     //add a plant from users list of plant entries
     const addPlant = () => {
       if(addData && addData.length > 0){

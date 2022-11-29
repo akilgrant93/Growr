@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, SafeAreaView, FlatList, View, Keyboard, TextInput, Platform } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, SafeAreaView, FlatList, View, Platform } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
