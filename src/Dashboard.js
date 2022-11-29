@@ -19,7 +19,6 @@ const Dashboard = () => {
   const [name, setName] = useState('')
   const [ plants, setPlants] = useState([])
   const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-  const [addData, setAddData] = useState('')
   const navigation = useNavigation( )
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
@@ -90,43 +89,9 @@ const Dashboard = () => {
     })
   }
 
-  //add a plant from users list of plant entries
-  const addPlant = () => {
-     if(addData && addData.length > 0){
-      //timestamp
-      const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-      const data = {
-        heading: addData,
-        createdAt: timestamp,
-      }
-      plantsRef
-        .add(data)
-        .then(() => {
-          setAddData('')
-          //release keyboard
-          Keyboard.dismiss()
-        })
-        .catch((error) => {
-          alert(error)
-        })
-     }
-  }
-
   return (
     <SafeAreaView style={styles.formContainer}>
       <Text>Your expo push token: {expoPushToken}</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Add A New Plant"
-        placeholderTextColor='#aaaaaa'
-        onChangeText={(heading) => setAddData(heading)}
-        value={addData}
-        underlineColorAndroid='transparent'
-        autoCapitalize='none'
-      />
-      <TouchableOpacity style={styles.button2}onPress={addPlant}>
-         <Text style={styles.buttonText}>Add Plant</Text>
-      </TouchableOpacity>
 
       <FlatList
         data={plants}
@@ -204,16 +169,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end'
   },
-  input: {
-    height: 28,
-    borderRadius: 5,
-    overflow: 'hidden',
-    backgroundColor: 'white',
-    paddingLeft: 16,
-    marginRight: 5,
-    marginTop: 50,
-    width: '80%',
-  },
   button: {
     marginTop: 50,
     height: 70,
@@ -223,15 +178,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     borderRadius: 50,
-  },
-  button2: {
-    height: 47,
-    borderRadius: 5,
-    backgroundColor: '#788eec',
-    width: 100,
-    marginTop: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   buttonText: {
     color: 'white',

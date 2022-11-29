@@ -14,6 +14,7 @@ import Header from "./src/Header";
 import Settings from "./src/Settings";
 // import Weather from "./src/Weather";
 import Calendar from "./src/Calendar";
+import PostPlant from "./src/PostPlant";
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -22,6 +23,7 @@ function Home() {
   return (
     <Tab.Navigator>
       <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="Add Plant" component={PostPlant} />
       <Tab.Screen name="Calendar" component={Calendar} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
@@ -102,7 +104,7 @@ function App(){
         // }}
         />
         </Stack.Group>
-        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+        <Stack.Group screenOptions={{ presentation: 'modal', headerShown:false  }}>
         <Stack.Screen
         name="Detail"
         component={Detail}
