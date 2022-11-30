@@ -47,6 +47,7 @@ const PostModal = ({route, navigation}) => {
       setIsHydroponic(false)
     } else {
       setIsPotted(false)
+      setIsIndoors(false)
     }
  }
 
@@ -115,6 +116,7 @@ const toggleHydroponic = () => {
       </View>
       : ''}
 
+      {/* form control checkboxes*/}
       <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
@@ -125,7 +127,7 @@ const toggleHydroponic = () => {
         fillColor={isHydroponic?"#E0E0E0":"#004d00"}
         unfillColor="#FFFFFF"
         text="Potted"
-        bounceEffectIn={isHydroponic ? 1 : 0.9}
+        bounceEffectIn={isHydroponic ? 1 : 0.8}
         bounceEffectOut={1}
         iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
         innerIconStyle={{ borderWidth: 2 }}
@@ -140,6 +142,7 @@ const toggleHydroponic = () => {
         fillColor="#004d00"
         unfillColor="#FFFFFF"
         text="Hydroponic"
+        bounceEffectIn={0.8}
         iconStyle={{ borderColor: "#004d00" }}
         innerIconStyle={{ borderWidth: 2 }}
         onPress = {toggleHydroponic}
@@ -152,7 +155,7 @@ const toggleHydroponic = () => {
         fillColor={isHydroponic?"#E0E0E0":"#004d00"}
         unfillColor="#FFFFFF"
         text="Indoors"
-        bounceEffectIn={isHydroponic ? 1: 0.9}
+        bounceEffectIn={isHydroponic ? 1: 0.8}
         bounceEffectOut={1}
         bounceEffect={0}
         iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
