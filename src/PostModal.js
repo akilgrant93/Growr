@@ -3,7 +3,7 @@ import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
 
-const Detail = ({route, navigation}) => {
+const PostModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
 
@@ -44,8 +44,9 @@ const Detail = ({route, navigation}) => {
   const togglePotted = () => {
     if(isPotted === false){
       setIsPotted(true)
+      setIsHydroponic(false)
     } else {
-      setIsPotted(true)
+      setIsPotted(false)
     }
  }
 
@@ -54,7 +55,6 @@ const Detail = ({route, navigation}) => {
       setIsPotted(true)
       setIsIndoors(true)
     } else {
-      setIsPotted(false)
       setIsIndoors(false)
     }
 }
@@ -62,6 +62,8 @@ const Detail = ({route, navigation}) => {
 const toggleHydroponic = () => {
   if(isHydroponic === false){
     setIsHydroponic(true)
+    setIsIndoors(false)
+    setIsPotted(false)
   } else {
     setIsHydroponic(false)
   }
@@ -78,17 +80,18 @@ const toggleHydroponic = () => {
       <Text style={{textAlign:'center'}}>{route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName}</Text>
 
       {/* if commonName exists, scientificName else nothing */}
-      {route.params.item.commonName ? '' : <Text style={{textAlign:'center'}}>{route.params.item.scientificName}</Text>}
+      {route.params.item.commonName ? <View/> : <Text style={{textAlign:'center'}}>{route.params.item.scientificName}</Text>}
 
       {/* if familyName exists, familyName else nothing */}
-      {route.params.item.family ? <Text style={{textAlign:'center'}}>{route.params.item.familyName}</Text> : ''}
+      {route.params.item.family ?
+      <Text style={{textAlign:'center'}}>{route.params.item.familyName}</Text> : <View/>}
 
 
       {/* tag map ternary */}
       {route.params.item.tags.length > 0
       ?<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop: 10,}}>
-       {route.params.item.tags.map(tag => {
-       return  <Text style={{padding: 7.5, marginRight:5,backgroundColor:'green', color:'white'}}>{tag}</Text>
+       {route.params.item.tags.map((tag, idx) => {
+       return  <Text key={idx} style={{padding: 7.5, marginRight:5,backgroundColor:'green', color:'white'}}>{tag}</Text>
       })}
       {/* poison ternary */}
       {/* edible ternary */}
@@ -103,30 +106,60 @@ const toggleHydroponic = () => {
       {/* disease map ternary */}
       {route.params.item.diseases.length > 0
       ?<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop: 10,}}>
-       {route.params.item.diseases.map(disease => {
-       return  <Text style={disease.split(':')[1] === 'resistant'
+       {route.params.item.diseases.map((disease, idx) => {
+       return  <Text key={idx} style={disease.split(':')[1] === 'resistant'
        ? {padding: 7.5, marginRight:5,backgroundColor:'green', color:'white'}
        : {padding: 7.5, marginRight:5,backgroundColor:'red', color:'white'}}
        >{disease.split(':')[0]}: {disease.split(':')[1][0].toUpperCase()+disease.split(':')[1].slice(1)}</Text>
       })}
-
-<BouncyCheckbox
-  size={25}
-  fillColor="red"
-  unfillColor="#FFFFFF"
-  text="Custom Checkbox"
-  iconStyle={{ borderColor: "red" }}
-  innerIconStyle={{ borderWidth: 2 }}
-  textStyle={{ fontFamily: "JosefinSans-Regular" }}
-/>
-      {/* <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center'}}>
-      <CheckBox color = {'#004d00'} onPress = {togglePotted} checked = {isPotted}/>
-      <CheckBox color = {'#004d00'} onPress = {toggleHydroponic} checked = {isHydroponic}/>
-      <CheckBox color = {'#004d00'} onPress = {toggleIndoors} checked = {isIndoors}/>
-      </View> */}
-
       </View>
       : ''}
+
+      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
+        <BouncyCheckbox
+        style={{marginRight: 15}}
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none"}}
+        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Potted"
+        bounceEffectIn={isHydroponic ? 1 : 0.9}
+        bounceEffectOut={1}
+        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {isHydroponic ? '' :togglePotted}
+        isChecked = {isPotted}/>
+        <BouncyCheckbox
+        style={{marginRight: 15}}
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none"}}
+        fillColor="#004d00"
+        unfillColor="#FFFFFF"
+        text="Hydroponic"
+        iconStyle={{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {toggleHydroponic}
+        isChecked = {isHydroponic}/>
+        <BouncyCheckbox
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none"}}
+        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Indoors"
+        bounceEffectIn={isHydroponic ? 1: 0.9}
+        bounceEffectOut={1}
+        bounceEffect={0}
+        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {isHydroponic ? '' :toggleIndoors}
+        isChecked = {isIndoors}/>
+      </View>
 
       <Pressable
         style={styles.updateButton}
@@ -138,7 +171,7 @@ const toggleHydroponic = () => {
   )
 }
 
-export default Detail
+export default PostModal
 
 const styles = StyleSheet.create({
   container: {
