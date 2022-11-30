@@ -116,6 +116,11 @@ const toggleHydroponic = () => {
       </View>
       : ''}
 
+      {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
+      {/* regular watering slider */}
+      {/* succulent watering slider */}
+      {/* hydroponic watering slider */}
+
       {/* form control checkboxes*/}
       <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
         <BouncyCheckbox
@@ -139,13 +144,13 @@ const toggleHydroponic = () => {
         textContainerStyle={{marginLeft: 5}}
         disableBuiltInState
         textStyle={{textDecorationLine: "none"}}
-        fillColor="#004d00"
+        fillColor={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
         unfillColor="#FFFFFF"
         text="Hydroponic"
-        bounceEffectIn={0.8}
-        iconStyle={{ borderColor: "#004d00" }}
+        bounceEffectIn={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? 1: 0.8}
+        iconStyle={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
         innerIconStyle={{ borderWidth: 2 }}
-        onPress = {toggleHydroponic}
+        onPress = {route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? '' :toggleHydroponic}
         isChecked = {isHydroponic}/>
         <BouncyCheckbox
         size={20}
