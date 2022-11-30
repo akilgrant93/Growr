@@ -1,0 +1,12 @@
+{
+    "carnivorous": false,
+    "commonName": "Peruvian apple cactus fruit",
+    "diseases": ["verticilliumWilt:resistant"],
+    "edible": true,
+    "familyName": "",
+    "firestoreID": "fx62aKHi5RpWKrQO8boF", "freshWaterAquatic": false,
+    "herb": false, "key": "ypp63ayfonqp9ts5k7qri9",
+    "medicinalUse": "",
+    "poisonous": false,
+    "scientificName": "Cereus repandus", "succulent": true, "tags": ["Succulent", "Cactus", "Edible"]
+  }

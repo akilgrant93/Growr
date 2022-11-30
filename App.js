@@ -91,39 +91,20 @@ function App(){
       <Stack.Screen
         name="Home"
         component={Home}
-
-        // options={{
-        //   headerTitle: () => <Header name="Dashboard"/>,
-        //   headerStyle: {
-        //     height: 150,
-        //     borderBottomLeftRadius: 50,
-        //     borderBottomRightRadius: 50,
-        //     backgroundColor: '#00e4d0',
-        //     shadowColor: '#000',
-        //     elevation: 25,
-        //   }
-        // }}
         />
         </Stack.Group>
-        <Stack.Group screenOptions={{ presentation: 'modal', headerShown:false  }}>
+        <Stack.Group screenOptions={{
+          presentation: 'modal',
+          headerShown:false  }}>
         <Stack.Screen
         name="Detail"
         component={Detail}
-        // options={{
-        //   headerTitle: () => <Header name="Dashboard"/>,
-        //   headerStyle: {
-        //     height: 150,
-        //     borderBottomLeftRadius: 50,
-        //     borderBottomRightRadius: 50,
-        //     backgroundColor: '#00e4d0',
-        //     shadowColor: '#000',
-        //     elevation: 25,
-        //   }
-        // }}
+        // options={{ presentation: 'transparentModal' }}
         />
         <Stack.Screen
         name="PostPlant"
         component={PostModal}
+        // options={{ presentation: 'transparentModal' }}
         />
         </Stack.Group>
     </Stack.Navigator>

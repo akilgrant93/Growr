@@ -20,6 +20,8 @@ const Detail = ({route, navigation}) => {
     }
   }
 
+
+
   useEffect(() => {
     console.log(route)
   }, [])

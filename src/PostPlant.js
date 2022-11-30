@@ -3,25 +3,16 @@ import React, {useState} from 'react'
 import { firebase } from '../config'
 
 const PostPlant = ({route, navigation}) => {
-  const [isVisible, setIsVisible]= useState(false)
-  const [isPotted, setIsPotted]= useState(false)
-  const [isIndoors, setIsIndoors]= useState(false)
-  const [isHydroponic, setIsHydroponic]= useState(false)
-  const [isSucculent, setIsSucculent]= useState(false)
-  const [selectedPlant, setSelectedPlant]= useState('')
   const [endCursor, setEndCursor]= useState({})
   const [startCursor, setStartCursor]= useState({})
   const [count, setCount]= useState(0)
-  const [active, setActive]= useState(false)
-  const [sliderValue, setSliderValue]= useState(0)
-  const [slidingState, setSlidingState]= useState('inactive')
-  const [hoverValue, setHoverValue]= useState(0)
   const [value, setValue]= useState('Search')
-  // const [tableHead, setTableHead]= (['Name'])
   const [tableData, setTableData]= useState([])
+
   const plantsRef= firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
     //add a plant from users list of plant entries
+    //need to setup next and previous buttons
     const searchByName =  async ({search = ''}) => {
       if(search[search.length-1] === ' '){
         search = search.slice(0,search.length-1)
@@ -60,6 +51,7 @@ const PostPlant = ({route, navigation}) => {
         const name = doc.data();
         // console.log(tableData)
         setCount(count+1)
+        // common plant item object structure found here
         setTableData(tableData => [...tableData, {
           commonName: name.commonName,
           scientificName: name.scientificName,
@@ -89,29 +81,6 @@ const PostPlant = ({route, navigation}) => {
       // setTableHead(['Name'])
       setTableData([])
     }
-
-
-    //leave unfinished until we complete search function and modal page
-    const addPlant = () => {
-      if(addData && addData.length > 0){
-       //timestamp
-       const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-       const data = {
-         heading: addData,
-         createdAt: timestamp,
-       }
-       plantsRef
-         .add(data)
-         .then(() => {
-           setValue('')
-           //release keyboard
-           Keyboard.dismiss()
-         })
-         .catch((error) => {
-           alert(error)
-         })
-      }
-   }
 
   return (
     <SafeAreaView>
@@ -147,13 +116,6 @@ const PostPlant = ({route, navigation}) => {
                         </View>
 
                         <View style={{ flexDirection: 'column', justifyContent: 'center'}}>
-                        {/* <View style={{ flexDirection: 'row', marginRight: '2%'}}>
-                          {item.item.poisonous ? <FontAwesome5  name="skull-crossbones" size={25} color="black"/> : <View></View>}
-                          {item.item.edible || item.item.tags.includes('Edible')  ? <MaterialCommunityIcons  name="silverware-fork-knife" size={25} color="black"/> : <View></View>}
-                          {item.item.tags.includes('Herbal') || item.item.herbal ? <MaterialCommunityIcons  name="medical-bag" size={25} color="black"/> : <View></View>}
-                          {item.item.tags.includes('Cactus') || item.item.tags.includes('Succulent') || item.item.familyName === 'Cactaceae'  || item.item.succulent ? <MaterialCommunityIcons  name="cactus" size={25} color="black"/> : <View></View>}
-                          {item.item.tags.includes('Aquatic - Freshwater') || item.item.freshWaterAquatic ? <Entypo  name="drop" size={25} color="black"/> : <View></View>}
-                        </View> */}
                         </View>
                       </View>
                     </TouchableOpacity>
@@ -162,7 +124,7 @@ const PostPlant = ({route, navigation}) => {
               </View>
             )
           }} />}
-      <View style={{flexDirection:'row',}}>
+      <View style={{flexDirection:'row'}}>
       <TextInput
         style={styles.input}
         placeholder="Add A New Plant"
