@@ -77,7 +77,7 @@ const PostPlant = ({route, navigation}) => {
     }
 
     const cancelSearch = () => {
-      setValue('Search')
+      setValue('')
       // setTableHead(['Name'])
       setTableData([])
     }
@@ -124,6 +124,9 @@ const PostPlant = ({route, navigation}) => {
               </View>
             )
           }} />}
+
+      {/* pagination here, reduce count on limit to compensate */}
+
       <View style={{flexDirection:'row'}}>
       <TextInput
         style={styles.input}

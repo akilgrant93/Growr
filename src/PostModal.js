@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Pressable,  } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
+import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
 
@@ -15,9 +16,19 @@ const PostModal = ({route, navigation}) => {
   const [slidingState, setSlidingState]= useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
 
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-  // const [textHeading, onChangeHeadingText] = useState(route.params.item.name)
+  const diseasesObj = {
+    rootRot:'root rot',
+    canker:'canker',
+    verticilliumWilt:'verticillium wilt',
+    mosaicVirus:'mosaic virus',
+    leafBlight:'leaf blight',
+    blackSpot:'black spot',
+    powderyMildew:'powdery mildew',
+    blackDot:'Black Dot',
+    caneBlight:'cane blight'
+  }
 
+  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
   //leave unfinished until we complete search function and modal page
 //   const addPlant = () => {
 //     if(addData && addData.length > 0){
@@ -87,41 +98,47 @@ const toggleHydroponic = () => {
       {route.params.item.family ?
       <Text style={{textAlign:'center'}}>{route.params.item.familyName}</Text> : <View/>}
 
+      {/* icon ternaries */}
+      {/* poison icon ternary */}
+      {/* edible icon ternary */}
+      {/* carnivorous icon ternary */}
+      {/* aquatic icon ternary */}
+      {/* succulent icon ternary */}
+      {/* tropical icon ternary */}
+      {/* medicinalUse icon ternary */}
 
-      {/* tag map ternary */}
+      {/* tag map ternary needs flexwrap*/}
       {route.params.item.tags.length > 0
-      ?<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop: 10,}}>
+      ?<View style={styles.tagBox}>
        {route.params.item.tags.map((tag, idx) => {
-       return  <Text key={idx} style={{padding: 7.5, marginRight:5,backgroundColor:'green', color:'white'}}>{tag}</Text>
+       return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
       })}
-      {/* poison ternary */}
-      {/* edible ternary */}
-      {/* carnivorous ternary */}
-      {/* aquatic ternary */}
-      {/* succulent ternary */}
-      {/* tropical ternary */}
-      {/* medicinalUse ternary */}
       </View>
       : ''}
 
-      {/* disease map ternary */}
+      {/* disease map ternary needs restyle and formatting to be text based*/}
       {route.params.item.diseases.length > 0
-      ?<View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', marginTop: 10,}}>
+      ?
+      <View style={{alignItems:'center'}}>
+      <View style={styles.diseaseText}>
        {route.params.item.diseases.map((disease, idx) => {
-       return  <Text key={idx} style={disease.split(':')[1] === 'resistant'
-       ? {padding: 7.5, marginRight:5,backgroundColor:'green', color:'white'}
-       : {padding: 7.5, marginRight:5,backgroundColor:'red', color:'white'}}
-       >{disease.split(':')[0]}: {disease.split(':')[1][0].toUpperCase()+disease.split(':')[1].slice(1)}</Text>
+
+        const currDisease = disease.split(':')[0]
+        const currDiseaseStatus = disease.split(':')[1][0].toUpperCase()+disease.split(':')[1].slice(1)
+        const formattedDiseaseName = diseasesObj[currDisease]
+
+        if(currDiseaseStatus === 'Resistant'){
+          return <Text style={{paddingTop:1}}>•Resistant to {formattedDiseaseName}</Text>
+        } else if (currDiseaseStatus === 'Susceptible'){
+          return <Text style={{paddingTop:1}}>•Susceptible to {formattedDiseaseName}</Text>
+        }
+
       })}
+      </View>
       </View>
       : ''}
 
-      {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      {/* regular watering slider */}
-      {/* succulent watering slider */}
-      {/* hydroponic watering slider */}
-
-      {/* form control checkboxes*/}
+      {/* form control checkboxes make this a standalone component along with slider form controls*/}
       <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
@@ -163,16 +180,46 @@ const toggleHydroponic = () => {
         bounceEffectIn={isHydroponic ? 1: 0.8}
         bounceEffectOut={1}
         bounceEffect={0}
-        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
         innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic ? '' :toggleIndoors}
+        onPress = {isHydroponic?'':toggleIndoors}
         isChecked = {isIndoors}/>
       </View>
 
-      <Pressable
-        style={styles.updateButton}
-        onPress={() => {console.log('pressed')}}
-      >
+            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
+      <Slider
+          // value={value}
+          style={{marginTop: 15,width:'75%', alignSelf:'center'}}
+          onValueChange={value => setSliderValue(parseInt(value))}
+          minimumTrackTintColor={'#004d00'}
+          maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+          minimumValue={0}
+          value={0}
+          onSlidingStart={value => setHoverValue(parseInt(value))}
+          onSlidingComplete={value => console.log(sliderValue)}
+          step={1}
+                />
+
+        <Text style={{textAlign:'center'}}>Last watered {
+          sliderValue === 0
+          ? 'today'
+          : sliderValue === 1
+          ? 'yesterday'
+          : sliderValue > 1 && sliderValue <= 6
+          ? `${sliderValue} days ago`
+          : sliderValue === 7
+          ? 'a week ago'
+          : sliderValue > 7 && sliderValue <= 13
+          ? `${sliderValue} days ago`
+          : sliderValue === 14
+          ? 'two weeks ago'
+          : 'over two weeks ago'
+          }</Text>
+
+        <Pressable
+          style={styles.postButton}
+          onPress={() => {console.log('pressed')}}
+        >
         <Text>POST PLANT</Text>
       </Pressable>
     </View>
@@ -185,17 +232,15 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 80,
     marginHorizontal: 15,
-
   },
-  textField: {
-    marginBottom: 10,
-    padding: 10,
-    fontSize: 15,
-    color: '#000',
-    backgroundColor: '#e0e0e0',
-    borderRadius: 5,
+  diseaseText: {
+    flexDirection:'column',
+    justifyContent:'center',
+    alignItems:'left',
+    marginTop: 10,
+    width: '70%'
   },
-  updateButton: {
+  postButton: {
     marginTop: 25,
     alignItems: 'center',
     justifyContent: 'center',
@@ -204,5 +249,18 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     elevation: 10,
     backgroundColor: '#0de065'
+  },
+  tagBox: {
+    flexDirection:'row',
+    justifyContent:'center',
+    alignItems:'center',
+    marginTop: 10,
+  },
+  tag: {
+    padding: 8,
+    marginRight:5,
+    backgroundColor:'green',
+    color:'white',
+    borderRadius: '5%'
   }
 })
