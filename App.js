@@ -99,12 +99,10 @@ function App(){
         <Stack.Screen
         name="Detail"
         component={Detail}
-        // options={{ presentation: 'transparentModal' }}
         />
         <Stack.Screen
         name="PostPlant"
         component={PostModal}
-        // options={{ presentation: 'transparentModal' }}
         />
         </Stack.Group>
     </Stack.Navigator>

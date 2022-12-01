@@ -17,15 +17,15 @@ const PostModal = ({route, navigation}) => {
   const [hoverValue, setHoverValue]= useState(0)
 
   const diseasesObj = {
-    rootRot:'root rot',
-    canker:'canker',
-    verticilliumWilt:'verticillium wilt',
-    mosaicVirus:'mosaic virus',
-    leafBlight:'leaf blight',
-    blackSpot:'black spot',
-    powderyMildew:'powdery mildew',
+    rootRot:'Root Rot',
+    canker:'Canker',
+    verticilliumWilt:'Verticillium Wilt',
+    mosaicVirus:'Mosaic Virus',
+    leafBlight:'Leaf Blight',
+    blackSpot:'Black Spot',
+    powderyMildew:'Powdery Mildew',
     blackDot:'Black Dot',
-    caneBlight:'cane blight'
+    caneBlight:'Cane Blight'
   }
 
   const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
@@ -87,7 +87,6 @@ const toggleHydroponic = () => {
 
   return (
     <View style={styles.container}>
-
       {/* if commonName exists, commonName else scientificName */}
       <Text style={{textAlign:'center'}}>{route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName}</Text>
 
@@ -98,7 +97,7 @@ const toggleHydroponic = () => {
       {route.params.item.family ?
       <Text style={{textAlign:'center'}}>{route.params.item.familyName}</Text> : <View/>}
 
-      {/* icon ternaries */}
+      {/* icon ternaries - will be combined with tags*/}
       {/* poison icon ternary */}
       {/* edible icon ternary */}
       {/* carnivorous icon ternary */}
@@ -130,7 +129,7 @@ const toggleHydroponic = () => {
         if(currDiseaseStatus === 'Resistant'){
           return <Text style={{paddingTop:1}}>•Resistant to {formattedDiseaseName}</Text>
         } else if (currDiseaseStatus === 'Susceptible'){
-          return <Text style={{paddingTop:1}}>•Susceptible to {formattedDiseaseName}</Text>
+          return <Text style={{paddingTop:1, color:'red'}}>•Susceptible to {formattedDiseaseName}</Text>
         }
 
       })}
@@ -138,14 +137,15 @@ const toggleHydroponic = () => {
       </View>
       : ''}
 
-      {/* form control checkboxes make this a standalone component along with slider form controls*/}
+
+      {/* icons needed */}
       <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
         size={20}
         textContainerStyle={{marginLeft: 5}}
         disableBuiltInState
-        textStyle={{textDecorationLine: "none"}}
+        textStyle={{textDecorationLine: "none", fontSize: 12}}
         fillColor={isHydroponic?"#E0E0E0":"#004d00"}
         unfillColor="#FFFFFF"
         text="Potted"
@@ -160,7 +160,7 @@ const toggleHydroponic = () => {
         size={20}
         textContainerStyle={{marginLeft: 5}}
         disableBuiltInState
-        textStyle={{textDecorationLine: "none"}}
+        textStyle={{textDecorationLine: "none", fontSize: 12}}
         fillColor={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
         unfillColor="#FFFFFF"
         text="Hydroponic"
@@ -173,7 +173,7 @@ const toggleHydroponic = () => {
         size={20}
         textContainerStyle={{marginLeft: 5}}
         disableBuiltInState
-        textStyle={{textDecorationLine: "none"}}
+        textStyle={{textDecorationLine: "none", fontSize: 12}}
         fillColor={isHydroponic?"#E0E0E0":"#004d00"}
         unfillColor="#FFFFFF"
         text="Indoors"
@@ -230,8 +230,9 @@ export default PostModal
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 80,
+    marginTop: '50%',
     marginHorizontal: 15,
+    alignItems:'center'
   },
   diseaseText: {
     flexDirection:'column',

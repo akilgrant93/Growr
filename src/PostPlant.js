@@ -6,7 +6,7 @@ const PostPlant = ({route, navigation}) => {
   const [endCursor, setEndCursor]= useState({})
   const [startCursor, setStartCursor]= useState({})
   const [count, setCount]= useState(0)
-  const [value, setValue]= useState('Search')
+  const [value, setValue]= useState('')
   const [tableData, setTableData]= useState([])
 
   const plantsRef= firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
