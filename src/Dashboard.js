@@ -110,7 +110,7 @@ const Dashboard = () => {
               />
               <View style={styles.innerContainer}>
                 <Text style={styles.itemHeading}>
-                  {item.heading[0].toUpperCase() + item.heading.slice(1)}
+                  {item.heading.length > 0 ? item.heading[0].toUpperCase() + item.heading.slice(1) : item.name}
                 </Text>
               </View>
             </Pressable>

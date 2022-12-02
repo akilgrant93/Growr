@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, TextInput, Pressable,  } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Keyboard,  } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
+import * as Notifications from 'expo-notifications';
 
 const PostModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
-
   //this state value will disable the checkboxes for isPotted and isIndoors
   const [isHydroponic, setIsHydroponic]= useState(false)
 
@@ -28,9 +28,216 @@ const PostModal = ({route, navigation}) => {
     caneBlight:'Cane Blight'
   }
 
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
   //leave unfinished until we complete search function and modal page
-//   const addPlant = () => {
+
+  const resolveAfterTime = function(time, key) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        plantNeedsWaterNotif(key)
+      }, time * 1000);
+    });
+  }
+
+  //triggers with notification
+const plantNeedsWaterNotif = (key) => {
+    const uid=firebase.auth().currentUser.uid
+  //timestamp needs to be translated into real date for calendar functions
+    // return(dispatch) => {
+    //   firebase.database().ref(`/users/${uid}/plants/${key}`).update({isThirsty: true})
+    // }
+  }
+
+  const postPlant = async(plant, indoors, potted, hydroponic) => {
+
+
+    let indoorStatus = ''
+    let pottedStatus = ''
+    let hydroponicStatus = ''
+    let succulent
+
+    if(indoors){
+      indoorStatus = "Indoor"
+    } else {
+      indoorStatus = "Outdoor"
+    }
+    if(potted){
+      pottedStatus = "Potted"
+    } else {
+      pottedStatus = "In-Ground"
+    }
+    if(hydroponic){
+      hydroponicStatus = 'Hydroponic'
+      pottedStatus = ''
+    }
+
+    if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){
+      succulent = true
+    } else {
+      succulent = false
+    }
+
+    let base = 7
+
+    if(hydroponic){
+      base = 14
+    }
+
+    //
+    if(succulent){
+      //if indoors
+      if(indoors){
+        base = 14
+      }
+      //if outdoors and potted
+      else if (!indoors && potted){
+        base = 7
+      }
+      //outdoors in the ground
+      else if (!indoors && !potted){
+        base = 28
+      }
+    }
+
+    //if potted
+    else if(potted){
+      //if succulent and outdoors
+      if(succulent && !indoors){
+        base = 7
+      //if succulent and indoors
+      } else if (succulent && indoors) {
+        base = 14
+      //if outdoors and not succulent
+      } else if (!suculent && !indoors){
+        base = 3
+      //if indoors not succulent
+      } else {
+        base = 7
+      }
+      }
+
+    //if the common name is bugged
+    if(typeof plant === 'string'){
+      let notificationID = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant}`,
+          body: 'Needs water.',
+        },
+        trigger: {
+          seconds: base,
+          repeats: false
+        }
+      })
+
+      postUserPlant(plant, isPotted, isIndoors,
+        isHydroponic,
+        succulent, '', base, notificationID, plant.firestoreID)
+      resolveAfterTime(base);
+      }
+
+    //if theres a common name
+    if(plant.commonName){
+      let notificationID = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.commonName}`,
+          body: 'Needs water.',
+        },
+        trigger: {
+          seconds: base,
+          repeats: false
+        }
+      })
+      postUserPlant(
+        plant.commonName,
+        isPotted,
+        isIndoors,
+        isHydroponic,
+        succulent, '', base, notificationID, plant.firestoreID
+      )
+      resolveAfterTime(base);
+    //otherwise refer to the scientific name
+    } else if(!plant.commonName && typeof plant !== 'string') {
+      let notificationID = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.scientificName}`,
+          body: 'Needs water.',
+        },
+        trigger: {
+          seconds: base,
+          repeats: false
+        }
+      })
+      postUserPlant(plant.scientificName, isPotted, isIndoors,
+        isHydroponic,
+        succulent, '', base, notificationID, notificationIDplant.firestoreID)
+      resolveAfterTime(base);
+    }
+    setIsPotted(false)
+    setIsIndoors(false)
+    setIsHydroponic(false)
+    // pass this from the postPlant component
+    // setTableData(false)
+    navigation.navigate('Dashboard')
+
+    console.log('TIME TILL WATERNOTIF ',base,' seconds')
+  }
+
+   function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, notificationInterval, notificationId, firestoreID){
+    const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+
+     console.log('FIRESTORE ID FIRESTORE ID FIRESTORE ID',firestoreID)
+     const uid = firebase.auth().currentUser.uid
+
+     //will take a value 0-7 and calculate the isThirsty property of the newPlant variable accordingly
+     // const lastWatered = (days) => {}
+
+    //  return (dispatch) => {
+      const today = firebase.firestore.FieldValue.serverTimestamp()
+      const data = {
+        name,
+        initialized:today,
+        isPotted,
+        isIndoors,
+        isHydroponic,
+        isSucculent,
+        firestoreID,
+        notes,
+        notificationId,
+        notificationInterval
+      }
+      plantsRef
+      .add(data)
+      .then(() => {
+        setSliderValue(0)
+        setIsHydroponic(false)
+        setIsIndoors(false)
+        setIsPotted(false)
+        Keyboard.dismiss()
+      })
+      .catch((error) => {
+        alert(error)
+      })
+    //   .set(
+    //     {name,
+    //     initialized:today,
+    //     isPotted,
+    //     isIndoors,
+    //     isHydroponic,
+    //     isSucculent,
+    //     firestoreID,
+    //     notes}
+    //   )
+    // .catch((error) => {
+    //     alert.error("Error writing document: ", error);
+    // });
+
+
+
+
+    //  }
+    }
+
+
+//   const postUserPlant = (item, isIndoors, isPotted, isHydroponic, notes,notificationInterval, notificationId, firestoreID) => {
 //     if(addData && addData.length > 0){
 //      //timestamp
 //      const timestamp = firebase.firestore.FieldValue.serverTimestamp()
@@ -81,9 +288,10 @@ const toggleHydroponic = () => {
   }
 }
 
-  useEffect(() => {
-    console.log('route params',route.params)
-  }, [])
+  // useEffect(() => {
+  //   console.log('route params',route.params)
+  //   console.log('USER USER USER USER USER USER', user)
+  // }, [])
 
   return (
     <View style={styles.container}>
@@ -216,9 +424,11 @@ const toggleHydroponic = () => {
           : 'over two weeks ago'
           }</Text>
 
+          {/* notes textbox field */}
+
         <Pressable
           style={styles.postButton}
-          onPress={() => {console.log('pressed')}}
+          onPress={() => {postPlant(route.params.item, isIndoors, isPotted, isHydroponic)}}
         >
         <Text>POST PLANT</Text>
       </Pressable>
