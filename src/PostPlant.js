@@ -72,6 +72,9 @@ const PostPlant = ({route, navigation}) => {
     }
 
     const submitSearch = async () => {
+      if(value===''){
+        return
+      }
       setTableData([])
       await searchByName({search:value})
     }
