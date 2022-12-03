@@ -192,14 +192,14 @@ const plantNeedsWaterNotif = (key) => {
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
      console.log('FIRESTORE ID FIRESTORE ID FIRESTORE ID',firestoreID)
-     const uid = firebase.auth().currentUser.uid
 
      //will take a value 0-7 and calculate the isThirsty property of the newPlant variable accordingly
      // const lastWatered = (days) => {}
 
-    //  return (dispatch) => {
+
+     //make an identically logica function here for calendar entry
       const today = firebase.firestore.FieldValue.serverTimestamp()
-      const data = {
+      const plantData = {
         name,
         initialized:today,
         isPotted,
@@ -212,7 +212,7 @@ const plantNeedsWaterNotif = (key) => {
         notificationInterval
       }
       plantsRef
-      .add(data)
+      .add(plantData)
       .then(() => {
         setSliderValue(0)
         setIsHydroponic(false)
