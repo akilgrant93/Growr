@@ -128,9 +128,13 @@ const plantNeedsWaterNotif = (key) => {
         }
       })
 
-      postUserPlant(plant, isPotted, isIndoors,
+      postUserPlant(
+        plant,
+        isPotted,
+        isIndoors,
         isHydroponic,
-        succulent, '', base, notificationID, plant.firestoreID)
+        succulent, '', base, notificationID, plant.firestoreID
+        )
       resolveAfterTime(base);
       }
 
@@ -166,7 +170,10 @@ const plantNeedsWaterNotif = (key) => {
           repeats: false
         }
       })
-      postUserPlant(plant.scientificName, isPotted, isIndoors,
+      postUserPlant(
+        plant.scientificName,
+        isPotted,
+        isIndoors,
         isHydroponic,
         succulent, '', base, notificationID, notificationIDplant.firestoreID)
       resolveAfterTime(base);
@@ -216,49 +223,9 @@ const plantNeedsWaterNotif = (key) => {
       .catch((error) => {
         alert(error)
       })
-    //   .set(
-    //     {name,
-    //     initialized:today,
-    //     isPotted,
-    //     isIndoors,
-    //     isHydroponic,
-    //     isSucculent,
-    //     firestoreID,
-    //     notes}
-    //   )
-    // .catch((error) => {
-    //     alert.error("Error writing document: ", error);
-    // });
-
-
-
-
-    //  }
     }
 
 
-//   const postUserPlant = (item, isIndoors, isPotted, isHydroponic, notes,notificationInterval, notificationId, firestoreID) => {
-//     if(addData && addData.length > 0){
-//      //timestamp
-//      const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-//      const data = {
-//        heading: addData,
-//        createdAt: timestamp,
-//      }
-//      plantsRef
-//        .add(data)
-//        .then(() => {
-//          setValue('')
-//          //release keyboard
-//          Keyboard.dismiss()
-//        })
-//        .catch((error) => {
-//          alert(error)
-//        })
-//     }
-//  }
-
-  //modal functions
   const togglePotted = () => {
     if(isPotted === false){
       setIsPotted(true)
