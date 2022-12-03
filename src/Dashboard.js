@@ -45,15 +45,22 @@ const Dashboard = () => {
       }
     })
     plantsRef
-    .orderBy('createdAt', 'desc')
+    .orderBy('initialized', 'desc')
     .onSnapshot(
       querySnapshot => {
         const plants = []
         querySnapshot.forEach((doc) => {
-          const {heading} = doc.data()
           plants.push({
             id: doc.id,
-            heading
+            name: doc.data().name,
+            isPotted: doc.data().isPotted,
+            isIndoors: doc.data().isIndoors,
+            isHydroponic: doc.data().isHydroponic,
+            isSucculent: doc.data().isSucculent,
+            notes: doc.data().notes,
+            notificationInterval: doc.data().notificationInterval,
+            notificationID: doc.data().notificationID,
+            firestoreID: doc.data().firestoreID,
           })
         })
         setPlants(plants)
@@ -110,7 +117,16 @@ const Dashboard = () => {
               />
               <View style={styles.innerContainer}>
                 <Text style={styles.itemHeading}>
-                  {item.heading.length > 0 ? item.heading[0].toUpperCase() + item.heading.slice(1) : item.name}
+                  {item.name}
+                </Text>
+                <Text style={styles.subtitle}>
+                  {item.isPotted || item.isIndoors ? 'Potted' : ''}
+                </Text>
+                <Text style={styles.subtitle}>
+                  {!item.isIndoors ? 'Outdoor' : ''}
+                </Text>
+                <Text style={styles.subtitle}>
+                  {item.isHydroponic ? 'Hydroponic' : ''}
                 </Text>
               </View>
             </Pressable>
@@ -144,7 +160,7 @@ export default Dashboard
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#e5e5e5',
-    padding: 15,
+    padding: 5,
     borderRadius: 15,
     margin: 5,
     marginHorizontal: 10,
@@ -154,14 +170,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   innerContainer: {
+     marginHorizontal: 30,
      alignItems: 'center',
      flexDirection:'column',
-     marginLeft: 45,
   },
   itemHeading: {
     fontWeight:'bold',
     fontSize: 18,
-    marginRight:22,
+  },
+  subtitle: {
+    fontWeight:'bold',
+    fontSize: 14,
   },
   formContainer: {
     flex: 1,
