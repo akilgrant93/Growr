@@ -1,123 +1,107 @@
-import React, { useEffect, useState } from 'react'
-import { Agenda } from 'react-native-calendars';
-import { Text, StyleSheet, View } from 'react-native';
-import { firebase } from '../config'
+import { StatusBar } from 'expo-status-bar';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import CalendarPicker from 'react-native-calendar-picker';
+import * as Calendar from "expo-calendar";
 
-const timeToString = (time) => {
-    const date = new Date(time);
-    return date.toISOString().split('T')[0];
+async function getDefaultCalendarSource() {
+  const calendars = await Calendar.getCalendarsAsync(
+    Calendar.EntityTypes.EVENT
+  );
+  const defaultCalendars = calendars.filter(
+    (each) => each.source.name === 'Default'
+  );
+  return defaultCalendars.length
+    ? defaultCalendars[0].source
+    : calendars[0].source;
 }
 
-export default function UserCalendar() {
-  const [items, setItems] = useState({});
-  const [notifications, setNotifications] = useState([])
+async function createCalendar() {
+  const defaultCalendarSource =
+    Platform.OS === 'ios'
+      ? await getDefaultCalendarSource()
+      : { isLocalAccount: true, name: 'Expo Calendar' };
+  const newCalendarID = await Calendar.createCalendarAsync({
+    title: 'Expo Calendar',
+    color: 'blue',
+    entityType: Calendar.EntityTypes.EVENT,
+    sourceId: defaultCalendarSource.id,
+    source: defaultCalendarSource,
+    name: 'internalCalendarName',
+    ownerAccount: 'personal',
+    accessLevel: Calendar.CalendarAccessLevel.OWNER,
+  });
+  console.log(`Your new calendar ID is: ${newCalendarID}`);
+  return newCalendarID;
+}
 
-  // useEffect(() => {
-  //     let response = null
+const MyCalendar = () => {
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [friendNameText, setFriendNameText] = useState("");
 
-  //     const calendarRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('calendar')
+  const startDate = selectedStartDate
+    ? selectedStartDate.format('YYYY-MM-DD').toString()
+    : '';
 
-  //     calendarRef
-  //     .orderBy('intialized','desc')
-  //     .onSnapshot(
-  //       querySnapshot => {
-  //         const plantNotifs = []
-  //         querySnapshot.forEach((doc) => {
-  //           plantNotifs.push({
-  //             //needs data
+    const addNewEvent = async () => {
+      try {
+        const calendarId = await createCalendar();
 
-  //           })
-  //         })
-  //         setNotifications(plantNotifs)
-  //       }
-  //     )
-
-
-  //     const mappedData = notifications.map((post, index) => {
-  //       const date = timeToString(post[1].initialized)
-  //       return {
-  //         ...post,
-  //         date: date
-  //       };
-  //     });
-
-  //     const reduced = mappedData.reduce(
-  //       (acc, currentItem) => {
-  //         const {date, ...coolItem} = currentItem;
-  //         if(acc[date] === undefined){
-  //           acc[date] = [coolItem];
-  //         } else {
-  //           acc[date] = [...acc[date], coolItem]
-  //         }
-  //         return acc;
-  //       },
-  //       {},
-  //     );
-  //     setItems(reduced);
-
-  //     console.log('ITEMS REDUCED REDUCED',items )
-  // }, []);
-
-
-  const loadItems = (day) => {
-    setTimeout(() => {
-        for (let i = -15; i < 85; i++) {
-            const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-            const strTime = timeToString(time);
-            if (!items[strTime]) {
-                items[strTime] = [];
-                const numItems = Math.floor(Math.random() * 3 + 1);
-                for (let j = 0; j < numItems; j++) {
-                    items[strTime].push({
-                        name: 'Item for ' + strTime + ' #' + j,
-                        height: Math.max(10, Math.floor(Math.random() * 150)),
-                        day: strTime
-                    });
-                }
-            }
-        }
-        const newItems = {};
-        Object.keys(items).forEach(key => {
-            newItems[key] = items[key];
+        const res = await Calendar.createEventAsync(calendarId, {
+          endDate: getAppointementDate(startDate),
+          startDate: getAppointementDate(startDate),
+          title: 'Happy Birthday buddy ' + friendNameText,
         });
-        setItems(newItems);
-    }, 1000);
-}
+        Alert.alert('Event Created!');
+      } catch (e) {
+        console.log(e);
+      }
+    };
 
-  const renderItem = (item) => {
-    console.log(item)
-    return (
-      <View>
-        <Text>{item.name}</Text>
-      </View>
-    );
-  };
+    useEffect(() => {
+      (async () => {
+        const { status } = await Calendar.requestCalendarPermissionsAsync();
+        if (status === 'granted') {
+          const calendars = await Calendar.getCalendarsAsync(
+            Calendar.EntityTypes.EVENT
+          );
+          console.log('Here are all your calendars:');
+          console.log({ calendars });
+        }
+      })();
+    }, []);
 
   return (
-    <View style={styles.safe}>
-                  <Agenda
-                  items={items}
-                  loadItemsForMonth={loadItems}
-                  selected={'2022-07-07'}
-                  refreshControl={null}
-                  showClosingKnob={true}
-                  refreshing={false}
-                  renderItem={renderItem}
-                  />
+    <View style={styles.container}>
+      <StatusBar style="auto" />
+      <TextInput
+        onChangeText={setFriendNameText}
+        value={friendNameText}
+        placeholder="Enter the name of your friend"
+        style={styles.input}
+      />
+      <CalendarPicker onDateChange={setSelectedStartDate} />
+      <Text style={styles.dateText}>Birthday: {startDate}</Text>
+      <Button title={"Add to calendar"} onPress={addNewEvent} />
     </View>
-  );
-};
+  )
+}
+
+export default MyCalendar
 
 const styles = StyleSheet.create({
-  safe: {
+  container: {
     flex: 1,
-  },
-  itemContainer: {
-    backgroundColor: 'white',
-    margin: 5,
-    borderRadius: 15,
-    justifyContent: 'center',
+    backgroundColor: '#fff',
     alignItems: 'center',
-    flex: 1,
+    justifyContent: 'center',
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+  },
+  dateText: {
+    margin: 16,
   },
 });

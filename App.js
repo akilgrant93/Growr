@@ -13,7 +13,7 @@ import Dashboard from "./src/Dashboard";
 import Header from "./src/Header";
 import Settings from "./src/Settings";
 // import Weather from "./src/Weather";
-import Calendar from "./src/Calendar";
+import MyCalendar from "./src/Calendar";
 import PostPlant from "./src/PostPlant";
 import PostModal from "./src/PostModal";
 
@@ -25,7 +25,7 @@ function Home() {
     <Tab.Navigator>
       <Tab.Screen name="Dashboard" component={Dashboard} />
       <Tab.Screen name="Add Plant" component={PostPlant} />
-      <Tab.Screen name="Calendar" component={Calendar} />
+      <Tab.Screen name="Calendar" component={MyCalendar} />
       <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   );
