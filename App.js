@@ -13,7 +13,7 @@ import Dashboard from "./src/Dashboard";
 import Header from "./src/Header";
 import Settings from "./src/Settings";
 // import Weather from "./src/Weather";
-import MyCalendar from "./src/Calendar";
+import MyCalendar from "./src/Calendar2";
 import PostPlant from "./src/PostPlant";
 import PostModal from "./src/PostModal";
 
