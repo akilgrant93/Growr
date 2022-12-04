@@ -16,10 +16,10 @@ async function createCalendar() {
   const defaultCalendarSource =
     Platform.OS === 'ios'
       ? await getDefaultCalendarSource()
-      : { isLocalAccount: true, name: 'Expo Calendar' };
+      : { isLocalAccount: true, name: 'Growr Plant Calendar' };
 
   const newCalendarID = await Calendar.createCalendarAsync({
-    title: 'Expo Calendar',
+    title: 'Growr Plant Calendar',
     color: 'blue',
     entityType: Calendar.EntityTypes.EVENT,
     sourceId: defaultCalendarSource.id,
@@ -36,14 +36,34 @@ async function createCalendar() {
 const MyCalendar = () => {
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [friendNameText, setFriendNameText] = useState("");
-
+  const [calendars, setCalendars]= useState([])
   const startDate = selectedStartDate ? selectedStartDate.format('YYYY-MM-DD').toString() : '';
 
   const addNewEvent = async () => {
     try {
-      const calendarId = await createCalendar();
+
+      let needsInit = true
+      let calendarId
+
+      for(let i = 0; i < calendars.length; i++){
+        // console.log(Object.values(calendars[i])[4])
+        if(Object.values(calendars[i])[4] === 'Growr Plant Calendar'){
+          needsInit = false
+          calendarId = calendars[i].id
+        }
+      }
+
+      if(needsInit === true){
+        calendarId = await createCalendar();
+      }
+
+      // console.log('LOGGING',typeof calendars[0].id)
+      // if(calendars.includes(Object.entries())){
+        // let calendarId = await createCalendar();
+      // }
 
       const res = await Calendar.createEventAsync(calendarId, {
+        //date object will need to be configured for the selected date obj
         endDate: new Date(),
         startDate: new Date(),
         title: 'Happy Birthday buddy'
@@ -58,14 +78,18 @@ const MyCalendar = () => {
     (async () => {
       const { status } = await Calendar.requestCalendarPermissionsAsync();
       if (status === 'granted') {
-        const calendars = await Calendar.getCalendarsAsync(
+        const userCalendars = await Calendar.getCalendarsAsync(
           Calendar.EntityTypes.EVENT
         );
-
+        setCalendars(userCalendars)
         console.log('Here are all your calendars:');
         // console.log(calendars);
-        calendars.forEach((calendar)=>{
+        userCalendars.forEach((calendar)=>{
           console.log(calendar.title)
+          console.log(calendar.id)
+          // if(calendar.title==='Expo Calendar'){
+          //   Calendar.deleteCalendarAsync(calendar.id)
+          // }
         })
       }
     })();
