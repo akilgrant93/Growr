@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, SafeAreaView, FlatList, View, Platform } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native'
 import { Pressable } from 'react-native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import moment from 'moment';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -25,16 +24,6 @@ const Dashboard = () => {
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
-
-  // change the users current password
-  const changePassword = () => {
-    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.uid)
-    .then(() => {
-      alert('Password reset email sent')
-    }).catch((error) => {
-      alert(error)
-    })
-  }
 
   useEffect(()=> {
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).get()
@@ -72,11 +61,7 @@ const Dashboard = () => {
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
-      // need to get the plant data in the body of the notification and feed that to the firestore function that will change the isThirsty value
       const plantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(notification.request.content.data.firestoreplantID)
-
-      console.log('notification recieived!', notification.request.content.data)
-
       plantRef.get().then(async (plant) => {
         if (plant.exists) {
           await plantRef.update({isThirsty: true});
@@ -148,24 +133,6 @@ const Dashboard = () => {
           </View>
         )}
       />
-
-      <TouchableOpacity
-        onPress={() => {changePassword()}}
-        style={styles.button}
-      >
-        <Text style={{fontWeight: 'bold', fontSize:20}}>
-            Change Password
-        </Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        onPress={() => {firebase.auth().signOut()}}
-        style={styles.button}
-      >
-        <Text style={{fontWeight: 'bold', fontSize:20}}>
-            Sign out
-        </Text>
-      </TouchableOpacity>
     </SafeAreaView>
   )
 }
@@ -202,16 +169,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-end'
-  },
-  button: {
-    marginTop: 50,
-    height: 70,
-    width: 250,
-    backgroundColor: '#026efd',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    borderRadius: 50,
   },
   buttonText: {
     color: 'white',
