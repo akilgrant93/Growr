@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Pressable } from 'react-native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import moment from 'moment';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -71,6 +72,20 @@ const Dashboard = () => {
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
+      // need to get the plant data in the body of the notification and feed that to the firestore function that will change the isThirsty value
+      const plantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(notification.request.content.data.firestoreplantID)
+
+      console.log('notification recieived!', notification.request.content.data)
+
+      plantRef.get().then(async (plant) => {
+        if (plant.exists) {
+          await plantRef.update({isThirsty: true});
+        } else {
+            console.log("No such document!");
+        }
+    }).catch((error) => {
+       alert("Error getting document:", error);
+    });
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
@@ -92,7 +107,7 @@ const Dashboard = () => {
       alert('Deleted Successfully')
     })
     .catch( error =>{
-      alert('Error deleting the message')
+      alert('Error deleting the plant')
     })
   }
 
@@ -209,17 +224,6 @@ const styles = StyleSheet.create({
   },
 
 })
-
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: 'Here is the notification body',
-      data: { data: 'goes here' },
-    },
-    trigger: { seconds: 2 },
-  });
-}
 
 async function registerForPushNotificationsAsync() {
   let token;

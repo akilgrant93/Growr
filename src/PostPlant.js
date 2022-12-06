@@ -77,6 +77,7 @@ const PostPlant = ({route, navigation}) => {
       }
       setTableData([])
       await searchByName({search:value})
+      Keyboard.dismiss()
     }
 
     const cancelSearch = () => {

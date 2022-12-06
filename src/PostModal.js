@@ -4,6 +4,8 @@ import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
 import * as Notifications from 'expo-notifications';
+import * as Calendar from "expo-calendar";
+import moment from 'moment';
 
 const PostModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
@@ -15,6 +17,7 @@ const PostModal = ({route, navigation}) => {
   const [sliderValue, setSliderValue]= useState(0)
   const [slidingState, setSlidingState]= useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
+  const [calendars, setCalendars]= useState([])
 
   const diseasesObj = {
     rootRot:'Root Rot',
@@ -28,47 +31,10 @@ const PostModal = ({route, navigation}) => {
     caneBlight:'Cane Blight'
   }
 
-  //leave unfinished until we complete search function and modal page
+  //notification function
 
-  const resolveAfterTime = function(time, key) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        plantNeedsWaterNotif(key)
-      }, time * 1000);
-    });
-  }
-
-  //triggers with notification
-const plantNeedsWaterNotif = (key) => {
-    const uid=firebase.auth().currentUser.uid
-  //timestamp needs to be translated into real date for calendar functions
-    // return(dispatch) => {
-    //   firebase.database().ref(`/users/${uid}/plants/${key}`).update({isThirsty: true})
-    // }
-  }
-
-  const postPlant = async(plant, indoors, potted, hydroponic) => {
-
-
-    let indoorStatus = ''
-    let pottedStatus = ''
-    let hydroponicStatus = ''
+  const postPlant = (plant, indoors, potted, hydroponic) => {
     let succulent
-
-    if(indoors){
-      indoorStatus = "Indoor"
-    } else {
-      indoorStatus = "Outdoor"
-    }
-    if(potted){
-      pottedStatus = "Potted"
-    } else {
-      pottedStatus = "In-Ground"
-    }
-    if(hydroponic){
-      hydroponicStatus = 'Hydroponic'
-      pottedStatus = ''
-    }
 
     if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){
       succulent = true
@@ -77,12 +43,10 @@ const plantNeedsWaterNotif = (key) => {
     }
 
     let base = 7
-
     if(hydroponic){
       base = 14
     }
 
-    //
     if(succulent){
       //if indoors
       if(indoors){
@@ -107,7 +71,7 @@ const plantNeedsWaterNotif = (key) => {
       } else if (succulent && indoors) {
         base = 14
       //if outdoors and not succulent
-      } else if (!suculent && !indoors){
+      } else if (!succulent && !indoors){
         base = 3
       //if indoors not succulent
       } else {
@@ -117,66 +81,32 @@ const plantNeedsWaterNotif = (key) => {
 
     //if the common name is bugged
     if(typeof plant === 'string'){
-      let notificationID = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant}`,
-          body: 'Needs water.',
-        },
-        trigger: {
-          seconds: base,
-          repeats: false
-        }
-      })
-
       postUserPlant(
         plant,
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, notificationID, plant.firestoreID
+        succulent, '', base, sliderValue,plant.firestoreID
         )
-      resolveAfterTime(base);
       }
 
     //if theres a common name
     if(plant.commonName){
-      let notificationID = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.commonName}`,
-          body: 'Needs water.',
-        },
-        trigger: {
-          seconds: base,
-          repeats: false
-        }
-      })
       postUserPlant(
         plant.commonName,
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, notificationID, plant.firestoreID
+        succulent, '', base, sliderValue,plant.firestoreID
       )
-      resolveAfterTime(base);
     //otherwise refer to the scientific name
     } else if(!plant.commonName && typeof plant !== 'string') {
-      let notificationID = await Notifications.scheduleNotificationAsync({
-        content: {
-          title: `${indoorStatus} ${hydroponicStatus} ${pottedStatus} ${plant.scientificName}`,
-          body: 'Needs water.',
-        },
-        trigger: {
-          seconds: base,
-          repeats: false
-        }
-      })
       postUserPlant(
         plant.scientificName,
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, notificationID, notificationIDplant.firestoreID)
-      resolveAfterTime(base);
+        succulent, '', base, sliderValue,plant.firestoreID)
     }
     setIsPotted(false)
     setIsIndoors(false)
@@ -184,20 +114,88 @@ const plantNeedsWaterNotif = (key) => {
     // pass this from the postPlant component
     // setTableData(false)
     navigation.navigate('Dashboard')
-
-    console.log('TIME TILL WATERNOTIF ',base,' seconds')
   }
 
-   function postUserPlant(name, isPotted, isIndoors, isHydroponic, isSucculent, notes, notificationInterval, notificationId, firestoreID){
+   const postUserPlant = async(
+    name,
+    isPotted,
+    isIndoors,
+    isHydroponic,
+    isSucculent, notes, notificationInterval, lastWatered,firestoreID) => {
+
+    const one_day=1000*60*60*24;
+    const now = moment()
+    const lastWateringDate = now.clone().subtract(lastWatered, 'days')
+
+    let date1_ms = now.valueOf();
+    let date2_ms = lastWateringDate.clone().valueOf()
+
+    const difference_ms = date1_ms - date2_ms;
+    const difference_days = Math.round(difference_ms/one_day)
+
+    let isThirsty
+    let notificationID
+
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+    const newUserPlant = plantsRef.doc()
+    const newUserPlantID = newUserPlant.id
 
-     console.log('FIRESTORE ID FIRESTORE ID FIRESTORE ID',firestoreID)
+    const userCalendarRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('calendar')
+    const newUserCalendarEvent = userCalendarRef.doc()
+    const newUserCalendarEventID = newUserCalendarEvent.id
 
-     //will take a value 0-7 and calculate the isThirsty property of the newPlant variable accordingly
-     // const lastWatered = (days) => {}
+    //no notification immediate alert
+    if(difference_days >= notificationInterval){
+      isThirsty = true
+      notificationID = null
 
+    }
+    //notification with alert tied to notificationInterval
+    else {
+    const now = moment()
+    const lastWateringDate = now.clone().subtract(lastWatered, 'days')
+    const nextWateringDate = lastWateringDate.clone().add(notificationInterval, 'days')
+    let date1_ms = now.valueOf();
+    let date2_ms = nextWateringDate.valueOf()
 
-     //make an identically logica function here for calendar entry
+    const difference_ms = date2_ms - date1_ms;
+    const difference_days = Math.round(difference_ms/one_day)
+      isThirsty = false
+      notificationID = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${
+            isHydroponic
+            ? 'Hydroponic'
+            : isPotted
+            ? 'Potted'
+            : isIndoors
+            ? 'Indoor'
+            : 'Outdoor'} ${name}`,
+          body: 'Needs water.',
+          data: {
+            firestoreplantID: newUserPlantID,
+            firestoreCalendarID: newUserCalendarEventID
+            //needs firebase data
+          }
+        },
+        //will need to switch seconds to days
+        trigger: {
+          seconds: difference_days,
+          repeats: false
+        }
+      })
+    }
+     //make an identically logical function here for calendar entry
+     const eventData = {
+      notificationInterval,
+      name,
+      notes,
+      plantID:newUserPlantID
+     }
+    //  addNewEvent(eventData)
+    //  newUserCalendarEvent
+    //  .set(eventData)
+
       const today = firebase.firestore.FieldValue.serverTimestamp()
       const plantData = {
         name,
@@ -208,17 +206,22 @@ const plantNeedsWaterNotif = (key) => {
         isSucculent,
         firestoreID,
         notes,
-        notificationId,
-        notificationInterval
+        notificationID,
+        notificationInterval,
+        lastWatered:lastWatered.valueOf(),
+        isThirsty,
       }
-      plantsRef
-      .add(plantData)
+      newUserPlant
+      .set(plantData)
       .then(() => {
         setSliderValue(0)
         setIsHydroponic(false)
         setIsIndoors(false)
         setIsPotted(false)
         Keyboard.dismiss()
+        if(isThirsty){
+          alert(`Your ${name} needs water!`)
+        }
       })
       .catch((error) => {
         alert(error)
@@ -255,10 +258,80 @@ const toggleHydroponic = () => {
   }
 }
 
-  // useEffect(() => {
-  //   console.log('route params',route.params)
-  //   console.log('USER USER USER USER USER USER', user)
-  // }, [])
+//calendar functions
+//somehow make use of moment
+async function getDefaultCalendarSource() {
+  const defaultCalendar = await Calendar.getDefaultCalendarAsync(
+    Calendar.EntityTypes.EVENT
+  );
+  return defaultCalendar.source
+}
+
+async function createCalendar() {
+  const defaultCalendarSource =
+    Platform.OS === 'ios'
+      ? await getDefaultCalendarSource()
+      : { isLocalAccount: true, name: 'Growr Plant Calendar' };
+
+  const newCalendarID = await Calendar.createCalendarAsync({
+    title: 'Growr Plant Calendar',
+    color: 'blue',
+    entityType: Calendar.EntityTypes.EVENT,
+    sourceId: defaultCalendarSource.id,
+    source: defaultCalendarSource,
+    name: 'internalCalendarName',
+    ownerAccount: 'personal',
+    accessLevel: Calendar.CalendarAccessLevel.OWNER,
+  });
+
+  console.log(`Your new calendar ID is: ${newCalendarID}`);
+  return newCalendarID;
+}
+
+const addNewEvent = async (eventData) => {
+  try {
+
+    console.log(eventData)
+
+    let needsInit = true
+    let calendarId
+
+    for(let i = 0; i < calendars.length; i++){
+      if(Object.values(calendars[i])[4] === 'Growr Plant Calendar'){
+        needsInit = false
+        calendarId = calendars[i].id
+      }
+    }
+
+    if(needsInit === true){
+      calendarId = await createCalendar();
+    }
+
+    //this needs createReminderAsync
+    const res = await Calendar.createEventAsync(calendarId, {
+      //startDate and endDate are a reflection of lastWatered slider and potted/hydroponic/indoor status
+      endDate: new Date(),
+      startDate: new Date(),
+      title: `Water ${hydroponicstatus} ${name}`
+    });
+    alert('Reminder Created!');
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+
+useEffect(() => {
+  (async () => {
+    const { status } = await Calendar.requestCalendarPermissionsAsync();
+    if (status === 'granted') {
+      const userCalendars = await Calendar.getCalendarsAsync(
+        Calendar.EntityTypes.EVENT
+      );
+      setCalendars(userCalendars)
+    }
+  })();
+}, []);
 
   return (
     <View style={styles.container}>
@@ -302,9 +375,9 @@ const toggleHydroponic = () => {
         const formattedDiseaseName = diseasesObj[currDisease]
 
         if(currDiseaseStatus === 'Resistant'){
-          return <Text style={{paddingTop:1}}>•Resistant to {formattedDiseaseName}</Text>
+          return <Text key={idx} style={{paddingTop:1}}>•Resistant to {formattedDiseaseName}</Text>
         } else if (currDiseaseStatus === 'Susceptible'){
-          return <Text style={{paddingTop:1, color:'red'}}>•Susceptible to {formattedDiseaseName}</Text>
+          return <Text key={idx} style={{paddingTop:1, color:'red'}}>•Susceptible to {formattedDiseaseName}</Text>
         }
 
       })}
@@ -371,10 +444,10 @@ const toggleHydroponic = () => {
           minimumValue={0}
           value={0}
           onSlidingStart={value => setHoverValue(parseInt(value))}
-          onSlidingComplete={value => console.log(sliderValue)}
+          // onSlidingComplete={value => console.log(sliderValue)}
           step={1}
                 />
-
+                {/* needs to say "last resevior change" if hydroponic */}
         <Text style={{textAlign:'center'}}>Last watered {
           sliderValue === 0
           ? 'today'
@@ -391,7 +464,7 @@ const toggleHydroponic = () => {
           : 'over two weeks ago'
           }</Text>
 
-          {/* notes textbox field */}
+          {/* notes textInput */}
 
         <Pressable
           style={styles.postButton}

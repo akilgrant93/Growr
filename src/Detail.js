@@ -28,7 +28,7 @@ const Detail = ({route, navigation}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={{textAlign:'center'}}>{route.params.item.heading[0].toUpperCase()+route.params.item.heading.slice(1)}</Text>
+      {/* <Text style={{textAlign:'center'}}>{route.params.item.heading[0].toUpperCase()+route.params.item.heading.slice(1)}</Text> */}
       <TextInput
         style={styles.textField}
         onChangeText={onChangeHeadingText}
