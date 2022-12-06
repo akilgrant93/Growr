@@ -129,6 +129,7 @@ const PostModal = ({route, navigation}) => {
 
     let date1_ms = now.valueOf();
     let date2_ms = lastWateringDate.clone().valueOf()
+    const nextWateringDate = lastWateringDate.clone().add(notificationInterval, 'days')
 
     const difference_ms = date1_ms - date2_ms;
     const difference_days = Math.round(difference_ms/one_day)
@@ -152,9 +153,6 @@ const PostModal = ({route, navigation}) => {
     }
     //notification with alert tied to notificationInterval
     else {
-    const now = moment()
-    const lastWateringDate = now.clone().subtract(lastWatered, 'days')
-    const nextWateringDate = lastWateringDate.clone().add(notificationInterval, 'days')
     let date1_ms = now.valueOf();
     let date2_ms = nextWateringDate.valueOf()
 
@@ -175,7 +173,6 @@ const PostModal = ({route, navigation}) => {
           data: {
             firestoreplantID: newUserPlantID,
             firestoreCalendarID: newUserCalendarEventID
-            //needs firebase data
           }
         },
         //will need to switch seconds to days
@@ -186,15 +183,17 @@ const PostModal = ({route, navigation}) => {
       })
     }
      //make an identically logical function here for calendar entry
+
      const eventData = {
+      nextWateringDate:nextWateringDate.valueOf(),
       notificationInterval,
       name,
       notes,
       plantID:newUserPlantID
      }
     //  addNewEvent(eventData)
-    //  newUserCalendarEvent
-    //  .set(eventData)
+     newUserCalendarEvent
+     .set(eventData)
 
       const today = firebase.firestore.FieldValue.serverTimestamp()
       const plantData = {
