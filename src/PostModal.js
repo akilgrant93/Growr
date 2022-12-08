@@ -141,9 +141,9 @@ const PostModal = ({route, navigation}) => {
     const newUserPlant = plantsRef.doc()
     const newUserPlantID = newUserPlant.id
 
-    const userCalendarRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('calendar')
-    const newUserCalendarEvent = userCalendarRef.doc()
-    const newUserCalendarEventID = newUserCalendarEvent.id
+    const plantCalendarRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plantCalendars')
+    const newPlantCalendarEvent = plantCalendarRef.doc()
+    const newPlantCalendarEventID = newPlantCalendarEvent.id
 
     //no notification immediate alert
     if(difference_days >= notificationInterval){
@@ -172,7 +172,7 @@ const PostModal = ({route, navigation}) => {
           body: 'Needs water.',
           data: {
             firestoreplantID: newUserPlantID,
-            firestoreCalendarID: newUserCalendarEventID
+            firestoreCalendarID: newPlantCalendarEventID
           }
         },
         //will need to switch seconds to days
@@ -182,17 +182,18 @@ const PostModal = ({route, navigation}) => {
         }
       })
     }
-     //make an identically logical function here for calendar entry
 
      const eventData = {
+      wateringDates: [lastWateringDate.valueOf()],
       nextWateringDate:nextWateringDate.valueOf(),
       notificationInterval,
       name,
       notes,
-      plantID:newUserPlantID
+      plantID:newUserPlantID,
+      firestoreID
      }
     //  addNewEvent(eventData)
-     newUserCalendarEvent
+     newPlantCalendarEvent
      .set(eventData)
 
       const today = firebase.firestore.FieldValue.serverTimestamp()
@@ -258,7 +259,6 @@ const toggleHydroponic = () => {
 }
 
 //calendar functions
-//somehow make use of moment
 async function getDefaultCalendarSource() {
   const defaultCalendar = await Calendar.getDefaultCalendarAsync(
     Calendar.EntityTypes.EVENT
@@ -287,6 +287,7 @@ async function createCalendar() {
   return newCalendarID;
 }
 
+//fix asap
 const addNewEvent = async (eventData) => {
   try {
 
@@ -307,11 +308,13 @@ const addNewEvent = async (eventData) => {
     }
 
     //this needs createReminderAsync
+    //fed via eventData
     const res = await Calendar.createEventAsync(calendarId, {
       //startDate and endDate are a reflection of lastWatered slider and potted/hydroponic/indoor status
-      endDate: new Date(),
-      startDate: new Date(),
-      title: `Water ${hydroponicstatus} ${name}`
+      endDate: eventData.nextWateringDate,
+      startDate: eventData.nextWateringDate,
+      //conditional mirrors the notification ternary
+      title: `Water ${hydroponicstatus} ${plant}`
     });
     alert('Reminder Created!');
   } catch (e) {
