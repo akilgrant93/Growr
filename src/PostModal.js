@@ -125,12 +125,12 @@ const PostModal = ({route, navigation}) => {
 
     const one_day=1000*60*60*24;
     const now = moment()
-    const lastWateringDate = now.clone().subtract(lastWatered, 'days')
-
-    let date1_ms = now.valueOf();
-    let date2_ms = lastWateringDate.clone().valueOf()
+    const today = now.startOf('day')
+    const lastWateringDate = now.clone().subtract(lastWatered, 'days').startOf('day')
     const nextWateringDate = lastWateringDate.clone().add(notificationInterval, 'days')
 
+    let date1_ms = today.valueOf();
+    let date2_ms = lastWateringDate.clone().valueOf()
     const difference_ms = date1_ms - date2_ms;
     const difference_days = Math.round(difference_ms/one_day)
 
@@ -141,10 +141,6 @@ const PostModal = ({route, navigation}) => {
     const newUserPlant = plantsRef.doc()
     const newUserPlantID = newUserPlant.id
 
-    const plantCalendarRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plantCalendars')
-    const newPlantCalendarEvent = plantCalendarRef.doc()
-    const newPlantCalendarEventID = newPlantCalendarEvent.id
-
     //no notification immediate alert
     if(difference_days >= notificationInterval){
       isThirsty = true
@@ -153,7 +149,7 @@ const PostModal = ({route, navigation}) => {
     }
     //notification with alert tied to notificationInterval
     else {
-    let date1_ms = now.valueOf();
+    let date1_ms = today.valueOf();
     let date2_ms = nextWateringDate.valueOf()
 
     const difference_ms = date2_ms - date1_ms;
@@ -172,7 +168,6 @@ const PostModal = ({route, navigation}) => {
           body: 'Needs water.',
           data: {
             firestoreplantID: newUserPlantID,
-            firestoreCalendarID: newPlantCalendarEventID
           }
         },
         //will need to switch seconds to days
@@ -183,23 +178,18 @@ const PostModal = ({route, navigation}) => {
       })
     }
 
-     const eventData = {
-      wateringDates: [lastWateringDate.valueOf()],
-      nextWateringDate:nextWateringDate.valueOf(),
-      notificationInterval,
-      name,
-      notes,
-      plantID:newUserPlantID,
-      firestoreID
-     }
+    //  const eventData = {
+    //   wateringDates: [lastWateringDate.valueOf()],
+    //   nextWateringDate:nextWateringDate.valueOf(),
+    //   notificationInterval,
+    //   name,
+    //   notes,
+    //   plantID:newUserPlantID,
+    //   firestoreID
+    //  }
     //  addNewEvent(eventData)
-     newPlantCalendarEvent
-     .set(eventData)
-
-      const today = firebase.firestore.FieldValue.serverTimestamp()
       const plantData = {
         name,
-        initialized:today,
         isPotted,
         isIndoors,
         isHydroponic,
@@ -208,8 +198,16 @@ const PostModal = ({route, navigation}) => {
         notes,
         notificationID,
         notificationInterval,
-        lastWatered:lastWatered.valueOf(),
+        nextWateringDate:nextWateringDate.valueOf(),
+        lastWateringDate:lastWateringDate.valueOf(),
         isThirsty,
+        calendar:{
+          wateringDates: [lastWateringDate.valueOf()],
+          nextWateringDate:nextWateringDate.valueOf(),
+          notificationInterval,
+          name,
+          notes,
+         }
       }
       newUserPlant
       .set(plantData)
