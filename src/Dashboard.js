@@ -35,7 +35,7 @@ const Dashboard = () => {
       }
     })
     plantsRef
-    .orderBy('lastWateringDate', 'asc')
+    .orderBy('nextWateringDate', 'asc')
     .onSnapshot(
       querySnapshot => {
         const plants = []

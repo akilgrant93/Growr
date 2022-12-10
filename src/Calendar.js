@@ -10,7 +10,7 @@ const MyCalendar = () => {
   const [wateringDays, setWateringDays] = useState([])
   const [nextWateringDays, setNextWateringDays] = useState([])
   const [plants, setPlants] = useState([])
-
+  const [date, setDate] = useState(moment().startOf('day'))
   const [lastWateredData, setLastWateredData] = useState({})
   const [nextWateredData, setNextWateredData] = useState([])
   //this function will pull notification data from my backend - i need to be able to pass it more data.
@@ -19,42 +19,51 @@ const MyCalendar = () => {
     setNextWateredData({})
   }
 
-  const changeDate = (date) => {
+
+  const changeData = (date) => {
+    setDate(date)
     let nextWateringDaysInit = []
     let lastWateringDaysInit = []
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
     plantsRef
-    .orderBy('lastWateringDate', 'asc')
+    .orderBy('nextWateringDate', 'asc')
     .onSnapshot(
       querySnapshot => {
         querySnapshot.forEach((plant) => {
-          //watering dates check
-          // console.log('previous watering dates check',moment(date).startOf('day').valueOf() === plant.data().lastWateringDate)
-          if(moment(date).startOf('day').valueOf() === plant.data().lastWateringDate){
+          if(moment(date).startOf('day').valueOf() === plant.data().nextWateringDate){
+            nextWateringDaysInit.push(plant.data())
+          }
+          if(plant.data().wateringDates.includes(moment(date).startOf('day').valueOf())){
             lastWateringDaysInit.push(plant.data())
           }
-          // console.log('next watering date check',moment(date).startOf('day').valueOf() === moment(plant.data().nextWateringDate).valueOf())
-          // console.log('next watering date',moment(plant.data().nextWateringDate).valueOf())
         })
         setLastWateredData(lastWateringDaysInit)
-
+        setNextWateredData(nextWateringDaysInit)
       }
     )
   }
 
-
   useFocusEffect(
     React.useCallback(() => {
       const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+      let nextWateringDaysVisInit = []
+      let lastWateringDaysVisInit = []
       let wateringDaysInit = []
       let nextWateringDaysInit = []
       plantsRef
-      .orderBy('lastWateringDate','asc')
+      .orderBy('nextWateringDate','asc')
       .onSnapshot(
         querySnapshot => {
           querySnapshot.forEach((plant) => {
-            nextWateringDaysInit.push(moment(plant.data().calendar.nextWateringDate).startOf('day').toString())
-            wateringDaysInit.push(plant.data().calendar.wateringDates)
+            nextWateringDaysInit.push(moment(plant.data().nextWateringDate).startOf('day').toString())
+            wateringDaysInit.push(plant.data().wateringDates)
+
+            if(moment(date).startOf('day').valueOf() === plant.data().nextWateringDate){
+              nextWateringDaysVisInit.push(plant.data())
+            }
+            if(plant.data().wateringDates.includes(moment(date).startOf('day').valueOf())){
+              lastWateringDaysVisInit.push(plant.data())
+            }
           })
         setNextWateringDays(nextWateringDaysInit)
         let mergedArray = [];
@@ -67,49 +76,15 @@ const MyCalendar = () => {
         unproccessed.forEach(day => {
           daysRounded.push(moment(day).startOf('day').toString())
         })
+
+        setLastWateredData(lastWateringDaysVisInit)
+        setNextWateredData(nextWateringDaysVisInit)
         setWateringDays(daysRounded)
       }
     )
-    console.log('nextWateringDays',nextWateringDays)
-    // // 👇️ Display only time
-    // console.log(date.toLocaleTimeString('en-US')); // 👉️ "9:50:15 AM"
-    console.log('watering days',wateringDays)
-    console.log('lastWateredData ',lastWateredData)
     }, [])
   );
 
-
-  useEffect(()=>{
-    // const plantCalendarsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plantCalendars')
-    // let wateringDaysInit = []
-    // let nextWateringDaysInit = []
-    // plantCalendarsRef
-    // .orderBy('nextWateringDate','asc')
-    // .onSnapshot(
-    //   querySnapshot => {
-    //     querySnapshot.forEach((plant) => {
-    //       nextWateringDaysInit.push(moment(plant.data().nextWateringDate).startOf('day').toString())
-    //       wateringDaysInit.push(plant.data().wateringDates)
-    //     })
-    //     setNextWateringDays(nextWateringDaysInit)
-    //     let mergedArray = [];
-    //     wateringDaysInit.forEach(wateringDaysArray => {
-    //       mergedArray = [...mergedArray, ...wateringDaysArray]
-    //     })
-
-    //     let daysRounded = []
-    //     const unproccessed = [...new Set([...mergedArray])]
-    //     unproccessed.forEach(day => {
-    //       daysRounded.push(moment(day).startOf('day').toString())
-    //     })
-    //     setWateringDays(daysRounded)
-    //   }
-    // )
-    // console.log('nextWateringDays',nextWateringDays)
-    // // // 👇️ Display only time
-    // // console.log(date.toLocaleTimeString('en-US')); // 👉️ "9:50:15 AM"
-    // console.log('watering days',wateringDays)
-  },[])
 
 const customDatesStylesCallback = date => {
   switch(date) {
@@ -140,19 +115,24 @@ const customDatesStylesCallback = date => {
 
   return (
     <View style={{alignItems:'center', marginTop: '3%'}}>
-      <CalendarPicker onDateChange={changeDate}
+      <CalendarPicker onDateChange={changeData}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
       <StatusBar style="auto" />
       <View style={{marginTop: '3%'}}>
+      <Text style={{alignSelf:'center', fontSize: 16, fontWeight:'600'}}>
+        {moment(date).format("dddd, MMMM Do YYYY")}
+      </Text>
+        {/* need to check on inner conditional tomorrow */}
+      {!lastWateredData.length && !nextWateredData.length ? <Text>No plants need water or have been watered on {moment(date).startOf().valueOf() === moment().startOf().valueOf() ? 'today' : 'this day'}</Text> : ''}
       <View style={{width: '75%'}}>
       {nextWateredData.length ? nextWateredData.map((dateInfo, idx) => {
-        return <Text style={{marginTop: '2%'}} key={idx}>{dateInfo.name} needs water.</Text>
+        return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} needs water.</Text>
       }) : ''}
       </View>
       <View style={{width: '75%'}}>
+
       {lastWateredData.length ? lastWateredData.map((dateInfo, idx) => {
-        console.log(dateInfo.name)
-        return <Text style={{marginTop: '2%'}} key={idx}>{dateInfo.name} last watered on {moment(dateInfo.lastWateringDate).format("dddd, MMMM Do YYYY")}</Text>
+        return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} was watered</Text>
       }) : ''}
       </View>
       </View>
