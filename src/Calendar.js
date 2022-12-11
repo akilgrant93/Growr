@@ -123,7 +123,10 @@ const customDatesStylesCallback = date => {
         {moment(date).format("dddd, MMMM Do YYYY")}
       </Text>
         {/* need to check on inner conditional tomorrow */}
-      {!lastWateredData.length && !nextWateredData.length ? <Text>No plants need water or have been watered on {moment(date).startOf().valueOf() === moment().startOf().valueOf() ? 'today' : 'this day'}</Text> : ''}
+      <View style={{width: '75%', marginTop: '2%'}}>
+      {!lastWateredData.length && !nextWateredData.length ?
+      <Text>No plants need water or have been watered on {moment(date).startOf().valueOf() === moment().startOf().valueOf() ? 'today' : 'this day'}</Text> : ''}
+      </View>
       <View style={{width: '75%'}}>
       {nextWateredData.length ? nextWateredData.map((dateInfo, idx) => {
         return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} needs water.</Text>

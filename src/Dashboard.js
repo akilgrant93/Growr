@@ -102,12 +102,12 @@ const Dashboard = () => {
 
       <FlatList
         data={plants}
-        numColumns={1}
+        numColumns={2}
         renderItem={({item}) => (
-          <View>
+          <View style={{width:'50%'}}>
             <Pressable
               style={styles.container}
-              onPress={() => navigation.navigate('Detail', {item})}
+              onPress={() => navigation.navigate('UpdateModal', {item})}
             >
               <FontAwesome
                 name='trash-o'
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   },
   itemHeading: {
     fontWeight:'bold',
-    fontSize: 18,
+    fontSize: 14,
   },
   subtitle: {
     fontWeight:'bold',

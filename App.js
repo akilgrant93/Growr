@@ -8,7 +8,6 @@ import { firebase } from './config'
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
-import Detail from "./src/Detail";
 import Dashboard from "./src/Dashboard";
 import Header from "./src/Header";
 import Settings from "./src/Settings";
@@ -16,6 +15,7 @@ import Settings from "./src/Settings";
 import MyCalendar from "./src/Calendar";
 import PostPlant from "./src/PostPlant";
 import PostModal from "./src/PostModal";
+import UpdateModal from './src/UpdateModal'
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -97,8 +97,8 @@ function App(){
           presentation: 'modal',
           headerShown:false  }}>
         <Stack.Screen
-        name="Detail"
-        component={Detail}
+        name="UpdateModal"
+        component={UpdateModal}
         />
         <Stack.Screen
         name="PostPlant"
