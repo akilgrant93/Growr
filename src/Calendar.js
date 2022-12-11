@@ -41,6 +41,10 @@ const MyCalendar = () => {
         setNextWateredData(nextWateringDaysInit)
       }
     )
+    console.log(moment(date).startOf().valueOf() === moment().startOf().valueOf())
+    console.log(moment(date).startOf('day').valueOf())
+    console.log(moment().startOf('day').valueOf())
+    console.log('??????????')
   }
 
   useFocusEffect(
@@ -125,7 +129,7 @@ const customDatesStylesCallback = date => {
         {/* need to check on inner conditional tomorrow */}
       <View style={{width: '75%', marginTop: '2%'}}>
       {!lastWateredData.length && !nextWateredData.length ?
-      <Text>No plants need water or have been watered on {moment(date).startOf().valueOf() === moment().startOf().valueOf() ? 'today' : 'this day'}</Text> : ''}
+      <Text>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text> : ''}
       </View>
       <View style={{width: '75%'}}>
       {nextWateredData.length ? nextWateredData.map((dateInfo, idx) => {
