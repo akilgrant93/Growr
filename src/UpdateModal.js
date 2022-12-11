@@ -6,6 +6,8 @@ import { firebase } from '../config'
 import * as Notifications from 'expo-notifications';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
+import { useFocusEffect } from '@react-navigation/native';
+import { doc, getDoc } from "firebase/firestore";
 
 const UpdateModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
@@ -110,8 +112,6 @@ const UpdateModal = ({route, navigation}) => {
     setIsPotted(false)
     setIsIndoors(false)
     setIsHydroponic(false)
-    // pass this from the postPlant component
-    // setTableData(false)
     navigation.navigate('Dashboard')
   }
 
@@ -321,7 +321,12 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
-  (async () => {
+
+}, []);
+
+useFocusEffect(
+  React.useCallback(() => {
+      (async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
       const userCalendars = await Calendar.getCalendarsAsync(
@@ -329,12 +334,21 @@ useEffect(() => {
       );
       setCalendars(userCalendars)
     }
-    const plantRef = await firebase.firestore().collection('plants').doc(route.params.item.firestoreID).get()
-    setPlant(plantRef.data())
-    console.log(plantRef.data().tags)
-    console.log(plant)
+    const plantRef = firebase.firestore().collection('plants').doc(route.params.item.firestoreID)
+
+    plantRef.get().then((doc) => {
+      if (doc.exists) {
+          setPlant(doc.data())
+      } else {
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
+      }
+  }).catch((error) => {
+      console.log("Error getting document:", error);
+  });
   })();
-}, []);
+  }, [])
+);
 
   return (
     <View style={styles.container}>
@@ -358,7 +372,7 @@ useEffect(() => {
       {/* medicinalUse icon ternary */}
 
       {/* tag map ternary needs flexwrap*/}
-      {plant.tags.length > 0
+      {plant.tags
       ?<View style={styles.tagBox}>
        {plant.tags.map((tag, idx) => {
        return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
@@ -367,7 +381,7 @@ useEffect(() => {
       : ''}
 
       {/* disease map ternary needs restyle and formatting to be text based*/}
-      {plant.diseases.length > 0
+      {plant.diseases
       ?
       <View style={{alignItems:'center'}}>
       <View style={styles.diseaseText}>
@@ -412,13 +426,13 @@ useEffect(() => {
         textContainerStyle={{marginLeft: 5}}
         disableBuiltInState
         textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={plant.tags.includes('Cactus') || plant.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
+        fillColor={plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent')?"#E0E0E0":"#004d00":"#E0E0E0"}
         unfillColor="#FFFFFF"
         text="Hydroponic"
-        bounceEffectIn={plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ? 1: 0.8}
-        iconStyle={plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        bounceEffectIn={plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ? 1: 0.8: 1}
+        iconStyle={plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ?{ borderColor: "#E0E0E0"}:{ borderColor: "#004d00"}:{ borderColor: "#E0E0E0"}}
         innerIconStyle={{ borderWidth: 2 }}
-        onPress = {plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ? '' :toggleHydroponic}
+        onPress = {plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ? '' :toggleHydroponic:''}
         isChecked = {isHydroponic}/>
         <BouncyCheckbox
         size={20}
@@ -443,7 +457,9 @@ useEffect(() => {
           style={{marginTop: 15,width:'75%', alignSelf:'center'}}
           onValueChange={value => setSliderValue(parseInt(value))}
           minimumTrackTintColor={'#004d00'}
-          maximumValue={plant.tags.includes('Cactus') || plant.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+          maximumValue={
+            plant.tags
+            ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') || isHydroponic ? 15 : 8 : 8}
           minimumValue={0}
           value={0}
           onSlidingStart={value => setHoverValue(parseInt(value))}
@@ -473,7 +489,7 @@ useEffect(() => {
           style={styles.postButton}
           onPress={() => {updatePlant('plant', isIndoors, isPotted, isHydroponic)}}
         >
-        <Text>POST PLANT</Text>
+        <Text>UPDATE PLANT</Text>
       </Pressable>
     </View>
   )
