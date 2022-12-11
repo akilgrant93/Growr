@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Pressable } from 'react-native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import Weather from './Weather'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -17,11 +18,12 @@ Notifications.setNotificationHandler({
 
 const Dashboard = () => {
   const [name, setName] = useState('')
-  const [ plants, setPlants] = useState([])
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-  const navigation = useNavigation( )
+  const [plants, setPlants] = useState([])
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
+  const [isLoading, setIsLoading] = useState(true)
+  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+  const navigation = useNavigation( )
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -98,8 +100,6 @@ const Dashboard = () => {
 
   return (
     <SafeAreaView style={styles.formContainer}>
-      <Text>Your expo push token: {expoPushToken}</Text>
-
       <FlatList
         data={plants}
         numColumns={2}
@@ -133,6 +133,11 @@ const Dashboard = () => {
           </View>
         )}
       />
+      {/* {isLoading
+      ? <Text>Fetching The Weather</Text>
+      : <View> */}
+          <Weather />
+        {/* </View>} */}
     </SafeAreaView>
   )
 }

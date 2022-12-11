@@ -41,10 +41,6 @@ const MyCalendar = () => {
         setNextWateredData(nextWateringDaysInit)
       }
     )
-    console.log(moment(date).startOf().valueOf() === moment().startOf().valueOf())
-    console.log(moment(date).startOf('day').valueOf())
-    console.log(moment().startOf('day').valueOf())
-    console.log('??????????')
   }
 
   useFocusEffect(
