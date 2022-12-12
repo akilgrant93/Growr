@@ -45,6 +45,7 @@ const MyCalendar = () => {
 
   useFocusEffect(
     React.useCallback(() => {
+      console.log('here')
       const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
       let nextWateringDaysVisInit = []
       let lastWateringDaysVisInit = []
@@ -58,10 +59,13 @@ const MyCalendar = () => {
             nextWateringDaysInit.push(moment(plant.data().nextWateringDate).startOf('day').toString())
             wateringDaysInit.push(plant.data().wateringDates)
 
-            if(moment(date).startOf('day').valueOf() === plant.data().nextWateringDate){
+            console.log(moment().startOf('day').valueOf())
+            if(moment().startOf('day').valueOf() === plant.data().nextWateringDate){
               nextWateringDaysVisInit.push(plant.data())
             }
-            if(plant.data().wateringDates.includes(moment(date).startOf('day').valueOf())){
+
+            console.log('plant.data()',plant.data())
+            if(plant.data().wateringDates.includes(moment().startOf('day').valueOf())){
               lastWateringDaysVisInit.push(plant.data())
             }
           })

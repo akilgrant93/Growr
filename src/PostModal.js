@@ -201,13 +201,7 @@ const PostModal = ({route, navigation}) => {
         nextWateringDate:nextWateringDate.valueOf(),
         lastWateringDate:lastWateringDate.valueOf(),
         isThirsty,
-        calendar:{
-          wateringDates: [lastWateringDate.valueOf()],
-          nextWateringDate:nextWateringDate.valueOf(),
-          notificationInterval,
-          name,
-          notes,
-         }
+        wateringDates: [lastWateringDate.valueOf()],
       }
       newUserPlant
       .set(plantData)

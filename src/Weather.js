@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import * as Location from 'expo-location';
 import WeatherInfo from './WeatherInfo';
+import { ArrowUpRightIcon } from "react-native-heroicons/solid";
 
 const api_key = 'a3999e97ddb681be056baca3b261d939'
 
@@ -49,9 +50,18 @@ const Weather = () => {
 
   if(!loaded){
     return (
-      <View style={styles.activityContainer}>
+      <View style={styles.container}>
         {/* like any splash screen you will need to add some of the UI here as a "preload" fake */}
-        <ActivityIndicator size='large' color="green"/>
+        <View style={styles.header}>
+        <View style={{width: '80%', alignItems:'center'}}>
+          <Text style={styles.headerTitle}>Weather</Text>
+        </View>
+        {/*triggers the weather panel expansion */}
+      <ArrowUpRightIcon size={16} style={{color:'white',}}/>
+      </View>
+        <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
+          <ActivityIndicator size='large' color="green"/>
+        </View>
       </View>
     )
   }
@@ -59,7 +69,11 @@ const Weather = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <Text style={styles.headerTitle}>Weather</Text>
+        <View style={{width: '80%', alignItems:'center'}}>
+          <Text style={styles.headerTitle}>Weather</Text>
+        </View>
+        {/*triggers the weather panel expansion */}
+      <ArrowUpRightIcon size={16} style={{color:'white',}}/>
       </View>
       <WeatherInfo weatherData={weatherData}/>
     </View>
@@ -74,27 +88,34 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
     overflow: 'hidden',
     width: '50%',
-    backgroundColor: '#fff',
+    backgroundColor: '#E4F1E4',
+    borderTopWidth: 1,
+    borderRightWidth: 3,
+    borderRightColor: '#034732',
+    borderTopColor: '#034732',
     alignSelf: 'flex-start',
     alignItems: 'center',
   },
   activityContainer: {
     flex: 1,
-    width: '100%',
+    width: '50%',
     backgroundColor: '#fff',
+    alignSelf: 'flex-start',
     alignItems: 'center',
     justifyContent: 'center',
   },
   header: {
     alignItems:'center',
-    backgroundColor:'#c5d2ef',
+    backgroundColor:'#034732',
     width: '100%',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
-  headerTitle: {
+    headerTitle: {
+    color: 'white',
     paddingVertical: 10,
-    fontSize: 20,
-    fontWeight: 'bold'
+    fontSize: 15,
+    fontWeight: '600'
   },
 
 })

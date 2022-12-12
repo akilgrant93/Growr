@@ -109,15 +109,23 @@ const Dashboard = () => {
               style={styles.container}
               onPress={() => navigation.navigate('UpdateModal', {item})}
             >
+              <View style={{flexDirection: 'row'}}>
+              <View style={{backgroundColor:'#034732', height: 90, width: 40, justifyContent:'center'}}
+              onPress={() => deletePlant(item)}
+              >
               <FontAwesome
                 name='trash-o'
-                 color='red'
+                 color='white'
+                 style={styles.deleteIcon}
                  onPress={() => deletePlant(item)}
-                 style={styles.plantIcon}
               />
+              </View>
               <View style={styles.innerContainer}>
                 <Text style={styles.itemHeading}>
-                  {item.name}
+
+                  {item.name.split(' ').map((word) => {
+                    return word[0].toUpperCase() + word.substr(1);
+                  }).join(' ')}
                 </Text>
                 <Text style={styles.subtitle}>
                   {item.isPotted || item.isIndoors ? 'Potted' : ''}
@@ -128,6 +136,7 @@ const Dashboard = () => {
                 <Text style={styles.subtitle}>
                   {item.isHydroponic ? 'Hydroponic' : ''}
                 </Text>
+              </View>
               </View>
             </Pressable>
           </View>
@@ -146,43 +155,41 @@ export default Dashboard
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#e5e5e5',
-    padding: 5,
+    backgroundColor: '#E4F1E4',
     borderRadius: 15,
     margin: 5,
     marginHorizontal: 10,
     flexDirection: 'row',
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    overflow: 'hidden'
   },
   innerContainer: {
-     marginHorizontal: 30,
      alignItems: 'center',
      flexDirection:'column',
+     width: 100,
+     marginLeft: 10,
   },
   itemHeading: {
-    fontWeight:'bold',
     fontSize: 14,
+    paddingTop: 10
   },
   subtitle: {
-    fontWeight:'bold',
     fontSize: 14,
   },
   formContainer: {
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-end'
+    justifyContent: 'flex-end',
+    backgroundColor: '#C9E4CA',
   },
   buttonText: {
     color: 'white',
     fontSize: 20,
   },
-  todoIcon: {
-    marginTop: 5,
-    fontSize: 20,
-    marginLeft: 14
+  deleteIcon: {
+    fontSize: 14,
+    alignSelf:'center'
   },
 
 })

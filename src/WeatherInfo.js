@@ -52,9 +52,9 @@ const styles = StyleSheet.create({
   title: {
     width: '100%',
     textAlign:'center',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight:'bold',
-    color: '#e96e50',
+    color: '#034732',
     marginTop: 10,
   },
   largeIcon: {
