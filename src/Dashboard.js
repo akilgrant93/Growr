@@ -8,6 +8,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
 import NextWateringDate from './NextWateringDate'
+import Svg from 'react-native-svg';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -22,7 +23,6 @@ const Dashboard = () => {
   const [plants, setPlants] = useState([])
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
-  const [isLoading, setIsLoading] = useState(true)
   const [nextWateringDays, setNextWateringDays] = useState([])
   const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
   const navigation = useNavigation( )
@@ -105,13 +105,16 @@ const Dashboard = () => {
   return (
     <SafeAreaView style={styles.formContainer}>
       <FlatList
-        style={{height: '40%'}}
+        style={{height: '40%',}}
         data={plants}
         numColumns={2}
-        renderItem={({item}) => (
+        renderItem={({item, index}) => (
           <View style={{width:'50%'}}>
             <Pressable
-              style={styles.container}
+              style={
+                index === plants.length-1 || index === plants.length-2
+                ? styles.container2
+                : styles.container}
               onPress={() => navigation.navigate('UpdateModal', {item})}
             >
               <View style={{flexDirection: 'row'}}>
@@ -150,7 +153,11 @@ const Dashboard = () => {
       {/* {isLoading
       ? <Text>Fetching The Weather</Text>
       : <View> */}
-      <View style={{flex: 1, width: '100%', flexDirection:'row'}}>
+      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+    elevation: 5}}>
           <Weather />
           <NextWateringDate nextWateringDays={nextWateringDays}/>
       </View>
@@ -166,7 +173,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#E4F1E4',
     borderRadius: 15,
     margin: 5,
-    marginHorizontal: 10,
+    flexDirection: 'row',
+    flex: 1,
+    overflow: 'hidden'
+  },
+  container2: {
+    backgroundColor: '#E4F1E4',
+    borderRadius: 15,
+    marginTop: 5,
+    marginLeft: 5,
+    marginRight: 5,
+    marginBottom: 10,
     flexDirection: 'row',
     flex: 1,
     overflow: 'hidden'

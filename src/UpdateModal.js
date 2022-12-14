@@ -112,7 +112,7 @@ const UpdateModal = ({route, navigation}) => {
     setIsPotted(false)
     setIsIndoors(false)
     setIsHydroponic(false)
-    navigation.navigate('Dashboard')
+    navigation.navigate('My Garden')
   }
 
    const postUserPlant = async(

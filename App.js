@@ -3,8 +3,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from "react";
 import { firebase } from './config'
-
-
+import { FontAwesome } from '@expo/vector-icons'
+import { CalendarDaysIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
@@ -23,10 +23,50 @@ const Tab = createBottomTabNavigator();
 function Home() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="My Garden" component={Dashboard} />
-      <Tab.Screen name="Add Plant" component={PostPlant} />
-      <Tab.Screen name="Calendar" component={MyCalendar} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen
+      name="My Garden"
+      component={Dashboard}
+      options={({route}) => ({
+        tabBarIcon: ({color, size}) => (
+          <FontAwesome
+                name='pagelines'
+                 color='#034732'
+                 size={size}
+              />
+        ),
+      })}
+      />
+      <Tab.Screen
+      name="Add Plant"
+      component={PostPlant}
+      options={({route}) => ({
+        tabBarIcon: ({color, size}) => (
+          <PlusCircleIcon size={size} style={{color:'#034732'}}/>
+        ),
+      })}
+      />
+      <Tab.Screen
+      name="Calendar"
+      component={MyCalendar}
+      options={({route}) => ({
+        tabBarIcon: ({color, size}) => (
+          <CalendarDaysIcon size={size} style={{color:'#034732'}}/>
+        ),
+      })}
+      />
+      <Tab.Screen
+      name="Settings"
+      component={Settings}
+      options={({route}) => ({
+        tabBarIcon: ({color, size}) => (
+          <FontAwesome
+                name='sliders'
+                 color='#034732'
+                 size={size}
+              />
+        ),
+      })}
+      />
     </Tab.Navigator>
   );
 }

@@ -11,7 +11,7 @@ const NextWateringDate = (props) => {
           <View style={{display:'flex', flexDirection:'row', marginTop: 15}}>
 
           <View>
-          <CalendarDaysIcon size={60} style={{color:'white'}}/>
+          <CalendarDaysIcon size={60} style={{color:'#F97068'}}/>
           <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('MMM')}</Text>
           <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('Do')}</Text>
           </View>
@@ -34,7 +34,6 @@ export default NextWateringDate
 
 const styles = StyleSheet.create({
   container: {
-    borderTopLeftRadius: 10,
     overflow: 'hidden',
     width: '50%',
     backgroundColor: '#034732',

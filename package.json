@@ -9,6 +9,11 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@expo/webpack-config": "^0.17.3",
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-brands-svg-icons": "^6.2.1",
+    "@fortawesome/free-regular-svg-icons": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-native-fontawesome": "^0.3.0",
     "@react-native-community/slider": "4.2.4",
     "@react-navigation/bottom-tabs": "^6.4.1",
     "@react-navigation/native": "^6.0.14",

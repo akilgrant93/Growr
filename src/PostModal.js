@@ -113,7 +113,7 @@ const PostModal = ({route, navigation}) => {
     setIsHydroponic(false)
     // pass this from the postPlant component
     // setTableData(false)
-    navigation.navigate('Dashboard')
+    navigation.navigate('My Garden')
   }
 
    const postUserPlant = async(

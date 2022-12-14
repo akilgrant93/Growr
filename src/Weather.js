@@ -89,7 +89,6 @@ export default Weather
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderTopRightRadius: 10,
     overflow: 'hidden',
     width: '50%',
     backgroundColor: '#E4F1E4',
