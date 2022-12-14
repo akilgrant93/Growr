@@ -16,10 +16,11 @@ const NextWateringDate = (props) => {
           <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('Do')}</Text>
           </View>
 
-          <View style={{marginLeft: 10,}}>
-            {props.nextWateringDays.map((day,  idx) => {
-              if(idx > 0){
-                return <Text key={idx} style={{fontSize: 15, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(day).format('MMM Do')}</Text>
+          <View style={{marginLeft: 10}}>
+            {
+            [...new Set(props.nextWateringDays)].map((day,  idx) => {
+              if(idx > 0 && idx < 8){
+                return <Text key={idx} style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>{moment(day).format('MMM Do')}</Text>
               }
             })}
           </View>
