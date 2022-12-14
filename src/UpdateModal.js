@@ -378,7 +378,7 @@ useFocusEffect(
        return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
       })}
       </View>
-      : ''}
+      : <View/>}
 
       {/* disease map ternary needs restyle and formatting to be text based*/}
       {plant.diseases
@@ -400,7 +400,7 @@ useFocusEffect(
       })}
       </View>
       </View>
-      : ''}
+      : <View/>}
 
 
       {/* icons needed */}

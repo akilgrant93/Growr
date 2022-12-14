@@ -59,12 +59,12 @@ const MyCalendar = () => {
             nextWateringDaysInit.push(moment(plant.data().nextWateringDate).startOf('day').toString())
             wateringDaysInit.push(plant.data().wateringDates)
 
-            console.log(moment().startOf('day').valueOf())
+            // console.log(moment().startOf('day').valueOf())
             if(moment().startOf('day').valueOf() === plant.data().nextWateringDate){
               nextWateringDaysVisInit.push(plant.data())
             }
 
-            console.log('plant.data()',plant.data())
+            // console.log('plant.data()',plant.data())
             if(plant.data().wateringDates.includes(moment().startOf('day').valueOf())){
               lastWateringDaysVisInit.push(plant.data())
             }
@@ -129,18 +129,18 @@ const customDatesStylesCallback = date => {
         {/* need to check on inner conditional tomorrow */}
       <View style={{width: '75%', marginTop: '2%'}}>
       {!lastWateredData.length && !nextWateredData.length ?
-      <Text>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text> : ''}
+      <Text>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text> : <View/>}
       </View>
       <View style={{width: '75%'}}>
       {nextWateredData.length ? nextWateredData.map((dateInfo, idx) => {
         return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} needs water.</Text>
-      }) : ''}
+      }) :<View/>}
       </View>
       <View style={{width: '75%'}}>
 
       {lastWateredData.length ? lastWateredData.map((dateInfo, idx) => {
         return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} was watered</Text>
-      }) : ''}
+      }) : <View/>}
       </View>
       </View>
 

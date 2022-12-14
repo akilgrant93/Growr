@@ -324,7 +324,8 @@ useEffect(() => {
       );
       setCalendars(userCalendars)
     }
-  })();
+  });
+
 }, []);
 
   return (
@@ -355,7 +356,7 @@ useEffect(() => {
        return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
       })}
       </View>
-      : ''}
+      : <View/>}
 
       {/* disease map ternary needs restyle and formatting to be text based*/}
       {route.params.item.diseases.length > 0
@@ -377,7 +378,7 @@ useEffect(() => {
       })}
       </View>
       </View>
-      : ''}
+      : <View/>}
 
 
       {/* icons needed */}

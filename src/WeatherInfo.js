@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, Dimensions } from 'react-native'
+import moment from 'moment';
 import React from 'react'
 
 const WeatherInfo = ({weatherData}) => {
@@ -15,17 +16,15 @@ const WeatherInfo = ({weatherData}) => {
       <View style={{alignItems:'center'}}>
           <Text style={styles.title}>{name}</Text>
       </View>
-      <View styles={styles.logo}>
-        <View style={{display: 'flex', flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+      <Text style={styles.currentTemp}>{moment().format('MMMM d, YYYY')}</Text>
+      <Text style={styles.currentTemp}>{moment().format('h:mma')}</Text>
         <Image
         style={styles.largeIcon}
         // will be retooled for custom icons
         source={{uri: `http://openweathermap.org/img/wn/${icon}.png`}}
         />
-        <Text style={styles.currentTemp}>{temp} ºF</Text>
-        </View>
-      </View>
-      <Text style={styles.description}>{description}</Text>
+      <Text style={styles.currentTemp}>{description[0].toUpperCase()+description.slice(1)}</Text>
+      <Text style={styles.currentTemp}>{temp} ºF</Text>
 
 {/* these will load conditionally based on the user expanding the weather screen */}
       {/* <View style={styles.extraInfo}>
@@ -52,19 +51,21 @@ const styles = StyleSheet.create({
   title: {
     width: '100%',
     textAlign:'center',
-    fontSize: 14,
+    fontSize: 19,
     fontWeight:'bold',
     color: '#034732',
     marginTop: 10,
   },
   largeIcon: {
-    width: 40,
-    height: 40,
+    width: 100,
+    height: 100,
+    alignItems:'center',
   },
   currentTemp: {
     fontSize: 10,
+    color: '#034732',
     fontWeight: 'bold',
-    alignItems:'center',
+    alignSelf:'center',
   },
   description: {
     fontSize: 12,
@@ -93,6 +94,5 @@ const styles = StyleSheet.create({
   infoText: {
     textAlign: 'center',
     fontSize: 12,
-
   },
 })

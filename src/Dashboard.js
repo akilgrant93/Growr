@@ -7,6 +7,7 @@ import { Pressable } from 'react-native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
+import NextWateringDate from './NextWateringDate'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -22,7 +23,8 @@ const Dashboard = () => {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const [isLoading, setIsLoading] = useState(true)
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+  const [nextWateringDays, setNextWateringDays] = useState([])
+  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
   const navigation = useNavigation( )
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -37,10 +39,10 @@ const Dashboard = () => {
       }
     })
     plantsRef
-    .orderBy('nextWateringDate', 'asc')
     .onSnapshot(
       querySnapshot => {
         const plants = []
+        const wateringDays = []
         querySnapshot.forEach((doc) => {
           plants.push({
             id: doc.id,
@@ -54,8 +56,10 @@ const Dashboard = () => {
             notificationID: doc.data().notificationID,
             firestoreID: doc.data().firestoreID,
           })
+          wateringDays.push(doc.data().nextWateringDate)
         })
         setPlants(plants)
+        setNextWateringDays(wateringDays)
       }
     )
 
@@ -101,6 +105,7 @@ const Dashboard = () => {
   return (
     <SafeAreaView style={styles.formContainer}>
       <FlatList
+        style={{height: '40%'}}
         data={plants}
         numColumns={2}
         renderItem={({item}) => (
@@ -110,12 +115,12 @@ const Dashboard = () => {
               onPress={() => navigation.navigate('UpdateModal', {item})}
             >
               <View style={{flexDirection: 'row'}}>
-              <View style={{backgroundColor:'#034732', height: 90, width: 40, justifyContent:'center'}}
+              <View style={{backgroundColor:'#034732', height: '100%', width: 40, justifyContent:'center'}}
               onPress={() => deletePlant(item)}
               >
               <FontAwesome
                 name='trash-o'
-                 color='white'
+                 color='#F97068'
                  style={styles.deleteIcon}
                  onPress={() => deletePlant(item)}
               />
@@ -131,7 +136,7 @@ const Dashboard = () => {
                   {item.isPotted || item.isIndoors ? 'Potted' : ''}
                 </Text>
                 <Text style={styles.subtitle}>
-                  {!item.isIndoors ? 'Outdoor' : ''}
+                  {!item.isIndoors ? 'Outdoors' : ''}
                 </Text>
                 <Text style={styles.subtitle}>
                   {item.isHydroponic ? 'Hydroponic' : ''}
@@ -145,7 +150,10 @@ const Dashboard = () => {
       {/* {isLoading
       ? <Text>Fetching The Weather</Text>
       : <View> */}
+      <View style={{flex: 1, width: '100%', flexDirection:'row'}}>
           <Weather />
+          <NextWateringDate nextWateringDays={nextWateringDays}/>
+      </View>
         {/* </View>} */}
     </SafeAreaView>
   )

@@ -23,7 +23,7 @@ const Tab = createBottomTabNavigator();
 function Home() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Dashboard" component={Dashboard} />
+      <Tab.Screen name="My Garden" component={Dashboard} />
       <Tab.Screen name="Add Plant" component={PostPlant} />
       <Tab.Screen name="Calendar" component={MyCalendar} />
       <Tab.Screen name="Settings" component={Settings} />

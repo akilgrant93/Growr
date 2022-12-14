@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import {firebase} from '../config'
 import * as Location from 'expo-location';
 import WeatherInfo from './WeatherInfo';
 import { ArrowUpRightIcon } from "react-native-heroicons/solid";
@@ -25,26 +26,35 @@ const Weather = () => {
         setWeatherData(null)
       }
       setLoaded(true)
-
     } catch (error) {
       Alert.alert('Error',error.message)
     }
   }
 
   useEffect(() => {
-    //need a function to get the users city to feed this function
-
     (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission to access location is required to check local weather conditions');
-        return;
+      const userRef = await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
+      const userData = (await userRef.get()).data()
+      if(userData.location){
+        setLocation(userData.location)
+        fetchWeatherData(userData.location.city)
+        setLocation(userData.location)
+      } else {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        //i might refactor this
+        if (status !== 'granted') {
+          Alert.alert('Permission to access location is required to check local weather conditions');
+          return;
+        }
+
+        let locationData = await Location.getCurrentPositionAsync({});
+        const res = await Location.reverseGeocodeAsync(locationData.coords)
+        fetchWeatherData(res[0].city)
+        setLocation(res[0])
+        userRef.update({location:res[0]})
       }
 
-      let locationData = await Location.getCurrentPositionAsync({});
-      const res = await Location.reverseGeocodeAsync(locationData.coords)
-      fetchWeatherData(res[0].city)
-      setLocation(res[0])
     })()
   }, [])
 
@@ -53,9 +63,6 @@ const Weather = () => {
       <View style={styles.container}>
         {/* like any splash screen you will need to add some of the UI here as a "preload" fake */}
         <View style={styles.header}>
-        <View style={{width: '80%', alignItems:'center'}}>
-          <Text style={styles.headerTitle}>Weather</Text>
-        </View>
         {/*triggers the weather panel expansion */}
       <ArrowUpRightIcon size={16} style={{color:'white',}}/>
       </View>
@@ -69,11 +76,8 @@ const Weather = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <View style={{width: '80%', alignItems:'center'}}>
-          <Text style={styles.headerTitle}>Weather</Text>
-        </View>
-        {/*triggers the weather panel expansion */}
-      <ArrowUpRightIcon size={16} style={{color:'white',}}/>
+        {/*triggers the weather panel expansion this needs to be fed into weatherinfo but somehow passed upwards*/}
+      {/* <ArrowUpRightIcon size={20} style={{color:'#034732',}}/> */}
       </View>
       <WeatherInfo weatherData={weatherData}/>
     </View>
@@ -89,8 +93,8 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     width: '50%',
     backgroundColor: '#E4F1E4',
-    borderTopWidth: 1,
-    borderRightWidth: 3,
+    // borderTopWidth: 3,
+    // borderRightWidth: 3,
     borderRightColor: '#034732',
     borderTopColor: '#034732',
     alignSelf: 'flex-start',
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems:'center',
-    backgroundColor:'#034732',
+    // backgroundColor:'#034732',
     width: '100%',
     justifyContent: 'center',
     flexDirection: 'row',

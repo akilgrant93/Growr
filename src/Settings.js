@@ -14,7 +14,16 @@ const Settings = () => {
 
   return (
     <View>
-            <TouchableOpacity
+      <TouchableOpacity
+        onPress={() => {console.log('change form control')}}
+        style={styles.button}
+      >
+        <Text style={{fontWeight: 'bold', fontSize:20}}>
+            Change Location
+        </Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
         onPress={() => {changePassword()}}
         style={styles.button}
       >
