@@ -1,15 +1,30 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import moment from 'moment';
-import {firebase} from '../config'
+import { CalendarDaysIcon } from 'react-native-heroicons/solid';
 
 const NextWateringDate = (props) => {
   return (
       <View style={styles.container}>
           <Text style={{width: '60%',textAlign:'center', marginTop: 10, color: 'white'}}>Next Watering:</Text>
           {/* <Text style={{fontSize: 20, fontWeight: 'bold'}}>{moment(props.nextWateringDays[0]).format('ddd')}</Text> */}
-          <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white'}}>{moment(props.nextWateringDays[0]).format('MMM')}</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white'}}>{moment(props.nextWateringDays[0]).format('Do')}</Text>
+          <View style={{display:'flex', flexDirection:'row', marginTop: 15}}>
+
+          <View>
+          <CalendarDaysIcon size={60} style={{color:'white'}}/>
+          <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('MMM')}</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('Do')}</Text>
+          </View>
+
+          <View style={{marginLeft: 10,}}>
+            {props.nextWateringDays.map((day,  idx) => {
+              if(idx > 0){
+                return <Text key={idx} style={{fontSize: 15, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(day).format('MMM Do')}</Text>
+              }
+            })}
+          </View>
+
+          </View>
       </View>
   )
 }
