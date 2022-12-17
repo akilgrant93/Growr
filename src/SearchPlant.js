@@ -27,7 +27,7 @@ const SearchPlant = ({route, navigation}) => {
       .collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(13)
+      .limit(12)
       .get();
 
       exactNameSnapshot.forEach(doc =>{
@@ -88,6 +88,14 @@ const SearchPlant = ({route, navigation}) => {
       // setTableHead(['Name'])
       setTableData([])
     }
+
+  const prev = () => {
+      console.log('prev pressed')
+    }
+
+  const next = () => {
+    console.log('next pressed')
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -175,6 +183,24 @@ const SearchPlant = ({route, navigation}) => {
       </View>
       </View>
 
+      <View style={{width:'95%', marginLeft: '2.5%', flexDirection: 'row'}}>
+      <TouchableOpacity style={styles.button3} onPress={prev}>
+          <FontAwesome
+                size={25}
+                name='caret-left'
+                color='#034732'
+              />
+              <Text style={{marginLeft: 10, fontWeight:'bold',color:'#034732'}}>Prev</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button4} onPress={next}>
+      <Text style={{marginRight: 10, fontWeight:'bold',color:'#034732'}}>Next</Text>
+      <FontAwesome
+                size={25}
+                name='caret-right'
+                color='#034732'
+              />
+      </TouchableOpacity>
+      </View>
       {/* <TouchableOpacity style={styles.button2}onPress={addPlant}>
          <Text style={styles.buttonText}>Add Plant</Text>
       </TouchableOpacity> */}
@@ -220,6 +246,27 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '25%',
     justifyContent: 'center',
+  },
+  button3: {
+    height: 28,
+    borderRadius: 5,
+    backgroundColor: '#E4F1E4',
+    marginTop: '1%',
+    alignItems: 'center',
+    width: '49%',
+    justifyContent: 'center',
+    flexDirection: 'row'
+  },
+  button4: {
+    height: 28,
+    marginLeft: '1.5%',
+    borderRadius: 5,
+    backgroundColor: '#E4F1E4',
+    marginTop: '1%',
+    alignItems: 'center',
+    width: '49%',
+    justifyContent: 'center',
+    flexDirection: 'row'
   },
   buttonText: {
     color: 'white'
