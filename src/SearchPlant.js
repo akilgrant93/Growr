@@ -1,60 +1,37 @@
 import { StyleSheet, View, Text, SafeAreaView, TextInput, TouchableOpacity, Keyboard, FlatList } from 'react-native'
 import React, {useState} from 'react'
 import { firebase } from '../config'
-import Svg, { Path } from 'react-native-svg'
 import CustomSVG from './CustomSVG'
 import { FontAwesome } from '@expo/vector-icons'
 
 const SearchPlant = ({route, navigation}) => {
-  const [endCursor, setEndCursor]= useState({})
-  const [startCursor, setStartCursor]= useState({})
+  const [startCursor, setStartCursor] = useState({})
+  const [endCursor, setEndCursor] = useState({})
+  const [initialValue, setInitialValue] = useState({})
   const [count, setCount]= useState(0)
   const [value, setValue]= useState('')
   const [tableData, setTableData]= useState([])
-
+  const limit = 12
   const plantsRef= firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
-    //add a plant from users list of plant entries
-    //need to setup next and previous buttons
     const searchByName =  async ({search = ''}) => {
       if(search[search.length-1] === ' '){
         search = search.slice(0,search.length-1)
       }
 
-      const exactNameSnapshot = await firebase.firestore().collection('plants').where('commonName', '==', `${search}`).get();
-
       const snapshot = await firebase.firestore()
       .collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
       .orderBy('scientificName')
-      .limit(12)
+      .limit(limit)
       .get();
 
-      exactNameSnapshot.forEach(doc =>{
-        const name = doc.data();
-            setTableData([{
-            commonName: name.commonName,
-            scientificName: name.scientificName,
-            carnivorous: name.carnivorous,
-            diseases:
-            name.diseases,
-            edible: name.edible,
-            familyName: name.familyName,
-            freshWaterAquatic: name.freshWaterAquatic,
-            herb: name.herb,
-            medicinalUse: name.medicinalUse,
-            poisonous: name.poisonous,
-            succulent: name.succulent,
-            tags: name.tags,
-            key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`}])
-
-      })
+      const firstValue = snapshot.docs[0]
+      setInitialValue(firstValue)
+      setEndCursor(snapshot.docs[snapshot.docs.length-1])
 
       return snapshot.docs.reduce((acc, doc) => {
         const name = doc.data();
-        // console.log(tableData)
-        setCount(count+1)
-        // common plant item object structure found here
         setTableData(tableData => [...tableData, {
           commonName: name.commonName,
           scientificName: name.scientificName,
@@ -74,6 +51,53 @@ const SearchPlant = ({route, navigation}) => {
       }, '');
     }
 
+    const prev = async() => {
+      console.log('prev clicked')
+    }
+
+    const next = async({search = value }) => {
+      console.log('initial value',initialValue.data().scientificName)
+      console.log('table data',tableData[0].scientificName)
+      console.log(
+        '??????',initialValue.data().scientificName === tableData[0].scientificName
+      )
+      if(search[search.length-1] === ' '){
+        search = search.slice(0,search.length-1)
+      }
+      console.log('end cursor',endCursor)
+
+      const snapshot = await firebase.firestore().collection('plants')
+      .where('keywords', 'array-contains', search.toLowerCase())
+        .orderBy('scientificName')
+        .limit(limit)
+        .startAfter(endCursor)
+        .get();
+
+        let arr = []
+        for (let i = 0; i < snapshot.docs.length; i++){
+          const name = snapshot.docs[i].data()
+          arr.push({
+            commonName: name.commonName,
+            scientificName: name.scientificName,
+            carnivorous: name.carnivorous,
+            diseases:
+            name.diseases,
+            edible: name.edible,
+            familyName: name.familyName,
+            freshWaterAquatic: name.freshWaterAquatic,
+            herb: name.herb,
+            medicinalUse: name.medicinalUse,
+            poisonous: name.poisonous,
+            succulent: name.succulent,
+            tags: name.tags,
+            key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`})
+        }
+        setTableData(arr)
+        setStartCursor(snapshot.docs[0])
+        setEndCursor(snapshot.docs[snapshot.docs.length-1])
+    }
+
+
     const submitSearch = async () => {
       if(value===''){
         return
@@ -88,14 +112,6 @@ const SearchPlant = ({route, navigation}) => {
       // setTableHead(['Name'])
       setTableData([])
     }
-
-  const prev = () => {
-      console.log('prev pressed')
-    }
-
-  const next = () => {
-    console.log('next pressed')
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -150,8 +166,6 @@ const SearchPlant = ({route, navigation}) => {
                         {item.item.tags.includes('Passion Fruit') || item.item.tags.includes('Gooseberry/Currant') || item.item.tags.includes('Cane Fruit') || item.item.tags.includes('Stone Fruit')  || item.item.tags.includes('Mulberry/Fig') || item.item.scientificName.split(' ')[0] === 'Citrus' ? <CustomSVG   size={18} name='fruit'/> : <View />}
                         {item.item.tags.includes('Cactus') || item.item.tags.includes('Succulent')? <CustomSVG   size={20} name='succulent'/> : <View />}
                         {item.item.tags.includes('Walnut') || item.item.tags.includes('Chestnut') || item.item.tags.includes('Hazelnut') || item.item.tags.includes('Pecan') ? <CustomSVG   size={20} name='nut'/> : <View />}
-
-
                         </View>
                         </View>
                       </View>
@@ -160,8 +174,6 @@ const SearchPlant = ({route, navigation}) => {
               </View>
             )
           }} />}
-
-      {/* pagination here, reduce count on limit to compensate */}
 
       <View style={{flexDirection:'row', marginTop: 5}}>
       <TextInput
@@ -184,27 +196,64 @@ const SearchPlant = ({route, navigation}) => {
       </View>
 
       <View style={{width:'95%', marginLeft: '2.5%', flexDirection: 'row'}}>
-      <TouchableOpacity style={styles.button3} onPress={prev}>
+
+     {!tableData.length
+     ?
+      <TouchableOpacity style={styles.button3} disabled={true}>
+          <FontAwesome
+                size={25}
+                name='caret-left'
+                color='#C9E4CA'
+              />
+              <Text style={{marginLeft: 10, fontWeight:'bold', color:'#C9E4CA'}}>Prev</Text>
+      </TouchableOpacity>
+      : initialValue.data().scientificName === tableData[0].scientificName
+     ? <TouchableOpacity style={styles.button3} disabled={true}>
+     <FontAwesome
+           size={25}
+           name='caret-left'
+           color='#C9E4CA'
+         />
+         <Text style={{marginLeft: 10, fontWeight:'bold', color:'#C9E4CA'}}>Prev</Text>
+ </TouchableOpacity>
+     :
+     <TouchableOpacity style={styles.button3} onPress={prev}>
           <FontAwesome
                 size={25}
                 name='caret-left'
                 color='#034732'
               />
-              <Text style={{marginLeft: 10, fontWeight:'bold',color:'#034732'}}>Prev</Text>
+              <Text style={{marginLeft: 10, fontWeight:'bold', color:'#034732'}}>Prev</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button4} onPress={next}>
+      }
+
+      {!tableData.length ?
+      <TouchableOpacity style={styles.button4} onPress={next} disabled={true}>
+      <Text style={{marginRight: 10, fontWeight:'bold',color:'#C9E4CA'}}>Next</Text>
+      <FontAwesome
+                size={25}
+                name='caret-right'
+                color='#C9E4CA'
+              />
+      </TouchableOpacity>
+      : limit > tableData.length
+      ? <TouchableOpacity style={styles.button4} onPress={next} disabled={true}>
+      <Text style={{marginRight: 10, fontWeight:'bold',color:'#C9E4CA'}}>Next</Text>
+      <FontAwesome
+                size={25}
+                name='caret-right'
+                color='#C9E4CA'
+              />
+      </TouchableOpacity>
+      : <TouchableOpacity style={styles.button4} onPress={next}>
       <Text style={{marginRight: 10, fontWeight:'bold',color:'#034732'}}>Next</Text>
       <FontAwesome
                 size={25}
                 name='caret-right'
                 color='#034732'
               />
-      </TouchableOpacity>
+      </TouchableOpacity>}
       </View>
-      {/* <TouchableOpacity style={styles.button2}onPress={addPlant}>
-         <Text style={styles.buttonText}>Add Plant</Text>
-      </TouchableOpacity> */}
-
     </SafeAreaView>
   )
 }

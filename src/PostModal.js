@@ -334,10 +334,10 @@ useEffect(() => {
       <Text style={{textAlign:'center'}}>{route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName}</Text>
 
       {/* if commonName exists, scientificName else nothing */}
-      {route.params.item.commonName ? <View/> : <Text style={{textAlign:'center'}}>{route.params.item.scientificName}</Text>}
+      {!route.params.item.commonName ? <View/> : <Text style={{textAlign:'center'}}>{route.params.item.scientificName}</Text>}
 
       {/* if familyName exists, familyName else nothing */}
-      {route.params.item.family ?
+      {!route.params.item.family ?
       <Text style={{textAlign:'center'}}>{route.params.item.familyName}</Text> : <View/>}
 
       {/* icon ternaries - will be combined with tags*/}
