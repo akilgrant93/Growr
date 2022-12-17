@@ -63,6 +63,9 @@ const Dashboard = () => {
       }
     )
 
+    //need to pull tags data to feed into plants Arr for more visual appeal
+    plants.forEach(plant => console.log(plant))
+
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -115,8 +118,7 @@ const Dashboard = () => {
                 index === plants.length-1 || index === plants.length-2
                 ? styles.container2
                 : styles.container}
-              onPress={() => navigation.navigate('UpdateModal', {item})}
-            >
+              onPress={() => navigation.navigate('UpdateModal', {item})}>
               <View style={{flexDirection: 'row'}}>
               <View style={{backgroundColor:'#034732', height: '100%', width: 40, justifyContent:'center'}}
               onPress={() => deletePlant(item)}
@@ -170,7 +172,7 @@ export default Dashboard
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#E4F1E4',
+    backgroundColor: '#fff',
     borderRadius: 15,
     margin: 5,
     flexDirection: 'row',
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden'
   },
   container2: {
-    backgroundColor: '#E4F1E4',
+    backgroundColor: '#fff',
     borderRadius: 15,
     marginTop: 5,
     marginLeft: 5,

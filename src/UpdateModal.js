@@ -34,7 +34,7 @@ const UpdateModal = ({route, navigation}) => {
 
   //notification function
 
-  const postPlant = (plant, indoors, potted, hydroponic) => {
+  const updatePlant = (plant, indoors, potted, hydroponic) => {
     let succulent
 
     if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){

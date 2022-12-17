@@ -1,8 +1,11 @@
 import { StyleSheet, View, Text, SafeAreaView, TextInput, TouchableOpacity, Keyboard, FlatList } from 'react-native'
 import React, {useState} from 'react'
 import { firebase } from '../config'
+import Svg, { Path } from 'react-native-svg'
+import CustomSVG from './CustomSVG'
+import { FontAwesome } from '@expo/vector-icons'
 
-const PostPlant = ({route, navigation}) => {
+const SearchPlant = ({route, navigation}) => {
   const [endCursor, setEndCursor]= useState({})
   const [startCursor, setStartCursor]= useState({})
   const [count, setCount]= useState(0)
@@ -87,7 +90,7 @@ const PostPlant = ({route, navigation}) => {
     }
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.container}>
       <View>
       {!tableData
            ? <View></View>
@@ -97,41 +100,62 @@ const PostPlant = ({route, navigation}) => {
           keyExtractor={(item) => item.key}
           scrollEnabled={false}
           renderItem={(item) => {
-            // console.log('ITEM ITEM ITEM ITEM ITEM',tableData.length)
-            //convert these to card components for visual effect
              return (
               <View>
-                <View style={{paddingBottom: '1%',
-                paddingTop: '1%',
+                <View style={{
                 flexDirection: 'column',
-                justifyContent: 'space-between'}}>
+                width: '95%',
+                marginLeft: '2.5%',
+                marginBottom: 1,
+                }}>
                     <TouchableOpacity
-                    onPress={() => navigation.navigate('PostPlant',item)}>
+                    onPress={() => navigation.navigate('SearchPlant',item)}>
                       <View style={{ flexDirection: 'row', justifyContent: 'space-between',
-                      shadowOpacity: .25,
-                      width: '99%',shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
+                      shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
                         <View style={styles.textView}>
-                        <Text style={{fontSize: 18}}>
+
+                        <View style={{marginLeft: 35}}>
+                        <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                           {!item.item.commonName
-                            ? item.item.scientificName
-                            : item.item.commonName}
+                            ? item.item.scientificName.split(' ').map((word) => {
+                              return word[0].toUpperCase() + word.substr(1);
+                            }).join(' ')
+                            : item.item.commonName.split(' ').map((word) => {
+                              return word[0].toUpperCase() + word.substr(1);
+                            }).join(' ')}
                         </Text>
-                          <Text style={{fontSize: 10}}>{item.item.familyName}</Text>
+
+                        <Text style={{fontSize: 10}}>{item.item.familyName}</Text>
                         </View>
 
-                        <View style={{ flexDirection: 'column', justifyContent: 'center'}}>
+                        <View style={{ flexDirection: 'row-reverse', marginLeft: 35, alignItems:'center'}}>
+
+                        {item.item.tags.includes('Edible') ? <CustomSVG size={20} name='edible'/> : <View />}
+                        {item.item.tags.includes('Herbal') ? <CustomSVG   size={20} name='pagelines'/> : <View />}
+                        {item.item.tags.includes('Pine') ? <CustomSVG   size={20} name='tree'/> : <View />}
+                        {item.item.tags.includes('Carnivorous') ? <CustomSVG   size={20} name='bug'/> : <View />}
+                        {item.item.tags.includes('Rose') || item.item.tags.includes('Cannabaceae') || item.item.tags.includes('Cane Fruit') || item.item.tags.includes('Stone Fruit') || item.item.tags.includes('Buckthorn') ? <CustomSVG   size={20} name='rose'/> : <View />}
+                        {item.item.tags.includes('Tropical') ? <CustomSVG   size={22} name='palm'/> : <View />}
+                        {item.item.tags.includes('Cannabaceae') ? <CustomSVG   size={18} name='cannabis'/> : <View />}
+                        {item.item.tags.includes('Poisonous') ? <CustomSVG   size={18} name='poison'/> : <View />}
+                        {item.item.tags.includes('Aquatic - Freshwater') ? <CustomSVG   size={18} name='aquatic'/> : <View />}
+                        {item.item.tags.includes('Passion Fruit') || item.item.tags.includes('Gooseberry/Currant') || item.item.tags.includes('Cane Fruit') || item.item.tags.includes('Stone Fruit')  || item.item.tags.includes('Mulberry/Fig') || item.item.scientificName.split(' ')[0] === 'Citrus' ? <CustomSVG   size={18} name='fruit'/> : <View />}
+                        {item.item.tags.includes('Cactus') || item.item.tags.includes('Succulent')? <CustomSVG   size={20} name='succulent'/> : <View />}
+                        {item.item.tags.includes('Walnut') || item.item.tags.includes('Chestnut') || item.item.tags.includes('Hazelnut') || item.item.tags.includes('Pecan') ? <CustomSVG   size={20} name='nut'/> : <View />}
+
+
+                        </View>
                         </View>
                       </View>
                     </TouchableOpacity>
                 </View>
-
               </View>
             )
           }} />}
 
       {/* pagination here, reduce count on limit to compensate */}
 
-      <View style={{flexDirection:'row'}}>
+      <View style={{flexDirection:'row', marginTop: 5}}>
       <TextInput
         style={styles.input}
         placeholder="Add A New Plant"
@@ -159,12 +183,16 @@ const PostPlant = ({route, navigation}) => {
   )
 }
 
-export default PostPlant
+export default SearchPlant
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#C9E4CA',
+    height: '100%'
+  },
   input: {
-    height: 28,
-    marginLeft: 5,
+    height: 40,
+    marginLeft: '2.5%',
     borderTopLeftRadius:5,
     borderBottomLeftRadius: 5,
     overflow: 'hidden',
@@ -174,23 +202,33 @@ const styles = StyleSheet.create({
     marginTop: '1%',
   },
   button: {
-    height: 28,
+    height: 40,
     borderTopRightRadius:5,
     borderBottomRightRadius: 5,
-    backgroundColor: 'red',
-    width: '10%',
+    backgroundColor: '#F97068',
+    width: '8.5%',
     marginTop: '1%',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 5,
   },
   button2: {
-    height: 28,
+    height: 40,
     borderRadius: 5,
-    backgroundColor: '#788eec',
+    backgroundColor: '#034732',
     marginTop: '1%',
     alignItems: 'center',
     width: '25%',
     justifyContent: 'center',
   },
+  buttonText: {
+    color: 'white'
+  },
+  textView: {
+    paddingVertical: 6,
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    // marginBottom: 5,
+  }
 })

@@ -11,9 +11,8 @@ import Registration from "./src/Registration";
 import Dashboard from "./src/Dashboard";
 import Header from "./src/Header";
 import Settings from "./src/Settings";
-// import Weather from "./src/Weather";
 import MyCalendar from "./src/Calendar";
-import PostPlant from "./src/PostPlant";
+import SearchPlant from "./src/SearchPlant";
 import PostModal from "./src/PostModal";
 import UpdateModal from './src/UpdateModal'
 
@@ -25,20 +24,26 @@ function Home() {
     <Tab.Navigator>
       <Tab.Screen
       name="My Garden"
+      label="My Garden"
       component={Dashboard}
       options={({route}) => ({
         tabBarIcon: ({color, size}) => (
           <FontAwesome
-                name='pagelines'
+                name='leaf'
                  color='#034732'
                  size={size}
               />
         ),
+        // tabBarActiveTintColor: 'white',
+        // tabBarActiveBackgroundColor: '034732',
+        // tabBarInactiveTintColor: 'blue',
+        // tabBarInactiveBackgroundColor:'red',
       })}
       />
       <Tab.Screen
       name="Add Plant"
-      component={PostPlant}
+      label="Add Plant"
+      component={SearchPlant}
       options={({route}) => ({
         tabBarIcon: ({color, size}) => (
           <PlusCircleIcon size={size} style={{color:'#034732'}}/>
@@ -47,6 +52,7 @@ function Home() {
       />
       <Tab.Screen
       name="Calendar"
+      label="Calendar"
       component={MyCalendar}
       options={({route}) => ({
         tabBarIcon: ({color, size}) => (
@@ -56,6 +62,7 @@ function Home() {
       />
       <Tab.Screen
       name="Settings"
+      label="Settings"
       component={Settings}
       options={({route}) => ({
         tabBarIcon: ({color, size}) => (
@@ -141,7 +148,7 @@ function App(){
         component={UpdateModal}
         />
         <Stack.Screen
-        name="PostPlant"
+        name="SearchPlant"
         component={PostModal}
         />
         </Stack.Group>
