@@ -134,11 +134,12 @@ const SearchPlant = ({route, navigation}) => {
                 }}>
                     <TouchableOpacity
                     onPress={() => navigation.navigate('SearchPlant',item)}>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between',
+                      <View style={{ flexDirection: 'row',
+                       overflow:'hidden',justifyContent: 'space-between',
                       shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
                         <View style={styles.textView}>
 
-                        <View style={{marginLeft: 35}}>
+                        <View style={{marginLeft: 35, alignSelf:'center'}}>
                         <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                           {!item.item.commonName
                             ? item.item.scientificName.split(' ').map((word) => {
@@ -152,7 +153,8 @@ const SearchPlant = ({route, navigation}) => {
                         <Text style={{fontSize: 10}}>{item.item.familyName}</Text>
                         </View>
 
-                        <View style={{ flexDirection: 'row-reverse', marginLeft: 35, alignItems:'center'}}>
+                        <View style={{ flexDirection: 'row-reverse', width: '25%',
+                        paddingLeft: '5%',alignItems:'center', backgroundColor: '#E4F1E4', height: '100%', paddingVertical: 10}}>
 
                         {item.item.tags.includes('Edible') ? <CustomSVG size={20} name='edible'/> : <View />}
                         {item.item.tags.includes('Herbal') ? <CustomSVG   size={20} name='pagelines'/> : <View />}
@@ -321,7 +323,7 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   textView: {
-    paddingVertical: 6,
+    height: 40,
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
