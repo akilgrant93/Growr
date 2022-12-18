@@ -79,6 +79,7 @@ const PostModal = ({route, navigation}) => {
       }
       }
 
+      // console.log('plant',plant)
     //if the common name is bugged
     if(typeof plant === 'string'){
       postUserPlant(
@@ -86,7 +87,8 @@ const PostModal = ({route, navigation}) => {
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, sliderValue,plant.firestoreID
+        succulent, '', base, sliderValue,
+        plant.tags
         )
       }
 
@@ -97,7 +99,7 @@ const PostModal = ({route, navigation}) => {
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, sliderValue,plant.firestoreID
+        succulent, '', base, sliderValue, plant.tags
       )
     //otherwise refer to the scientific name
     } else if(!plant.commonName && typeof plant !== 'string') {
@@ -106,7 +108,7 @@ const PostModal = ({route, navigation}) => {
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, sliderValue,plant.firestoreID)
+        succulent, '', base, sliderValue,plant.tags)
     }
     setIsPotted(false)
     setIsIndoors(false)
@@ -121,8 +123,8 @@ const PostModal = ({route, navigation}) => {
     isPotted,
     isIndoors,
     isHydroponic,
-    isSucculent, notes, notificationInterval, lastWatered,firestoreID) => {
-
+    isSucculent, notes, notificationInterval, lastWatered,tags) => {
+      console.log('TAGS',tags)
     const one_day=1000*60*60*24;
     const now = moment()
     const today = now.startOf('day')
@@ -194,13 +196,13 @@ const PostModal = ({route, navigation}) => {
         isIndoors,
         isHydroponic,
         isSucculent,
-        firestoreID,
         notes,
         notificationID,
         notificationInterval,
         nextWateringDate:nextWateringDate.valueOf(),
         lastWateringDate:lastWateringDate.valueOf(),
         isThirsty,
+        tags,
         wateringDates: [lastWateringDate.valueOf()],
       }
       newUserPlant

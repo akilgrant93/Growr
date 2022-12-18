@@ -154,6 +154,7 @@ function App(){
         />
         <Stack.Screen
         name="PlantsByCategory"
+        options={{ title: 'My profile' }}
         component={PlantsByCategory}
         />
         </Stack.Group>

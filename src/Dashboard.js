@@ -1,14 +1,12 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
-import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
-import { Pressable } from 'react-native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
 import NextWateringDate from './NextWateringDate'
-import Svg from 'react-native-svg';
+import CustomSVG from './CustomSVG'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -24,7 +22,7 @@ const Dashboard = () => {
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
   const [nextWateringDays, setNextWateringDays] = useState([])
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
+  const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
   const navigation = useNavigation( )
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -38,12 +36,13 @@ const Dashboard = () => {
         console.log('User does not exist')
       }
     })
-    plantsRef
+    userPlantsRef
     .onSnapshot(
       querySnapshot => {
         const plants = []
         const wateringDays = []
         querySnapshot.forEach((doc) => {
+          console.log(doc.data())
           plants.push({
             id: doc.id,
             name: doc.data().name,
@@ -64,7 +63,7 @@ const Dashboard = () => {
     )
 
     //need to pull tags data to feed into plants Arr for more visual appeal
-    plants.forEach(plant => console.log(plant))
+    // plants.forEach(plant => console.log(plant))
 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
@@ -94,7 +93,7 @@ const Dashboard = () => {
 
   //delete a plant from users list of plant entries
   const deletePlant = (userPlants) => {
-    plantsRef
+    userPlantsRef
     .doc(userPlants.id)
     .delete()
     .then(() => {
@@ -108,53 +107,40 @@ const Dashboard = () => {
   return (
     <SafeAreaView style={styles.formContainer}>
       <FlatList
-        style={{height: '40%',}}
+        style={{height: '40%',width: '100%',}}
         data={plants}
-        numColumns={2}
-        renderItem={({item, index}) => (
-          <View style={{width:'50%'}}>
-            <Pressable
-              style={
-                index === plants.length-1 || index === plants.length-2
-                ? styles.container2
-                : styles.container}
-              onPress={() => navigation.navigate('UpdateModal', {item})}>
-              <View style={{flexDirection: 'row'}}>
-              <View style={{backgroundColor:'#034732', height: '100%', width: 40, justifyContent:'center'}}
-              onPress={() => deletePlant(item)}
-              >
-              <FontAwesome
-                name='trash-o'
-                 color='#F97068'
-                 style={styles.deleteIcon}
-                 onPress={() => deletePlant(item)}
-              />
-              </View>
-              <View style={styles.innerContainer}>
-                <Text style={styles.itemHeading}>
+        numColumns={1}
+        renderItem={({item, index}) => {
+            return (
+            <View key={item.index || index}>
+              <View style={{
+              flexDirection: 'column',
+              width: '95%',
+              marginLeft: '2.5%',
+              marginBottom: 1,
+              flex:1,
+              }}>
+                  <TouchableOpacity
+                  onPress={() => navigation.navigate('SearchPlant',item)}>
+                    <View style={{ flexDirection: 'row',
+                     overflow:'hidden',justifyContent: 'space-between',
+                    shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
+                      <View style={styles.textView}>
 
-                  {item.name.split(' ').map((word) => {
-                    return word[0].toUpperCase() + word.substr(1);
-                  }).join(' ')}
-                </Text>
-                <Text style={styles.subtitle}>
-                  {item.isPotted || item.isIndoors ? 'Potted' : ''}
-                </Text>
-                <Text style={styles.subtitle}>
-                  {!item.isIndoors ? 'Outdoors' : ''}
-                </Text>
-                <Text style={styles.subtitle}>
-                  {item.isHydroponic ? 'Hydroponic' : ''}
-                </Text>
+                      <View style={{marginLeft: 35, alignSelf:'center'}}>
+                      <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+                        {item.name}
+                      </Text>
+                      </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
               </View>
-              </View>
-            </Pressable>
-          </View>
-        )}
+            </View>
+            )
+        }}
       />
-      {/* {isLoading
-      ? <Text>Fetching The Weather</Text>
-      : <View> */}
+
       <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.8,
@@ -218,7 +204,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     alignSelf:'center'
   },
-
+  textView: {
+    height: 40,
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+  }
 })
 
 async function registerForPushNotificationsAsync() {

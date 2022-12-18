@@ -76,7 +76,7 @@ const PlantsByCategory = ({route, navigation}) => {
           renderItem={(item) => {
             // console.log(item)
              return (
-              <View key={item.index}>
+              <View key={item.index || item.index}>
                 <View style={{
                 flexDirection: 'column',
                 width: '95%',
@@ -128,7 +128,7 @@ const PlantsByCategory = ({route, navigation}) => {
               </View>
             )
           }} />}
-          {refreshing ? <ActivityIndicator /> : null}
+          {refreshing ? <ActivityIndicator style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
     </View>
   )
 }
