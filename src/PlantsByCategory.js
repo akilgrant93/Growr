@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
@@ -25,21 +25,29 @@ const PlantsByCategory = ({route, navigation}) => {
       }
     )
 
-
-
-    // console.log(snapshot.map((snapshot) => {
-    //   return snapshot.doc.data()
-    // }))
-
-    // console.log(snapshot)
-
-
   }, [])
   return (
     <View>
+      <ImageBackground
+          source={
+            route.params === 'edible'
+            ? require(`../assets/edible.jpg`)
+            : route.params === 'medicinal'
+            ? require(`../assets/medicinal.jpg`)
+            : route.params === 'fruit'
+            ? require(`../assets/fruit.jpg`)
+            : route.params === 'tropical'
+            ? require(`../assets/tropical.jpg`)
+            : route.params === 'succulent'
+            ? require(`../assets/succulent.jpg`)
+            : require(`../assets/hydroponic.jpg`)} resizeMode="cover">
+              <View style={{backgroundColor: "rgba(0, 0, 0, 0.25)"}}>
+                <Text style={{fontSize: 40, marginLeft: 45, fontWeight: 'bold', color: 'white', marginVertical: 10, }}>{`${route.params[0].toUpperCase()+route.params.slice(1)}s`}</Text>
+              </View>
+            </ImageBackground>
       {!plants
            ? <View></View>
-           :<FlatList style={{flexDirection:'column', width:'100%',marginTop: '5%'}}
+           :<FlatList style={{flexDirection:'column', width:'100%'}}
           data={plants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
@@ -62,10 +70,10 @@ const PlantsByCategory = ({route, navigation}) => {
                         <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                           {!item.item.commonName
                             ? item.item.scientificName.split(' ').map((word) => {
-                              return word[0].toUpperCase() + word.substr(1);
+                              return word
                             }).join(' ')
                             : item.item.commonName.split(' ').map((word) => {
-                              return word[0].toUpperCase() + word.substr(1);
+                              return word
                             }).join(' ')}
                         </Text>
 
