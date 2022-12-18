@@ -1,26 +1,46 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground, ActivityIndicator, RefreshControl } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
 
 const PlantsByCategory = ({route, navigation}) => {
+  const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
+  const [endCursor, setEndCursor] = useState({})
+  const snapshot = firebase.firestore().collection('plants').where('tags','array-contains', `${route.params[0].toUpperCase()+route.params.slice(1)}`).orderBy('scientificName')
 
   const getNextPlants = () => {
-
-  }
-
-  useEffect(() => {
-    console.log('params in plantsbyCategory',route.params)
-    //we will need to process route params for 'fruit', 'hydroponic', 'medicinal'
-
-    const snapshot = firebase.firestore().collection('plants').where('tags','array-contains', `${route.params[0].toUpperCase()+route.params.slice(1)}`).orderBy('scientificName').limit(25)
+    console.log('getting next plants')
+    console.log(endCursor)
+    snapshot
+    .startAfter(endCursor)
+    .limit(25)
     .onSnapshot(
       querySnapshot => {
         const plantsArr = []
         querySnapshot.forEach((plant) => {
           plantsArr.push(plant.data())
         })
+        setEndCursor(querySnapshot.docs[querySnapshot.docs.length-1])
+        let newdata = plants.concat(plantsArr)
+        setPlants(newdata)
+      }
+    )
+  }
+
+  useEffect(() => {
+    //we will need to process route params for 'fruit', 'hydroponic', 'medicinal'
+    snapshot
+    .limit(25)
+    .onSnapshot(
+      querySnapshot => {
+        const plantsArr = []
+        querySnapshot.forEach((plant) => {
+          plantsArr.push(plant.data())
+        })
+        setRefreshing(false);
+        setEndCursor(querySnapshot.docs[querySnapshot.docs.length-1])
+        // console.log(endCursor)
         setPlants(plantsArr)
       }
     )
@@ -49,10 +69,14 @@ const PlantsByCategory = ({route, navigation}) => {
            ? <View></View>
            :<FlatList style={{flexDirection:'column', width:'100%'}}
           data={plants}
+          onEndReached={getNextPlants}
+          onEndReachedThreshold={0.01}
+          scrollEventThrottle={150}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
+            // console.log(item)
              return (
-              <View>
+              <View key={item.index}>
                 <View style={{
                 flexDirection: 'column',
                 width: '95%',
@@ -69,7 +93,8 @@ const PlantsByCategory = ({route, navigation}) => {
                         <View style={{marginLeft: 35, alignSelf:'center'}}>
                         <Text style={{fontSize: 14, fontWeight: 'bold'}}>
                           {!item.item.commonName
-                            ? item.item.scientificName.split(' ').map((word) => {
+                            ?
+                            item.item.scientificName.split(' ').map((word) => {
                               return word
                             }).join(' ')
                             : item.item.commonName.split(' ').map((word) => {
@@ -103,6 +128,7 @@ const PlantsByCategory = ({route, navigation}) => {
               </View>
             )
           }} />}
+          {refreshing ? <ActivityIndicator /> : null}
     </View>
   )
 }
