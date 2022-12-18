@@ -1,5 +1,5 @@
-import { StyleSheet, View, Text, SafeAreaView, TextInput, TouchableOpacity, Keyboard, FlatList } from 'react-native'
-import React, {useState} from 'react'
+import { StyleSheet, View, Text, SafeAreaView, TextInput, TouchableOpacity, Keyboard, FlatList, ImageBackground } from 'react-native'
+import React, {useState, useEffect} from 'react'
 import { firebase } from '../config'
 import CustomSVG from './CustomSVG'
 import { FontAwesome } from '@expo/vector-icons'
@@ -10,7 +10,13 @@ const SearchPlant = ({route, navigation}) => {
   const [initialValue, setInitialValue] = useState({})
   const [previousStart, setPreviousStart] = useState({})
   const [value, setValue]= useState('')
-  const [tableData, setTableData]= useState([])
+  const [tableData, setTableData] = useState([])
+  const [edible, setEdible] = useState([])
+  const [herbal, setHerbal] = useState([])
+  const [tropical, setTropical] = useState([])
+  const [aquatic, setAquatic] = useState([])
+  const [succulent, setSucculent] = useState([])
+  const [fruit, setFruit] = useState([])
   const limit = 12
 
     const searchByName =  async ({search = ''}) => {
@@ -89,11 +95,6 @@ const SearchPlant = ({route, navigation}) => {
     }
 
     const next = async({search = value }) => {
-      console.log('initial value',initialValue.data().scientificName)
-      console.log('table data',tableData[0].scientificName)
-      console.log(
-        '??????',initialValue.data().scientificName === tableData[0].scientificName
-      )
       if(search[search.length-1] === ' '){
         search = search.slice(0,search.length-1)
       }
@@ -127,7 +128,6 @@ const SearchPlant = ({route, navigation}) => {
         setPreviousStart(startCursor)
         setStartCursor(snapshot.docs[0])
         setEndCursor(snapshot.docs[snapshot.docs.length-1])
-        console.log('endcursor after clicking next',endCursor.data())
     }
 
 
@@ -287,6 +287,73 @@ const SearchPlant = ({route, navigation}) => {
               />
       </TouchableOpacity>}
       </View>
+
+{/* resize these images */}
+      {tableData.length < 1 ?
+      <View style={{flexDirection:'row', flex:1, alignItems:'center', justifyContent: 'center', marginTop: 10}}>
+        <ImageBackground source={require('../assets/edible.jpg')} resizeMode="cover" style={{flex: .9}}>
+            <Text style={{color: "white",
+    fontSize: 30,
+    lineHeight: 184,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Edible</Text>
+        </ImageBackground>
+
+        <ImageBackground source={require('../assets/medicinal.jpg')} resizeMode="cover" style={{flex: .9}}>
+            <Text style={{color: "white",
+    fontSize: 30,
+    lineHeight: 184,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Medicinal</Text>
+        </ImageBackground>
+      </View>
+      : <View/>}
+
+      {tableData.length < 1 ?
+      <View style={{flexDirection:'row', flex:1, alignItems:'center', justifyContent: 'center'}}>
+        <ImageBackground source={require('../assets/fruit.jpg')} resizeMode="cover" style={{flex: .9}}>
+            <Text style={{color: "white",
+    fontSize: 30,
+    lineHeight: 184,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Fruit</Text>
+        </ImageBackground>
+
+        <ImageBackground source={require('../assets/tropical.jpg')} resizeMode="cover" style={{flex: .9}}>
+            <Text style={{color: "white",
+    fontSize: 30,
+    lineHeight: 184,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Tropical</Text>
+        </ImageBackground>
+      </View>
+      : <View/>}
+
+      {tableData.length < 1 ?
+      <View style={{flexDirection:'row', flex:1, alignItems:'center', justifyContent: 'center'}}>
+        <ImageBackground source={require('../assets/succulent.jpg')} resizeMode="cover" style={{flex: .9}}>
+            <Text style={{color: "white",
+    fontSize: 30,
+    lineHeight: 184,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Succulent</Text>
+        </ImageBackground>
+
+        <ImageBackground source={require('../assets/hydroponic.jpg')} resizeMode="cover" style={{flex: .9}}>
+            <Text style={{color: "white",
+    fontSize: 30,
+    lineHeight: 184,
+    fontWeight: "bold",
+    textAlign: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Hydroponic</Text>
+        </ImageBackground>
+      </View>
+      : <View/>}
     </SafeAreaView>
   )
 }
