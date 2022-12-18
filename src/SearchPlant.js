@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, SafeAreaView, TextInput, TouchableOpacity, Keyboard, FlatList, ImageBackground } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import { firebase } from '../config'
 import CustomSVG from './CustomSVG'
 import { FontAwesome } from '@expo/vector-icons'
@@ -12,12 +12,6 @@ const SearchPlant = ({route, navigation}) => {
   const [previousStart, setPreviousStart] = useState({})
   const [value, setValue]= useState('')
   const [tableData, setTableData] = useState([])
-  const [edible, setEdible] = useState([])
-  const [herbal, setHerbal] = useState([])
-  const [tropical, setTropical] = useState([])
-  const [aquatic, setAquatic] = useState([])
-  const [succulent, setSucculent] = useState([])
-  const [fruit, setFruit] = useState([])
   const limit = 12
 
     const searchByName =  async ({search = ''}) => {
