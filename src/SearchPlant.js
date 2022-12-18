@@ -12,7 +12,6 @@ const SearchPlant = ({route, navigation}) => {
   const [value, setValue]= useState('')
   const [tableData, setTableData]= useState([])
   const limit = 12
-  const plantsRef= firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
     const searchByName =  async ({search = ''}) => {
       if(search[search.length-1] === ' '){
@@ -143,7 +142,6 @@ const SearchPlant = ({route, navigation}) => {
 
     const cancelSearch = () => {
       setValue('')
-      // setTableHead(['Name'])
       setTableData([])
     }
 
@@ -221,7 +219,6 @@ const SearchPlant = ({route, navigation}) => {
         underlineColorAndroid='transparent'
         autoCapitalize='none'
       />
-      {/* make cancel color style responsive to whether or not base text has been changed*/}
       <TouchableOpacity style={styles.button}onPress={cancelSearch}>
          <Text style={{color:'white', fontWeight:'bold'}}>X</Text>
       </TouchableOpacity>
@@ -361,6 +358,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    // marginBottom: 5,
   }
 })
