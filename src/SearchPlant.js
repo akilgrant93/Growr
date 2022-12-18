@@ -3,6 +3,7 @@ import React, {useState, useEffect} from 'react'
 import { firebase } from '../config'
 import CustomSVG from './CustomSVG'
 import { FontAwesome } from '@expo/vector-icons'
+import CategoryLink from './CategoryLink'
 
 const SearchPlant = ({route, navigation}) => {
   const [startCursor, setStartCursor] = useState({})
@@ -288,72 +289,23 @@ const SearchPlant = ({route, navigation}) => {
       </TouchableOpacity>}
       </View>
 
-{/* resize these images */}
       {tableData.length < 1 ?
-      <View style={{flexDirection:'row', flex:1, alignItems:'center', justifyContent: 'center', marginTop: 10}}>
-        <ImageBackground source={require('../assets/edible.jpg')} resizeMode="cover" style={{flex: .9}}>
-            <Text style={{color: "white",
-    fontSize: 30,
-    lineHeight: 184,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Edible</Text>
-        </ImageBackground>
-
-        <ImageBackground source={require('../assets/medicinal.jpg')} resizeMode="cover" style={{flex: .9}}>
-            <Text style={{color: "white",
-    fontSize: 30,
-    lineHeight: 184,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Medicinal</Text>
-        </ImageBackground>
+      <View style={{marginTop: 10}}>
+        <View style={{flexDirection:'row'}}>
+        <CategoryLink navigation={navigation} type='edible'/>
+        <CategoryLink navigation={navigation} type='medicinal'/>
+        </View>
+        <View style={{flexDirection:'row'}}>
+        <CategoryLink navigation={navigation} type='fruit'/>
+        <CategoryLink navigation={navigation} type='tropical'/>
+        </View>
+        <View style={{flexDirection:'row'}}>
+        <CategoryLink navigation={navigation} type='succulent'/>
+        <CategoryLink navigation={navigation} type='hydroponic'/>
+        </View>
       </View>
       : <View/>}
 
-      {tableData.length < 1 ?
-      <View style={{flexDirection:'row', flex:1, alignItems:'center', justifyContent: 'center'}}>
-        <ImageBackground source={require('../assets/fruit.jpg')} resizeMode="cover" style={{flex: .9}}>
-            <Text style={{color: "white",
-    fontSize: 30,
-    lineHeight: 184,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Fruit</Text>
-        </ImageBackground>
-
-        <ImageBackground source={require('../assets/tropical.jpg')} resizeMode="cover" style={{flex: .9}}>
-            <Text style={{color: "white",
-    fontSize: 30,
-    lineHeight: 184,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Tropical</Text>
-        </ImageBackground>
-      </View>
-      : <View/>}
-
-      {tableData.length < 1 ?
-      <View style={{flexDirection:'row', flex:1, alignItems:'center', justifyContent: 'center'}}>
-        <ImageBackground source={require('../assets/succulent.jpg')} resizeMode="cover" style={{flex: .9}}>
-            <Text style={{color: "white",
-    fontSize: 30,
-    lineHeight: 184,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Succulent</Text>
-        </ImageBackground>
-
-        <ImageBackground source={require('../assets/hydroponic.jpg')} resizeMode="cover" style={{flex: .9}}>
-            <Text style={{color: "white",
-    fontSize: 30,
-    lineHeight: 184,
-    fontWeight: "bold",
-    textAlign: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.25)"}}>Hydroponic</Text>
-        </ImageBackground>
-      </View>
-      : <View/>}
     </SafeAreaView>
   )
 }

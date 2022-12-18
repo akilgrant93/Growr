@@ -14,7 +14,8 @@ import Settings from "./src/Settings";
 import MyCalendar from "./src/Calendar";
 import SearchPlant from "./src/SearchPlant";
 import PostModal from "./src/PostModal";
-import UpdateModal from './src/UpdateModal'
+import UpdateModal from './src/UpdateModal';
+import PlantsByCategory from './src/PlantsByCategory';
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator();
@@ -150,6 +151,10 @@ function App(){
         <Stack.Screen
         name="SearchPlant"
         component={PostModal}
+        />
+        <Stack.Screen
+        name="PlantsByCategory"
+        component={PlantsByCategory}
         />
         </Stack.Group>
     </Stack.Navigator>
