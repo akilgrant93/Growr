@@ -8,7 +8,7 @@ const SearchPlant = ({route, navigation}) => {
   const [startCursor, setStartCursor] = useState({})
   const [endCursor, setEndCursor] = useState({})
   const [initialValue, setInitialValue] = useState({})
-  const [count, setCount]= useState(0)
+  const [previousStart, setPreviousStart] = useState({})
   const [value, setValue]= useState('')
   const [tableData, setTableData]= useState([])
   const limit = 12
@@ -28,6 +28,9 @@ const SearchPlant = ({route, navigation}) => {
 
       const firstValue = snapshot.docs[0]
       setInitialValue(firstValue)
+      setStartCursor(firstValue)
+      setStartCursor(firstValue)
+      setPreviousStart()
       setEndCursor(snapshot.docs[snapshot.docs.length-1])
 
       return snapshot.docs.reduce((acc, doc) => {
@@ -51,8 +54,39 @@ const SearchPlant = ({route, navigation}) => {
       }, '');
     }
 
-    const prev = async() => {
-      console.log('prev clicked')
+    const prev = async({search = value }) => {
+      if(search[search.length-1] === ' '){
+        search = search.slice(0,search.length-1)
+      }
+      const snapshot = await firebase.firestore().collection('plants')
+      .where('keywords', 'array-contains', search.toLowerCase())
+        .orderBy('scientificName','desc')
+        .limit(limit)
+        .startAfter(endCursor)
+        .get();
+
+        let arr = []
+        for (let i = 0; i < snapshot.docs.length; i++){
+          const name = snapshot.docs[i].data()
+          arr.push({
+            commonName: name.commonName,
+            scientificName: name.scientificName,
+            carnivorous: name.carnivorous,
+            diseases:
+            name.diseases,
+            edible: name.edible,
+            familyName: name.familyName,
+            freshWaterAquatic: name.freshWaterAquatic,
+            herb: name.herb,
+            medicinalUse: name.medicinalUse,
+            poisonous: name.poisonous,
+            succulent: name.succulent,
+            tags: name.tags,
+            key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`})
+        }
+        setTableData(arr)
+        setStartCursor(snapshot.docs[0])
+        setEndCursor(snapshot.docs[snapshot.docs.length-1])
     }
 
     const next = async({search = value }) => {
@@ -64,8 +98,6 @@ const SearchPlant = ({route, navigation}) => {
       if(search[search.length-1] === ' '){
         search = search.slice(0,search.length-1)
       }
-      console.log('end cursor',endCursor)
-
       const snapshot = await firebase.firestore().collection('plants')
       .where('keywords', 'array-contains', search.toLowerCase())
         .orderBy('scientificName')
@@ -93,8 +125,10 @@ const SearchPlant = ({route, navigation}) => {
             key: `${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`})
         }
         setTableData(arr)
+        setPreviousStart(startCursor)
         setStartCursor(snapshot.docs[0])
         setEndCursor(snapshot.docs[snapshot.docs.length-1])
+        console.log('endcursor after clicking next',endCursor.data())
     }
 
 
