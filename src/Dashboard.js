@@ -23,7 +23,7 @@ const Dashboard = () => {
   const [notification, setNotification] = useState(false);
   const [nextWateringDays, setNextWateringDays] = useState([])
   const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
-  const navigation = useNavigation( )
+  const navigation = useNavigation()
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -107,7 +107,7 @@ const Dashboard = () => {
   return (
     <SafeAreaView style={styles.formContainer}>
       <FlatList
-        style={{height: '40%',width: '100%',}}
+        style={{height: '40%',width: '100%', paddingTop: 5}}
         data={plants}
         numColumns={1}
         renderItem={({item, index}) => {
@@ -120,8 +120,9 @@ const Dashboard = () => {
               marginBottom: 1,
               flex:1,
               }}>
+                {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
-                  onPress={() => navigation.navigate('SearchPlant',item)}>
+                  onPress={() => navigation.navigate('UpdateModal',item)}>
                     <View style={{ flexDirection: 'row',
                      overflow:'hidden',justifyContent: 'space-between',
                     shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>

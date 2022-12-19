@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity } from 'react-native'
 import { StatusBar } from 'expo-status-bar';
 import React, {useState, useEffect} from 'react'
+import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
 import {firebase} from '../config'
 import { useFocusEffect } from '@react-navigation/native';
 
 const MyCalendar = () => {
+  const navigation = useNavigation()
   const [wateringDays, setWateringDays] = useState([])
   const [nextWateringDays, setNextWateringDays] = useState([])
   const [plants, setPlants] = useState([])
@@ -45,7 +47,6 @@ const MyCalendar = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      console.log('here')
       const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
       let nextWateringDaysVisInit = []
       let lastWateringDaysVisInit = []
@@ -96,55 +97,152 @@ const customDatesStylesCallback = date => {
         if(nextWateringDays.includes(moment(date).startOf('day').toString())){
           return {
           style:{
-            backgroundColor: '#909',
+            backgroundColor: '#034732',
           },
           textStyle: {
-            color: '#0f0',
+            color: 'white',
             fontWeight: 'bold',
           }
         };}
         if(wateringDays.includes(moment(date).startOf('day').toString())){
           return {
           style:{
-            backgroundColor: 'red',
+            backgroundColor: '#C9E4CA',
           },
           textStyle: {
-            color: '#0f0',
+            color: 'white',
             fontWeight: 'bold',
           }
         };}
+        else {
+          return {
+            textStyle: {
+              color: 'black',
+              fontWeight: 'bold',
+            }
+          }
+        }
   }
 }
 
 
   return (
-    <View style={{alignItems:'center', marginTop: '3%'}}>
+    <View style={{alignItems:'center', paddingTop: '3%', height: '100%', backgroundColor:'#E4F1E4'}}>
       <CalendarPicker onDateChange={changeData}
+      monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
+      yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
       <StatusBar style="auto" />
-      <View style={{marginTop: '3%'}}>
-      <Text style={{alignSelf:'center', fontSize: 16, fontWeight:'600'}}>
-        {moment(date).format("dddd, MMMM Do YYYY")}
-      </Text>
-        {/* need to check on inner conditional tomorrow */}
-      <View style={{width: '75%', marginTop: '2%'}}>
+      <View style={styles.textView}>
+          <View style={{width: '95%', alignSelf:'center'}}>
+
       {!lastWateredData.length && !nextWateredData.length ?
-      <Text>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text> : <View/>}
-      </View>
-      <View style={{width: '75%'}}>
-      {nextWateredData.length ? nextWateredData.map((dateInfo, idx) => {
-        return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} needs water.</Text>
-      }) :<View/>}
-      </View>
-      <View style={{width: '75%'}}>
+      <Text style={{color:'white', fontSize:20, fontWeight:'bold', alignSelf:'center', marginTop: '35%'}}>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text>
+      : <View/>}
 
+      {/* Needs Water */}
+      {nextWateredData.length ?
+      <View style={{height: 176}}>
+        <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>What needs water:</Text>
+        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10}}>
+        {moment(date).format("dddd, MMMM Do YYYY")}
+        </Text>
+      <FlatList
+        style={{width: '100%'}}
+        data={nextWateredData}
+        numColumns={2}
+        renderItem={({item, index}) => {
+            return (
+            <View key={item.index || index} style={{width:'50%'}}>
+              <View style={{
+              flexDirection: 'column',
+              width: '95%',
+              marginLeft: '2.5%',
+              marginBottom: 1,
+              flex:1,
+              }}>
+                {/* neeeds indoors and tags modularity */}
+                  <TouchableOpacity
+                  onPress={() => navigation.navigate('UpdateModal',item)}>
+                    <View style={{ flexDirection: 'row',
+                    height: 40,
+                     overflow:'hidden',
+                     alignItems:'center',
+                     justifyContent: 'space-between',
+                    shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
+                      <View>
+
+                      <View >
+                      <Text style={{fontSize: 12,
+                        fontWeight: 'bold', paddingLeft: 5}}>
+                        {item.name}
+                      </Text>
+                      </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+              </View>
+            </View>
+            )
+        }}
+      />
+      </View>
+      :<View/>}
+      {/* Was Watered */}
+
+      {lastWateredData.length ?
+      <View style={{height: 176}}>
+        <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>What you watered</Text>
+        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10}}>
+        {moment(date).format("dddd, MMMM Do YYYY")}
+        </Text>
+      <FlatList
+        style={{width: '100%'}}
+        data={lastWateredData}
+        numColumns={2}
+        renderItem={({item, index}) => {
+            return (
+            <View key={item.index || index} style={{width:'50%'}}>
+              <View style={{
+              flexDirection: 'column',
+              width: '95%',
+              marginLeft: '2.5%',
+              marginBottom: 1,
+              flex:1,
+              }}>
+                {/* neeeds indoors and tags modularity */}
+                  <TouchableOpacity
+                  onPress={() => navigation.navigate('UpdateModal',item)}>
+                    <View style={{ flexDirection: 'row',
+                    height: 40,
+                     overflow:'hidden',
+                     alignItems:'center',
+                     justifyContent: 'space-between',
+                    shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
+                      <View>
+
+                      <View >
+                      <Text style={{fontSize: 12,
+                        fontWeight: 'bold', paddingLeft: 5}}>
+                        {item.name}
+                      </Text>
+                      </View>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+              </View>
+            </View>
+            )
+        }}
+      />
+      </View>
+      :<View/>}
+{/*
       {lastWateredData.length ? lastWateredData.map((dateInfo, idx) => {
-        return <Text style={{marginTop: '2%'}} key={idx}>Your {dateInfo.name} was watered</Text>
-      }) : <View/>}
+        return <Text style={{marginTop: '2%', color: 'white'}} key={idx}>Your {dateInfo.name} was watered</Text>
+      }) : <View/>} */}
+          </View>
       </View>
-      </View>
-
-
     </View>
   )
 }
@@ -166,4 +264,12 @@ const styles = StyleSheet.create({
   dateText: {
     margin: 16,
   },
+  textView: {
+    paddingTop: '3%',
+    marginTop: '3%',
+    backgroundColor: '#034732',
+    width: '100%',
+    height: '100%',
+    overflow: 'scroll'
+  }
 });

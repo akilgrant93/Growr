@@ -160,7 +160,7 @@ const SearchPlant = ({route, navigation}) => {
                 marginBottom: 1,
                 }}>
                     <TouchableOpacity
-                    onPress={() => navigation.navigate('SearchPlant',item)}>
+                    onPress={() => navigation.navigate('PostModal',item)}>
                       <View style={{ flexDirection: 'row',
                        overflow:'hidden',justifyContent: 'space-between',
                       shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>

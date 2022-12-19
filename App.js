@@ -149,7 +149,7 @@ function App(){
         component={UpdateModal}
         />
         <Stack.Screen
-        name="SearchPlant"
+        name="PostModal"
         component={PostModal}
         />
         <Stack.Screen
