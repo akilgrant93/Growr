@@ -2,9 +2,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Alert } from "react-native";
+import { TouchableOpacity, Alert, View } from "react-native";
 import { firebase } from './config'
 import { FontAwesome } from '@expo/vector-icons'
+import Svg, { Path } from 'react-native-svg'
 import { CalendarDaysIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
 import * as Location from 'expo-location';
 import Signin from "./src/Signin";
@@ -52,9 +53,9 @@ function Home() {
       component={Dashboard}
       options={({route}) => ({
         headerRight: () => (
+          <View style={{flexDirection:'row', marginRight: 10}}>
           <TouchableOpacity onPress={() => Alert.alert(
-            "Alert Title",
-            "My Alert Msg",
+            "Settings",
             [
               {
                 text: "Change Password",
@@ -77,6 +78,10 @@ function Home() {
                    style={{marginRight: 10}}
                 />
           </TouchableOpacity>
+          <TouchableOpacity onPress={() => {firebase.auth().signOut()}}>
+          <Svg xmlns="http://www.w3.org/2000/svg" height={20} fill={'#034732'} width={20} viewBox="0 0 512 512"><Path d="M160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96C43 32 0 75 0 128V384c0 53 43 96 96 96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H96c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32h64zM504.5 273.4c4.8-4.5 7.5-10.8 7.5-17.4s-2.7-12.9-7.5-17.4l-144-136c-7-6.6-17.2-8.4-26-4.6s-14.5 12.5-14.5 22v72H192c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32H320v72c0 9.6 5.7 18.2 14.5 22s19 2 26-4.6l144-136z"/></Svg>
+            </TouchableOpacity>
+          </View>
         ),
         tabBarIcon: ({color, size}) => (
           <FontAwesome
