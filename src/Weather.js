@@ -38,22 +38,19 @@ const Weather = () => {
       if(userData.location){
         setLocation(userData.location)
         fetchWeatherData(userData.location.city)
-        setLocation(userData.location)
-      } else {
-        let { status } = await Location.requestForegroundPermissionsAsync();
-
-        //i might refactor this
-        if (status !== 'granted') {
-          Alert.alert('Permission to access location is required to check local weather conditions');
-          return;
-        }
-
-        let locationData = await Location.getCurrentPositionAsync({});
-        const res = await Location.reverseGeocodeAsync(locationData.coords)
-        fetchWeatherData(res[0].city)
-        setLocation(res[0])
-        userRef.update({location:res[0]})
       }
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      //i might refactor this
+      if (status !== 'granted') {
+        Alert.alert('Permission to access location is required to check local weather conditions');
+        return;
+      }
+      let locationData = await Location.getCurrentPositionAsync({});
+      const res = await Location.reverseGeocodeAsync(locationData.coords)
+      fetchWeatherData(res[0].city)
+      setLocation(res[0])
+      userRef.update({location:res[0]})
 
     })()
   }, [])

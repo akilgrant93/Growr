@@ -42,7 +42,6 @@ const Dashboard = () => {
         const plants = []
         const wateringDays = []
         querySnapshot.forEach((doc) => {
-          console.log(doc.data())
           plants.push({
             id: doc.id,
             name: doc.data().name,

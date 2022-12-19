@@ -189,7 +189,6 @@ const customDatesStylesCallback = date => {
       </View>
       :<View/>}
 
-
       {/* Was Watered - load tags into flatlist */}
       {lastWateredData.length ?
       <View style={{height: 176}}>
@@ -238,6 +237,16 @@ const customDatesStylesCallback = date => {
       />
       </View>
       :<View/>}
+
+      {lastWateredData.length
+      ? <Text style={{color:'#E4F1E4', fontSize:15, fontWeight:'bold', marginLeft: '1.5%', marginTop: 5}}>Nothing needs water</Text>
+      : <View/>
+      }
+
+      {nextWateredData.length
+      ? <Text style={{color:'#E4F1E4', fontSize:15, fontWeight:'bold', marginLeft: '1.5%', marginTop: 5}}>Nothing was watered</Text>
+      : <View/>
+      }
 {/*
       {lastWateredData.length ? lastWateredData.map((dateInfo, idx) => {
         return <Text style={{marginTop: '2%', color: 'white'}} key={idx}>Your {dateInfo.name} was watered</Text>
