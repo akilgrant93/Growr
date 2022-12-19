@@ -60,12 +60,10 @@ const MyCalendar = () => {
             nextWateringDaysInit.push(moment(plant.data().nextWateringDate).startOf('day').toString())
             wateringDaysInit.push(plant.data().wateringDates)
 
-            // console.log(moment().startOf('day').valueOf())
             if(moment().startOf('day').valueOf() === plant.data().nextWateringDate){
               nextWateringDaysVisInit.push(plant.data())
             }
 
-            // console.log('plant.data()',plant.data())
             if(plant.data().wateringDates.includes(moment().startOf('day').valueOf())){
               lastWateringDaysVisInit.push(plant.data())
             }

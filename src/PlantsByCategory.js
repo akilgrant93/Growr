@@ -10,8 +10,6 @@ const PlantsByCategory = ({route, navigation}) => {
   const snapshot = firebase.firestore().collection('plants').where('tags','array-contains', `${route.params[0].toUpperCase()+route.params.slice(1)}`).orderBy('scientificName')
 
   const getNextPlants = () => {
-    console.log('getting next plants')
-    console.log(endCursor)
     snapshot
     .startAfter(endCursor)
     .limit(25)
@@ -40,7 +38,6 @@ const PlantsByCategory = ({route, navigation}) => {
         })
         setRefreshing(false);
         setEndCursor(querySnapshot.docs[querySnapshot.docs.length-1])
-        // console.log(endCursor)
         setPlants(plantsArr)
       }
     )
@@ -74,7 +71,6 @@ const PlantsByCategory = ({route, navigation}) => {
           scrollEventThrottle={150}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
-            // console.log(item)
              return (
               <View key={item.index || item.index}>
                 <View style={{

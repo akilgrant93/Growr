@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native'
+import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
 import WeatherInfo from './WeatherInfo';
-import { ArrowUpRightIcon } from "react-native-heroicons/solid";
+import moment from 'moment';
 
 const api_key = 'a3999e97ddb681be056baca3b261d939'
 
@@ -58,24 +58,22 @@ const Weather = () => {
   if(!loaded){
     return (
       <View style={styles.container}>
-        {/* like any splash screen you will need to add some of the UI here as a "preload" fake */}
-        <View style={styles.header}>
-        {/*triggers the weather panel expansion */}
-      <ArrowUpRightIcon size={16} style={{color:'white',}}/>
+        <SafeAreaView sstyles={{flex: 1}}>
+      <View style={{alignItems:'center'}}>
+          <Text style={styles.title}>{location.city}</Text>
       </View>
+      <Text style={styles.txt}>{moment().format('MMMM d, YYYY')}</Text>
+      <Text style={styles.txt}>{moment().format('h:mma')}</Text>
         <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
           <ActivityIndicator size='large' color="green"/>
         </View>
+        </SafeAreaView>
       </View>
     )
   }
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        {/*triggers the weather panel expansion this needs to be fed into weatherinfo but somehow passed upwards*/}
-      {/* <ArrowUpRightIcon size={20} style={{color:'#034732',}}/> */}
-      </View>
       <WeatherInfo weatherData={weatherData}/>
     </View>
   )
@@ -117,5 +115,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600'
   },
-
+  title: {
+    width: '100%',
+    textAlign:'center',
+    fontSize: 19,
+    fontWeight:'bold',
+    color: '#034732',
+    marginTop: 10,
+  },
+  txt: {
+    fontSize: 10,
+    color: '#034732',
+    fontWeight: 'bold',
+    alignSelf:'center',
+  },
 })

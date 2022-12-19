@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   largeIcon: {
     width: 100,
     height: 100,
-    alignItems:'center',
+    alignSelf:'center',
   },
   currentTemp: {
     fontSize: 10,

@@ -79,7 +79,6 @@ const PostModal = ({route, navigation}) => {
       }
       }
 
-      // console.log('plant',plant)
     //if the common name is bugged
     if(typeof plant === 'string'){
       postUserPlant(
@@ -124,7 +123,6 @@ const PostModal = ({route, navigation}) => {
     isIndoors,
     isHydroponic,
     isSucculent, notes, notificationInterval, lastWatered,tags) => {
-      console.log('TAGS',tags)
     const one_day=1000*60*60*24;
     const now = moment()
     const today = now.startOf('day')
@@ -276,8 +274,6 @@ async function createCalendar() {
     ownerAccount: 'personal',
     accessLevel: Calendar.CalendarAccessLevel.OWNER,
   });
-
-  console.log(`Your new calendar ID is: ${newCalendarID}`);
   return newCalendarID;
 }
 
@@ -441,7 +437,6 @@ useEffect(() => {
           minimumValue={0}
           value={0}
           onSlidingStart={value => setHoverValue(parseInt(value))}
-          // onSlidingComplete={value => console.log(sliderValue)}
           step={1}
                 />
                 {/* needs to say "last resevior change" if hydroponic */}
