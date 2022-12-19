@@ -137,14 +137,14 @@ const customDatesStylesCallback = date => {
           <View style={{width: '95%', alignSelf:'center'}}>
 
       {!lastWateredData.length && !nextWateredData.length ?
-      <Text style={{color:'white', fontSize:20, fontWeight:'bold', alignSelf:'center', marginTop: '35%'}}>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text>
+      <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', alignSelf:'center', marginTop: '35%'}}>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text>
       : <View/>}
 
-      {/* Needs Water */}
+      {/* Needs Water - load tags into flatlist*/}
       {nextWateredData.length ?
       <View style={{height: 176}}>
-        <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>What needs water:</Text>
-        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10}}>
+        <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', marginLeft: '2.5%',}}>What needs water:</Text>
+        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10, marginLeft: '2.5%',}}>
         {moment(date).format("dddd, MMMM Do YYYY")}
         </Text>
       <FlatList
@@ -188,12 +188,13 @@ const customDatesStylesCallback = date => {
       />
       </View>
       :<View/>}
-      {/* Was Watered */}
 
+
+      {/* Was Watered - load tags into flatlist */}
       {lastWateredData.length ?
       <View style={{height: 176}}>
-        <Text style={{color:'white', fontSize:20, fontWeight:'bold'}}>What you watered</Text>
-        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10}}>
+        <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', marginLeft: '2.5%',}}>What you watered</Text>
+        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10, marginLeft: '2.5%',}}>
         {moment(date).format("dddd, MMMM Do YYYY")}
         </Text>
       <FlatList
