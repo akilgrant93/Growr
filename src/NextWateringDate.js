@@ -1,5 +1,5 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import moment from 'moment';
 import {firebase} from '../config'
 import { CalendarDaysIcon } from 'react-native-heroicons/solid';
@@ -13,21 +13,18 @@ import Animated, {
 
 const NextWateringDate = (props) => {
   const pressed = useSharedValue(false);
-
   const scaleAnimation = useAnimatedStyle(() => {
     return {
       marginLeft: withSpring(pressed.value ? '-50%' : '0%'),
       width: withSpring(pressed.value ? '100%' : '50%') ,
     };
   });
-
   const uas = useAnimatedStyle(() => {
     return {
       width: withSpring(pressed.value ? '50%' : '100%'),
       marginLeft: withSpring(pressed.value ? '-40%' : '25%'),
     };
   });
-
   const expand = useAnimatedGestureHandler({
     onStart: (event, ctx) => {
       pressed.value = true;
@@ -37,43 +34,40 @@ const NextWateringDate = (props) => {
     },
   });
 
-  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-
+  useEffect(() => {
+    // console.log('PLANTS',props.plants.nextWateringDate)
+  }, [])
   return (
     <TapGestureHandler onGestureEvent={expand}>
       <Animated.View
         style={[styles.container, scaleAnimation]}
       >
-          <View style={{width: '100%', flexDirection:'row', justifyContent:'center', marginTop: 8}}>
-            <Text style={{fontSize: 15, textAlign:'center', alignSelf:'center', fontWeight: 'bold',
-             color: 'white'}}>Next Watering:</Text>
-          </View>
-
           <View style={{flexDirection:'row'}}>
           <Animated.View style={[uas,{flexDirection:'row', justifyContent:'flex-start'}]}>
 
-          <View style={styles.pos}>
-          <View >
+          <View style={{justifyContent:'center', alignItems:'center', width:50}}>
+          <Text style={{fontSize: 15, textAlign:'center', fontWeight: 'bold',
+             color: 'white', width: 75}}>Watering Dates</Text>
           <CalendarDaysIcon size={60} style={{color:'#F97068'}}/>
-          <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('MMM')}</Text>
-          <Text style={{fontSize: 20, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('Do')}</Text>
-          </View>
           </View>
 
-          <View style={{marginLeft: 10}}>
+          <View style={{marginLeft: 20, width: '160%'}}>
             <FlatList
+            style={{}}
             data={[...new Set(props.nextWateringDays)]}
             renderItem={({item, index}) => {
-              console.log('item',item)
-              console.log(index)
-              if(index > 0 && index < 8){
+              // console.log('item',item)
+              console.log(props.nextWateringDays.length)
+              if(index < 8){
                 return (
-                <View style={{flexDirection:'row'}}>
-                <Text key={index} style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>{moment(item).format('MMM Do')}</Text>
+                <View style={styles.dateStyle}>
+                <Text key={index} style={{marginLeft: 5, fontSize: 14, padding: 5,fontWeight: 'bold', marginTop: 20, color: 'white'}}>{moment(item).format('MMM Do')}</Text>
                 <View>
-                  {props.nextWateringDays.length > 2
-                  ? <View>
-
+                  {props.nextWateringDays.length > 1
+                  ? <View style={{ width: 200}}>
+                    {props.plants.map((plant, idx) => {
+                      if(item === plant.nextWateringDate){return <Text style={idx === props.plants.length-1 ? {padding: 3, backgroundColor:'white', fontSize:10} : {padding: 3, backgroundColor:'white', marginBottom: 1, fontSize:10}} key={idx}>{plant.name}</Text>}
+                    })}
                   </View>
                   : null}
                 </View>
@@ -85,8 +79,6 @@ const NextWateringDate = (props) => {
           </View>
 
           </Animated.View>
-
-            {/* extra data goes here, uas2 will be factored based on its size */}
           </View>
 
       </Animated.View>
@@ -105,9 +97,19 @@ const styles = StyleSheet.create({
     height: '100%',
     alignItems: 'center',
   },
-  pos: {
-    display:'flex',
+  firstDateStyle: {
+    backgroundColor: '#E4F1E4',
+    borderTopLeftRadius: 5,
+    marginBottom: 1,
+    width: '100%',
     flexDirection:'row',
-    marginTop: 15,
+    justifyContent:'space-between'
+  },
+  dateStyle: {
+    backgroundColor: 'rgba(228, 241, 228, .25)',
+    marginBottom: 1,
+    width: '100%',
+    flexDirection:'row',
+    justifyContent:'space-between'
   }
 })

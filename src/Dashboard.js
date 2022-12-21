@@ -51,7 +51,7 @@ const Dashboard = () => {
             notes: doc.data().notes,
             notificationInterval: doc.data().notificationInterval,
             notificationID: doc.data().notificationID,
-            firestoreID: doc.data().firestoreID,
+            nextWateringDate: doc.data().nextWateringDate,
           })
           wateringDays.push(doc.data().nextWateringDate)
         })
@@ -146,7 +146,7 @@ const Dashboard = () => {
     shadowRadius: 2,
     elevation: 5}}>
           <Weather />
-          <NextWateringDate nextWateringDays={nextWateringDays}/>
+          <NextWateringDate plants={plants} nextWateringDays={nextWateringDays}/>
       </View>
         {/* </View>} */}
     </SafeAreaView>
