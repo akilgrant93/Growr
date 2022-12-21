@@ -103,9 +103,6 @@ const Weather = () => {
     return (
       <View style={styles.container}>
         <SafeAreaView style={{flex: 1}}>
-        <View style={{width: '100%', flexDirection:'row', justifyContent:'flex-end'}}>
-        <Svg style={{}} height={40} width={40} viewBox="0 0 36 36" fill={'#044732'}><Path d="M0,0l36,36V0H0z M29.9,12.4c0,0.7-0.6,1.3-1.3,1.3s-1.3-0.6-1.3-1.3l0-2.7l-4.8,4.8c-0.3,0.3-0.6,0.4-0.9,0.4  c-0.3,0-0.7-0.1-0.9-0.4c-0.5-0.5-0.5-1.4,0-1.9l4.8-4.8l-2.7,0c-0.7,0-1.3-0.6-1.3-1.3s0.6-1.3,1.3-1.3H29v0.1  c0.5,0.2,0.8,0.7,0.8,1.2V12.4z"/></Svg>
-        </View>
         <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
           <ActivityIndicator size='large' color="green"/>
         </View>

@@ -1,6 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import moment from 'moment';
+import {firebase} from '../config'
 import { CalendarDaysIcon } from 'react-native-heroicons/solid';
 import { TapGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
@@ -23,13 +24,7 @@ const NextWateringDate = (props) => {
   const uas = useAnimatedStyle(() => {
     return {
       width: withSpring(pressed.value ? '50%' : '100%'),
-      marginLeft: withSpring(pressed.value ? '-20%' : '65%'),
-    };
-  });
-
-  const opacity = useAnimatedStyle(() => {
-    return {
-      opacicty: withSpring(pressed.value ? '100%' : '0%'),
+      marginLeft: withSpring(pressed.value ? '-40%' : '25%'),
     };
   });
 
@@ -37,20 +32,19 @@ const NextWateringDate = (props) => {
     onStart: (event, ctx) => {
       pressed.value = true;
     },
-    onActive: (event, ctx) => {
-      console.log('ACTIVE')
-    },
     onEnd: (event, ctx) => {
       pressed.value = false;
     },
   });
+
+  const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
 
   return (
     <TapGestureHandler onGestureEvent={expand}>
       <Animated.View
         style={[styles.container, scaleAnimation]}
       >
-          <View style={{width: '100%', flexDirection:'row'}}>
+          <View style={{width: '100%', flexDirection:'row', justifyContent:'center', marginTop: 8}}>
             <Text style={{fontSize: 15, textAlign:'center', alignSelf:'center', fontWeight: 'bold',
              color: 'white'}}>Next Watering:</Text>
           </View>
@@ -58,8 +52,7 @@ const NextWateringDate = (props) => {
           <View style={{flexDirection:'row'}}>
           <Animated.View style={[uas,{flexDirection:'row', justifyContent:'flex-start'}]}>
 
-          <View style={styles.pos}
-          >
+          <View style={styles.pos}>
           <View >
           <CalendarDaysIcon size={60} style={{color:'#F97068'}}/>
           <Text style={{fontSize: 30, fontWeight: 'bold', color: 'white', alignSelf:'center'}}>{moment(props.nextWateringDays[0]).format('MMM')}</Text>
@@ -68,25 +61,32 @@ const NextWateringDate = (props) => {
           </View>
 
           <View style={{marginLeft: 10}}>
-            {
-            [...new Set(props.nextWateringDays)].map((day,  idx) => {
-              if(idx > 0 && idx < 8){
-                return <Text key={idx} style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>{moment(day).format('MMM Do')}</Text>
+            <FlatList
+            data={[...new Set(props.nextWateringDays)]}
+            renderItem={({item, index}) => {
+              console.log('item',item)
+              console.log(index)
+              if(index > 0 && index < 8){
+                return (
+                <View style={{flexDirection:'row'}}>
+                <Text key={index} style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>{moment(item).format('MMM Do')}</Text>
+                <View>
+                  {props.nextWateringDays.length > 2
+                  ? <View>
+
+                  </View>
+                  : null}
+                </View>
+                </View>
+                )
               }
-            })}
+            }}
+            />
           </View>
 
           </Animated.View>
 
             {/* extra data goes here, uas2 will be factored based on its size */}
-          <View style={{marginLeft: 10}}>
-            {
-            [...new Set(props.nextWateringDays)].map((day,  idx) => {
-              if(idx > 0 && idx < 8){
-                return <Text key={idx} style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>{moment(day).format('MMM Do')}</Text>
-              }
-            })}
-          </View>
           </View>
 
       </Animated.View>

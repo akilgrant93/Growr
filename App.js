@@ -56,6 +56,7 @@ function Home() {
           <View style={{flexDirection:'row', marginRight: 10}}>
           <TouchableOpacity onPress={() => Alert.alert(
             "Settings",
+            '',
             [
               {
                 text: "Change Password",

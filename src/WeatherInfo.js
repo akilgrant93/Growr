@@ -8,9 +8,9 @@ import Animated, {
 } from 'react-native-reanimated';
 
 const WeatherInfo = ({weatherData, pressed, forecast}) => {
-  useEffect(() => {
-    // console.log(weatherData)
-  }, [])
+  // useEffect(() => {
+  //   console.log(weatherData)
+  // }, [])
   const uas = useAnimatedStyle(() => {
     return {
       // marginLeft: withSpring(pressed.value ? '0%' : '0%'),
@@ -23,12 +23,11 @@ const WeatherInfo = ({weatherData, pressed, forecast}) => {
   //     marginLeft: withSpring(pressed.value ? '0%' : '0%')
   //   }
   // })
-
   const {
     name,
     visibility,
     weather: [{icon, description}],
-    main: {temp, humidity, feels_like},
+    main: {temp_max, temp_min,humidity, feels_like},
     wind: {speed},
     sys: {sunrise, sunset}
   } = weatherData;
@@ -50,18 +49,18 @@ const WeatherInfo = ({weatherData, pressed, forecast}) => {
         // will be retooled for custom icons
         source={{uri: `http://openweathermap.org/img/wn/${icon}.png`}}
         />
-      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width: '60%', alignSelf:'center', borderRadius: 5, padding: 2}}>
+      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width: '80%', alignSelf:'center', borderRadius: 5, padding: 2}}>
       <Text style={[styles.currentTemp, {color: 'white'}]}>{description[0].toUpperCase()+description.slice(1)}</Text>
-      <Text style={[styles.currentTemp, {color: 'white'}]}>{temp} ºF</Text>
+      <Text style={[styles.currentTemp, {color: 'white'}]}>H:{Math.round(temp_max)}ºF | L:{Math.round(temp_min)}ºF</Text>
       </View>
         </View>
       </Animated.View>
 
       {/* weekly forecast */}
-      <Animated.View style={[{flexDirection:'column',  marginTop: 7.5, width: '100%'}]}>
+      <Animated.View style={[{flexDirection:'column',  marginTop: 7.5, width: '80%'}]}>
       {forecast.map((dailyForecast, idx) => {
         // console.log(dailyForecast.temp)
-        if(idx > 0){return <View key={idx} style={{flexDirection:'row', backgroundColor:'white', borderRadius: 5, padding: 2, paddingLeft: 5, marginBottom: 1}}>
+        if(idx > 0){return <View key={idx} style={{flexDirection:'row', backgroundColor:'white', borderRadius: 5, padding: 2, paddingLeft: 5, marginBottom: 1, alignItems:'center'}}>
           <Text style={[{fontSize: 10, color:'#034732'}, {marginRight: 5, width: '33%'}]}>{moment().add(idx,'days').format('ddd')}, {moment().add(idx,'days').format('MMM Do')}</Text>
 
           <View style={{flexDirection:'row', justifyContent:'space-between'}}>
