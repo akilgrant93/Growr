@@ -6,7 +6,6 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
 import NextWateringDate from './NextWateringDate'
-import CustomSVG from './CustomSVG'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({

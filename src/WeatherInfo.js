@@ -1,8 +1,29 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, Dimensions } from 'react-native'
 import moment from 'moment';
-import React from 'react'
+import React, {useEffect} from 'react'
+'react-native-gesture-handler';
+import Animated, {
+  useAnimatedStyle,
+  withSpring
+} from 'react-native-reanimated';
 
-const WeatherInfo = ({weatherData}) => {
+const WeatherInfo = ({weatherData, pressed, forecast}) => {
+  useEffect(() => {
+    // console.log(weatherData)
+  }, [])
+  const uas = useAnimatedStyle(() => {
+    return {
+      // marginLeft: withSpring(pressed.value ? '0%' : '0%'),
+      width: withSpring(pressed.value ? '40%' : '100%'),
+    };
+  });
+
+  // const forecastAnim = useAnimatedStyle(() => {
+  //   return {
+  //     marginLeft: withSpring(pressed.value ? '0%' : '0%')
+  //   }
+  // })
+
   const {
     name,
     visibility,
@@ -10,13 +31,16 @@ const WeatherInfo = ({weatherData}) => {
     main: {temp, humidity, feels_like},
     wind: {speed},
     sys: {sunrise, sunset}
-  } = weatherData
+  } = weatherData;
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{alignItems:'center'}}>
-          <Text style={styles.title}>{name}</Text>
-      </View>
-      <Text style={styles.currentTemp}>{moment().format('MMMM d, YYYY')}</Text>
+      <View style={{width: '100%', flexDirection:'row'}}>
+
+      <Animated.View style={[uas]}>
+        <View>
+      <Text style={styles.title}>{name}</Text>
+      <Text style={styles.currentTemp}>{moment().format('ddd')}, {moment().format('MMM do')}</Text>
       <Text style={styles.currentTemp}>{moment().format('h:mma')}</Text>
         <Image
         style={styles.largeIcon}
@@ -25,18 +49,29 @@ const WeatherInfo = ({weatherData}) => {
         />
       <Text style={styles.currentTemp}>{description[0].toUpperCase()+description.slice(1)}</Text>
       <Text style={styles.currentTemp}>{temp} ºF</Text>
-
-{/* these will load conditionally based on the user expanding the weather screen */}
-      {/* <View style={styles.extraInfo}>
-        <View style={styles.info}>
-            <Image
-              styles={styles.smallIcon}
-              source={require('../assets/temp.png')}
-            />
-            <Text style={styles.infoText}>{feels_like} ºF</Text>
-            <Text styles={styles.infoText}>Feels Like</Text>
         </View>
-      </View> */}
+      </Animated.View>
+
+      {/* weekly forecast */}
+      <Animated.View style={[{flexDirection:'column',  marginTop: 7.5, width: '100%'}]}>
+      {forecast.map((dailyForecast, idx) => {
+        // console.log(dailyForecast.temp)
+        if(idx > 0){return <View key={idx} style={{flexDirection:'row', backgroundColor:'white', borderRadius: 5, padding: 2, paddingLeft: 5, marginBottom: 1}}>
+          <Text style={[{fontSize: 10, color:'#034732'}, {marginRight: 5, width: '33%'}]}>{moment().add(idx,'days').format('ddd')}, {moment().add(idx,'days').format('MMM Do')}</Text>
+
+          <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+          <Image
+            style={{width: 20, height: 20, marginRight: 5}}
+            // will be retooled for custom icons
+            source={{uri: `http://openweathermap.org/img/wn/${dailyForecast.weather[0].icon}.png`}}
+            />
+          <Text style={{fontSize: 10, color:'#034732'}}>{dailyForecast.weather[0].description}</Text>
+          </View>
+        </View>}
+      })}
+      </Animated.View>
+
+      </View>
 
     </SafeAreaView>
   )
@@ -47,14 +82,14 @@ export default WeatherInfo
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: '100%',
   },
   title: {
-    width: '100%',
     textAlign:'center',
-    fontSize: 19,
+    alignSelf:'center',
+    fontSize: 15,
     fontWeight:'bold',
     color: '#034732',
-    marginTop: 10,
   },
   largeIcon: {
     width: 100,

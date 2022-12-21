@@ -1,14 +1,27 @@
-import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView } from 'react-native'
+import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView, } from 'react-native'
 import React, { useState, useEffect } from 'react'
+import Svg, { Path } from 'react-native-svg'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
 import WeatherInfo from './WeatherInfo';
 import moment from 'moment';
+import { TapGestureHandler } from 'react-native-gesture-handler';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useAnimatedGestureHandler,
+  withSpring
+} from 'react-native-reanimated';
 
 const api_key = 'a3999e97ddb681be056baca3b261d939'
 
 const Weather = () => {
+  let url = `https://api.openweathermap.org/data/2.5/onecall?&units=imperial&exclude=minutely&appid=${api_key}`;
+
+  const [latitude, setLatitude] = useState(0)
+  const [longitude, setLongitude] = useState(0)
   const [weatherData, setWeatherData] = useState(null)
+  const [weeklyForecast, setWeeklyForeCast] = useState({})
   const [loaded, setLoaded] = useState(false)
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -25,6 +38,17 @@ const Weather = () => {
       else {
         setWeatherData(null)
       }
+
+      console.log(latitude)
+      console.log(longitude)
+      const forecastResponse = await fetch( `${url}&lat=${latitude}&lon=${longitude}`);
+      if(forecastResponse.status === 200){
+        const data = await forecastResponse.json()
+        setWeeklyForeCast(data.daily)
+      } else {
+        setWeeklyForeCast(null)
+      }
+
       setLoaded(true)
     } catch (error) {
       Alert.alert('Error',error.message)
@@ -37,7 +61,7 @@ const Weather = () => {
       const userData = (await userRef.get()).data()
       if(userData.location){
         setLocation(userData.location)
-        fetchWeatherData(userData.location.city)
+        fetchWeatherData(userData.location.city,)
       }
       let { status } = await Location.requestForegroundPermissionsAsync();
 
@@ -47,6 +71,9 @@ const Weather = () => {
         return;
       }
       let locationData = await Location.getCurrentPositionAsync({});
+
+      setLatitude(locationData.coords.latitude)
+      setLongitude(locationData.coords.longitude)
       const res = await Location.reverseGeocodeAsync(locationData.coords)
       fetchWeatherData(res[0].city)
       setLocation(res[0])
@@ -55,15 +82,30 @@ const Weather = () => {
     })()
   }, [])
 
+  const pressed = useSharedValue(false);
+  const scaleAnimation = useAnimatedStyle(() => {
+    return {
+      width: withSpring(pressed.value ? '100%' : '50%') ,
+    };
+  });
+
+  const expand = useAnimatedGestureHandler({
+    onStart: (event, ctx) => {
+      pressed.value = true;
+    },
+    onEnd: (event, ctx) => {
+      pressed.value = false;
+    },
+  });
+
+
   if(!loaded){
     return (
       <View style={styles.container}>
-        <SafeAreaView sstyles={{flex: 1}}>
-      <View style={{alignItems:'center'}}>
-          <Text style={styles.title}>{location.city}</Text>
-      </View>
-      <Text style={styles.txt}>{moment().format('MMMM d, YYYY')}</Text>
-      <Text style={styles.txt}>{moment().format('h:mma')}</Text>
+        <SafeAreaView style={{flex: 1}}>
+        <View style={{width: '100%', flexDirection:'row', justifyContent:'flex-end'}}>
+        <Svg style={{}} height={40} width={40} viewBox="0 0 36 36" fill={'#044732'}><Path d="M0,0l36,36V0H0z M29.9,12.4c0,0.7-0.6,1.3-1.3,1.3s-1.3-0.6-1.3-1.3l0-2.7l-4.8,4.8c-0.3,0.3-0.6,0.4-0.9,0.4  c-0.3,0-0.7-0.1-0.9-0.4c-0.5-0.5-0.5-1.4,0-1.9l4.8-4.8l-2.7,0c-0.7,0-1.3-0.6-1.3-1.3s0.6-1.3,1.3-1.3H29v0.1  c0.5,0.2,0.8,0.7,0.8,1.2V12.4z"/></Svg>
+        </View>
         <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
           <ActivityIndicator size='large' color="green"/>
         </View>
@@ -72,10 +114,13 @@ const Weather = () => {
     )
   }
 
+
   return (
-    <View style={styles.container}>
-      <WeatherInfo weatherData={weatherData}/>
-    </View>
+    <TapGestureHandler onGestureEvent={expand} >
+      <Animated.View style={[styles.container, scaleAnimation]}>
+      <WeatherInfo pressed={pressed} weatherData={weatherData}forecast={weeklyForecast}/>
+      </Animated.View>
+    </TapGestureHandler>
   )
 }
 
@@ -83,14 +128,10 @@ export default Weather
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     overflow: 'hidden',
     width: '50%',
     backgroundColor: '#E4F1E4',
-    // borderTopWidth: 3,
-    // borderRightWidth: 3,
-    borderRightColor: '#034732',
-    borderTopColor: '#034732',
+    borderTopRightRadius: 5,
     alignSelf: 'flex-start',
     alignItems: 'center',
   },
