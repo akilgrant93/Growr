@@ -33,22 +33,27 @@ const WeatherInfo = ({weatherData, pressed, forecast}) => {
     sys: {sunrise, sunset}
   } = weatherData;
 
+  // use sunrise and sunset to configure day/night shifts
   return (
     <SafeAreaView style={styles.container}>
       <View style={{width: '100%', flexDirection:'row'}}>
 
       <Animated.View style={[uas]}>
-        <View>
+        <View style={{marginTop: 8}}>
       <Text style={styles.title}>{name}</Text>
-      <Text style={styles.currentTemp}>{moment().format('ddd')}, {moment().format('MMM do')}</Text>
-      <Text style={styles.currentTemp}>{moment().format('h:mma')}</Text>
+      <View style={{backgroundColor: '#F97068', width: '80%', alignSelf:'center', borderRadius: 5, padding: 2, marginTop: 2}}>
+      <Text style={[styles.currentTemp, {color: 'white'}]}>{moment().format('ddd')}, {moment().format('MMM do')}</Text>
+      <Text style={[styles.currentTemp, {color: 'white'}]}>{moment().format('h:mma')}</Text>
+      </View>
         <Image
         style={styles.largeIcon}
         // will be retooled for custom icons
         source={{uri: `http://openweathermap.org/img/wn/${icon}.png`}}
         />
-      <Text style={styles.currentTemp}>{description[0].toUpperCase()+description.slice(1)}</Text>
-      <Text style={styles.currentTemp}>{temp} ºF</Text>
+      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width: '60%', alignSelf:'center', borderRadius: 5, padding: 2}}>
+      <Text style={[styles.currentTemp, {color: 'white'}]}>{description[0].toUpperCase()+description.slice(1)}</Text>
+      <Text style={[styles.currentTemp, {color: 'white'}]}>{temp} ºF</Text>
+      </View>
         </View>
       </Animated.View>
 
@@ -89,7 +94,6 @@ const styles = StyleSheet.create({
     alignSelf:'center',
     fontSize: 15,
     fontWeight:'bold',
-    color: '#034732',
   },
   largeIcon: {
     width: 100,

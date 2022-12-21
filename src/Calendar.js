@@ -127,6 +127,8 @@ const customDatesStylesCallback = date => {
   return (
     <View style={{alignItems:'center', paddingTop: '3%', height: '100%', backgroundColor:'#E4F1E4'}}>
       <CalendarPicker onDateChange={changeData}
+      previousTitleStyle={{fontWeight:'500', color: '#F97068'}}
+      nextTitleStyle={{fontWeight:'500', color: '#F97068'}}
       monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
