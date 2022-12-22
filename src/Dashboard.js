@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
-import NextWateringDate from './NextWateringDate'
+import Reminders from './Reminders'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -146,7 +146,7 @@ const Dashboard = () => {
     shadowRadius: 2,
     elevation: 5}}>
           <Weather />
-          <NextWateringDate plants={plants} nextWateringDays={nextWateringDays}/>
+          <Reminders plants={plants} nextWateringDays={nextWateringDays}/>
       </View>
         {/* </View>} */}
     </SafeAreaView>

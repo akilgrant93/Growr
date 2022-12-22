@@ -2,7 +2,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect } from 'react'
 import moment from 'moment';
 import {firebase} from '../config'
-import { CalendarDaysIcon } from 'react-native-heroicons/solid';
+import { CalendarDaysIcon, ChevronDownIcon } from 'react-native-heroicons/solid';
 import { TapGestureHandler } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -10,6 +10,7 @@ import Animated, {
   useAnimatedGestureHandler,
   withSpring
 } from 'react-native-reanimated';
+
 
 const NextWateringDate = (props) => {
   const pressed = useSharedValue(false);
@@ -47,13 +48,12 @@ const NextWateringDate = (props) => {
 
           <View style={{justifyContent:'center', alignItems:'center', width:50}}>
           <Text style={{fontSize: 15, textAlign:'center', fontWeight: 'bold',
-             color: 'white', width: 75}}>Watering Dates</Text>
+             color: 'white', width: 80}}>Reminders</Text>
           <CalendarDaysIcon size={60} style={{color:'#F97068'}}/>
           </View>
 
           <View style={{marginLeft: 20, width: '160%'}}>
-            <FlatList
-            style={{}}
+            {props.nextWateringDays.length ? <FlatList
             data={[...new Set(props.nextWateringDays)]}
             renderItem={({item, index}) => {
               // console.log('item',item)
@@ -63,19 +63,27 @@ const NextWateringDate = (props) => {
                 <View style={styles.dateStyle}>
                 <Text key={index} style={{marginLeft: 5, fontSize: 14, padding: 5,fontWeight: 'bold', marginTop: 20, color: 'white'}}>{moment(item).format('MMM Do')}</Text>
                 <View>
+                <View style={{ width: 200}}>
+                  {/* extra data goes here - other gardening reminders and protips based upon hardiness zone*/}
+                </View>
                   {props.nextWateringDays.length > 1
                   ? <View style={{ width: 200}}>
+                    <View style={{flexDirection:'row',backgroundColor:'#F97068', alignItems:'center'}}>
+                    <Text style={{paddingLeft: 3,  paddingBottom: 3, paddingTop: 3, color:'white', marginBottom: 1, fontSize:10,fontWeight:'bold'}} >Need Water </Text>
+                    <ChevronDownIcon size={10} style={{color:'#fff'}}/>
+                    </View>
                     {props.plants.map((plant, idx) => {
                       if(item === plant.nextWateringDate){return <Text style={idx === props.plants.length-1 ? {padding: 3, backgroundColor:'white', fontSize:10} : {padding: 3, backgroundColor:'white', marginBottom: 1, fontSize:10}} key={idx}>{plant.name}</Text>}
                     })}
                   </View>
                   : null}
+
                 </View>
                 </View>
                 )
               }
             }}
-            />
+            /> : <Text style={{marginLeft: 5, fontSize: 14, padding: 5,fontWeight: 'bold', marginTop: 20, color: 'white'}}>No plants scheduled for watering.</Text>}
           </View>
 
           </Animated.View>

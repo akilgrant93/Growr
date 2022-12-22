@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
 
-const PlantsByCategory = ({route, navigation}) => {
+const Reminders = ({route, navigation}) => {
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
@@ -80,7 +80,7 @@ const PlantsByCategory = ({route, navigation}) => {
                 marginBottom: 1,
                 }}>
                     <TouchableOpacity
-                    onPress={() => navigation.navigate('SearchPlant',item)}>
+                    onPress={() => navigation.navigate('PostModal',item)}>
                       <View style={{ flexDirection: 'row',
                        overflow:'hidden',justifyContent: 'space-between',
                       shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
@@ -129,7 +129,7 @@ const PlantsByCategory = ({route, navigation}) => {
   )
 }
 
-export default PlantsByCategory
+export default Reminders
 
 const styles = StyleSheet.create({
   container: {
