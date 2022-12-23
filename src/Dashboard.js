@@ -105,12 +105,13 @@ const Dashboard = () => {
   return (
     <SafeAreaView style={styles.formContainer}>
       <FlatList
-        style={{height: '40%',width: '100%', paddingTop: 5}}
+        showsVerticalScrollIndicator={false}
+        style={{height: '40%',width: '100%',  paddingTop: 10,}}
         data={plants}
         numColumns={1}
         renderItem={({item, index}) => {
             return (
-            <View key={item.index || index}>
+            <View key={item.index} style={index === plants.length-1 ? {paddingBottom:10}: {}}>
               <View style={{
               flexDirection: 'column',
               width: '95%',
@@ -140,15 +141,11 @@ const Dashboard = () => {
         }}
       />
 
-      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5}}>
+      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5, marginTop:10}}>
           <Weather />
           <Reminders plants={plants} nextWateringDays={nextWateringDays}/>
       </View>
-        {/* </View>} */}
+
     </SafeAreaView>
   )
 }

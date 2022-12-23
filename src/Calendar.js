@@ -5,25 +5,25 @@ import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
 import {firebase} from '../config'
+import { FontAwesome } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native';
 
 const MyCalendar = () => {
   const navigation = useNavigation()
   const [wateringDays, setWateringDays] = useState([])
   const [nextWateringDays, setNextWateringDays] = useState([])
-  const [plants, setPlants] = useState([])
   const [date, setDate] = useState(moment().startOf('day'))
   const [lastWateredData, setLastWateredData] = useState({})
   const [nextWateredData, setNextWateredData] = useState([])
-  //this function will pull notification data from my backend - i need to be able to pass it more data.
+  const [toggled, setToggled] = useState(false)
   const changeMonth = () => {
     setLastWateredData({})
     setNextWateredData({})
   }
 
-
   const changeData = (date) => {
     setDate(date)
+    setToggled(false)
     let nextWateringDaysInit = []
     let lastWateringDaysInit = []
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
@@ -133,8 +133,22 @@ const customDatesStylesCallback = date => {
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
       <StatusBar style="auto" />
-      <View style={styles.textView}>
-          <View style={{width: '95%', alignSelf:'center'}}>
+      <View style={[styles.textView]}>
+      <View style={{flexDirection:'row'}}>
+      <View style={nextWateredData.length || lastWateredData.length ? {width: 20, alignSelf:'flex-end', marginBottom: 20, paddingLeft: 2.5} : null}>
+      {nextWateredData.length > 6 && !toggled ? <FontAwesome
+                size={25}
+                name='caret-down'
+                color='#F97068'
+              /> : null}
+
+      {lastWateredData.length > 6 && !toggled ? <FontAwesome
+                size={25}
+                name='caret-down'
+                color='#F97068'
+              /> : null}
+      </View>
+      <View style={{alignSelf:'center', width: '95%'}}>
 
       {!lastWateredData.length && !nextWateredData.length ?
       <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', alignSelf:'center', marginTop: '35%'}}>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text>
@@ -148,9 +162,11 @@ const customDatesStylesCallback = date => {
         {moment(date).format("dddd, MMMM Do YYYY")}
         </Text>
       <FlatList
+        showsVerticalScrollIndicator={false}
         style={{width: '100%'}}
         data={nextWateredData}
         numColumns={2}
+        onEndReached={() => setToggled(true)}
         renderItem={({item, index}) => {
             return (
             <View key={item.index || index} style={{width:'50%'}}>
@@ -197,12 +213,14 @@ const customDatesStylesCallback = date => {
         {moment(date).format("dddd, MMMM Do YYYY")}
         </Text>
       <FlatList
+        showsVerticalScrollIndicator={false}
         style={{width: '100%'}}
         data={lastWateredData}
         numColumns={2}
+        onEndReached={() => setToggled(true)}
         renderItem={({item, index}) => {
             return (
-            <View key={item.index || index} style={{width:'50%'}}>
+            <View key={index} style={{width:'50%'}}>
               <View style={{
               flexDirection: 'column',
               width: '95%',
@@ -220,7 +238,6 @@ const customDatesStylesCallback = date => {
                      justifyContent: 'space-between',
                     shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
                       <View>
-
                       <View >
                       <Text style={{fontSize: 12,
                         fontWeight: 'bold', paddingLeft: 5}}>
@@ -251,7 +268,10 @@ const customDatesStylesCallback = date => {
       {lastWateredData.length ? lastWateredData.map((dateInfo, idx) => {
         return <Text style={{marginTop: '2%', color: 'white'}} key={idx}>Your {dateInfo.name} was watered</Text>
       }) : <View/>} */}
-          </View>
+
+      </View>
+      </View>
+
       </View>
     </View>
   )
@@ -280,6 +300,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#034732',
     width: '100%',
     height: '100%',
-    overflow: 'scroll'
+    overflow: 'scroll',
   }
 });

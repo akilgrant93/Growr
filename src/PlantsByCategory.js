@@ -66,13 +66,14 @@ const Reminders = ({route, navigation}) => {
            ? <View></View>
            :<FlatList style={{flexDirection:'column', width:'100%'}}
           data={plants}
+          showsVerticalScrollIndicator={false}
           onEndReached={getNextPlants}
           onEndReachedThreshold={0.01}
           scrollEventThrottle={150}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
              return (
-              <View key={item.index || item.index}>
+              <View key={item.index}>
                 <View style={{
                 flexDirection: 'column',
                 width: '95%',
