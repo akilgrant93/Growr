@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground, ActivityIndicator, RefreshControl } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground, ActivityIndicator, RefreshControl, SafeAreaView } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
@@ -44,7 +44,7 @@ const Reminders = ({route, navigation}) => {
 
   }, [])
   return (
-    <View>
+    <SafeAreaView>
       <ImageBackground
           source={
             route.params === 'edible'
@@ -126,7 +126,7 @@ const Reminders = ({route, navigation}) => {
             )
           }} />}
           {refreshing ? <ActivityIndicator style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
-    </View>
+    </SafeAreaView>
   )
 }
 
