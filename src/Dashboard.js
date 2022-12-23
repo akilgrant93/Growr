@@ -92,6 +92,8 @@ const Dashboard = () => {
 
   //delete a plant from users list of plant entries
   const deletePlant = (plant) => {
+    const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
+
     userPlantsRef
     .doc(plant.id)
     .delete()
