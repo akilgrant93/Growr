@@ -2,21 +2,21 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 import { SunIcon, HomeModernIcon } from 'react-native-heroicons/solid'
 import  Svg, { Path, G } from 'react-native-svg'
 import React from 'react'
+import { useNavigation } from '@react-navigation/native'
 
 const DashboardListItem = (props) => {
+  const navigation = useNavigation()
   return (
-    <View key={props.index} style={props.index === props.lastIdx ? {paddingBottom:10}: {}}>
+    <View key={props.index}>
               <View style={{
               flexDirection: 'column',
-              width: '95%',
-              marginLeft: '2.5%',
               marginBottom: 1,
               flex:1,
               }}>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
-                  onPress={() => navigation.navigate('UpdateModal',item)}>
-                    <View style={[{ flexDirection: 'row',overflow:'hidden',justifyContent: 'space-between', shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5}, props.item.isThirsty ? {backgroundColor:'rgba(249, 112, 104, .5)'} :{backgroundColor:'white'}]}>
+                  onPress={() => navigation.navigate('UpdateModal',props.item)}>
+                    <View style={[{ flexDirection: 'row',overflow:'hidden',justifyContent: 'space-between'}, props.item.isThirsty ? {backgroundColor:'rgba(249, 112, 104, .5)'} :{backgroundColor:'white'}]}>
 
                       <View style={styles.textView}>
 

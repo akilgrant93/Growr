@@ -1,7 +1,6 @@
 import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
-import { useNavigation } from '@react-navigation/native'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Weather from './Weather'
@@ -23,7 +22,7 @@ const Dashboard = () => {
   const [notification, setNotification] = useState(false);
   const [nextWateringDays, setNextWateringDays] = useState([])
   const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
-  const navigation = useNavigation()
+
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -92,9 +91,9 @@ const Dashboard = () => {
   }, [])
 
   //delete a plant from users list of plant entries
-  const deletePlant = (userPlants) => {
+  const deletePlant = (plant) => {
     userPlantsRef
-    .doc(userPlants.id)
+    .doc(plant.id)
     .delete()
     .then(() => {
       alert('Deleted Successfully')
@@ -109,7 +108,7 @@ const Dashboard = () => {
     <SafeAreaView style={styles.formContainer}>
       <FlatList
         showsVerticalScrollIndicator={false}
-        style={{height: '40%',width: '100%',  paddingTop: 10,}}
+        style={{height: '40%',width: '100%'}}
         data={plants}
         numColumns={1}
         renderItem={({item, index}) => {
@@ -119,7 +118,7 @@ const Dashboard = () => {
         }}
       />
 
-      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5, marginTop:10}}>
+      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5}}>
           <Weather />
           <Reminders plants={plants} nextWateringDays={nextWateringDays}/>
       </View>
