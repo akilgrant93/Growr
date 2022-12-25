@@ -321,7 +321,7 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
-
+console.log('item',route.params)
 }, []);
 
 useFocusEffect(

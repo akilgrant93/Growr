@@ -1,13 +1,16 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import 'react-native-gesture-handler'
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Alert, View } from "react-native";
+import { TouchableOpacity, Alert, View, StatusBar } from "react-native";
 import { firebase } from './config'
 import { FontAwesome } from '@expo/vector-icons'
 import Svg, { Path } from 'react-native-svg'
-import { CalendarDaysIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
+import { CalendarDaysIcon, PlusCircleIcon, HomeIcon } from 'react-native-heroicons/solid';
 import * as Location from 'expo-location';
+
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
 import Dashboard from "./src/Dashboard";
@@ -46,7 +49,17 @@ function Home() {
   }
 
   return (
-    <Tab.Navigator>
+    <>
+    <StatusBar barStyle="dark-content"/>
+    <Tab.Navigator
+    screenOptions={({route}) => ({
+      headerShown: false,
+      tabBarInactiveTintColor: '#C9E4CA',
+      tabBarStyle: {
+      borderTopWidth: 0,},
+      tabBarActiveTintColor: '#034732',
+    })}
+    >
       <Tab.Screen
       name="My Garden"
       label="My Garden"
@@ -114,6 +127,7 @@ function Home() {
       })}
       />
     </Tab.Navigator>
+    </>
   );
 }
 

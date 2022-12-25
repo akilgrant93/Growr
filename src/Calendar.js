@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity } from 'react-native'
-import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
 import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
@@ -125,14 +124,13 @@ const customDatesStylesCallback = date => {
 
 
   return (
-    <View style={{alignItems:'center', paddingTop: '3%', height: '100%', backgroundColor:'#E4F1E4'}}>
+    <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%', backgroundColor:'#E4F1E4'}}>
       <CalendarPicker onDateChange={changeData}
       previousTitleStyle={{fontWeight:'500', color: '#F97068'}}
       nextTitleStyle={{fontWeight:'500', color: '#F97068'}}
       monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
-      <StatusBar style="auto" />
       <View style={[styles.textView]}>
       <View style={{flexDirection:'row'}}>
       <View style={nextWateredData.length || lastWateredData.length ? {width: 20, alignSelf:'flex-end', marginBottom: 20, paddingLeft: 2.5} : null}>
@@ -273,7 +271,7 @@ const customDatesStylesCallback = date => {
       </View>
 
       </View>
-    </View>
+    </SafeAreaView>
   )
 }
 

@@ -3,6 +3,7 @@ import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
+import { FontAwesome } from '@expo/vector-icons'
 import Weather from './Weather'
 import Reminders from './Reminders'
 import DashboardListItem from './DashboardListItem'
@@ -108,6 +109,15 @@ const Dashboard = () => {
   return (
 
     <SafeAreaView style={styles.formContainer}>
+      {plants.length ? <View style={{flexDirection:'row', alignItems:'center'}}>
+        <Text style={{padding: 10, fontSize: 15, fontWeight:'bold', color:'#034732'}}>My Garden</Text>
+        <FontAwesome
+                name='leaf'
+                 color='#034732'
+                 size={15}
+              />
+        </View>
+          : null}
       <FlatList
         showsVerticalScrollIndicator={false}
         style={{height: '40%',width: '100%'}}
