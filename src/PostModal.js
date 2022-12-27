@@ -1,13 +1,18 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Keyboard,  } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Keyboard, Platform, Button, Image, SafeAreaView, TouchableOpacity } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
 import * as Notifications from 'expo-notifications';
+import { XCircleIcon } from 'react-native-heroicons/solid';
+import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
+import CustomSVG from './CustomSVG'
+import { FontAwesome } from '@expo/vector-icons';
 
 const PostModal = ({route, navigation}) => {
+  const [image, setImage] = useState(null);
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
   //this state value will disable the checkboxes for isPotted and isIndoors
@@ -188,6 +193,7 @@ const PostModal = ({route, navigation}) => {
     //   firestoreID
     //  }
     //  addNewEvent(eventData)
+
       const plantData = {
         name,
         isPotted,
@@ -326,17 +332,72 @@ useEffect(() => {
 
 }, []);
 
+const pickImage = async () => {
+  // No permissions request is necessary for launching the image library
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.canceled) {
+    setImage(result.assets[0].uri);
+  }
+};
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={{flexDirection:'row', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom: 5,}}>
+      <View style={{alignItems:'center', marginVertical: 10 }}>
+      {image ?
+      <View>
+        <XCircleIcon onPress={() => setImage(null)}size={35} style={{color:'#F97068', marginBottom: -17.5, marginLeft: -17.5, zIndex:10, shadowOffset: {width: 2, height: 4}, shadowOpacity: 0.2,shadowRadius: 3,}}/>
+        <TouchableOpacity onPress={pickImage}>
+          <Image  source={{ uri: image }} style={{ width: 110, height: 110, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(3, 71, 50, .25)' }} />
+        </TouchableOpacity>
+      </View>
+       :
+       //replace the following URI with a dummy img
+       <TouchableOpacity onPress={pickImage}>
+     <View>
+     <XCircleIcon size={35} style={{color:'rgba(255, 255, 255, 0)', marginBottom: -17.5, marginLeft: -17.5, zIndex:10, shadowOffset: {width: 2, height: 4}, shadowOpacity: 0.2,shadowRadius: 3,}}/>
+      <View style={{width: 110, height: 110, justifyContent:'center', borderColor: 'rgba(3, 71, 50, .25)', borderWidth: 2, borderRadius: 10}}>
+       <FontAwesome
+        style={{alignSelf:'center'}}
+        name='cloud-upload'
+        color='#034732'
+        size={75}
+       />
+        </View>
+     </View>
+     </TouchableOpacity>
+     }
+      </View>
+
+      <View style={{alignSelf:'center', paddingLeft:10, width: '60%', paddingTop: 20}}>
+     {/* <TouchableOpacity onPress={pickImage}><Text style={{paddingBottom: 5, paddingLeft: 5,paddingTop: 15}}>Pick an image from camera roll</Text></TouchableOpacity> */}
       {/* if commonName exists, commonName else scientificName */}
-      <Text style={{textAlign:'center'}}>{route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName}</Text>
+      <TextInput editable={false} value={route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName} style={{backgroundColor:'green', borderColor:'green', borderWidth: 1, paddingVertical: 5, borderTopLeftRadius:5, borderTopRightRadius: 5,  paddingLeft: 5, color: 'white', fontWeight: '600'}}>
+      </TextInput>
 
       {/* if commonName exists, scientificName else nothing */}
-      {!route.params.item.commonName ? <View/> : <Text style={{textAlign:'center'}}>{route.params.item.scientificName}</Text>}
+      {!route.params.item.commonName ? <View/> :
+      <TextInput editable={false} value={route.params.item.scientificName} style={{borderColor:'green', borderWidth: 1, paddingVertical: 5,  paddingLeft: 5, color: 'green', fontWeight:'600'}}/>
+      }
 
       {/* if familyName exists, familyName else nothing */}
       {!route.params.item.family ?
-      <Text style={{textAlign:'center'}}>{route.params.item.familyName}</Text> : <View/>}
+      <TextInput editable={false} value={route.params.item.familyName} style={{borderColor:'green', borderWidth: 1, paddingVertical: 5,  paddingLeft: 5, color: 'green', fontWeight:'600'}}/>
+      : <View/>}
+
+      <TextInput placeholder='Cultivar' style={{borderColor:'green', borderWidth: 1, paddingVertical: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, paddingLeft: 5, color: 'green'}}>
+      </TextInput>
+      </View>
+
+      </View>
 
       {/* icon ternaries - will be combined with tags*/}
       {/* poison icon ternary */}
@@ -349,7 +410,7 @@ useEffect(() => {
 
       {/* tag map ternary needs flexwrap*/}
       {route.params.item.tags.length > 0
-      ?<View style={styles.tagBox}>
+      ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:10, width: '85%'}]}>
        {route.params.item.tags.map((tag, idx) => {
        return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
       })}
@@ -359,7 +420,7 @@ useEffect(() => {
       {/* disease map ternary needs restyle and formatting to be text based*/}
       {route.params.item.diseases.length > 0
       ?
-      <View style={{alignItems:'center'}}>
+      <View style={{alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:10, width: '85%'}}>
       <View style={styles.diseaseText}>
        {route.params.item.diseases.map((disease, idx) => {
 
@@ -380,7 +441,7 @@ useEffect(() => {
 
 
       {/* icons needed */}
-      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
+      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15, borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '85%'}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
         size={20}
@@ -428,19 +489,20 @@ useEffect(() => {
       </View>
 
             {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      <Slider
+            <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '85%'}}>
+            <Slider
           // value={value}
-          style={{marginTop: 15,width:'75%', alignSelf:'center'}}
+              style={{marginTop: 15,width:'100%', alignSelf:'center'}}
           onValueChange={value => setSliderValue(parseInt(value))}
           minimumTrackTintColor={'#004d00'}
           maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
           minimumValue={0}
           value={0}
           onSlidingStart={value => setHoverValue(parseInt(value))}
-          step={1}
+              step={1}
                 />
                 {/* needs to say "last resevior change" if hydroponic */}
-        <Text style={{textAlign:'center'}}>Last watered {
+            <Text style={{textAlign:'center'}}>Last watered {
           sliderValue === 0
           ? 'today'
           : sliderValue === 1
@@ -455,6 +517,7 @@ useEffect(() => {
           ? 'two weeks ago'
           : 'over two weeks ago'
           }</Text>
+            </View>
 
           {/* notes textInput */}
 
@@ -464,7 +527,7 @@ useEffect(() => {
         >
         <Text>POST PLANT</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   )
 }
 
@@ -472,8 +535,7 @@ export default PostModal
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: '50%',
-    marginHorizontal: 15,
+    // marginHorizontal: 5,
     alignItems:'center'
   },
   diseaseText: {

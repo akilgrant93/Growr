@@ -1,8 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 import { firebase } from '../config'
-
+import { FontAwesome } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 const Registration = () => {
+  const navigation = useNavigation()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -39,8 +41,15 @@ const Registration = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={{fontWeight:'bold', fontSize:'23'}}>Register Here!</Text>
+    <SafeAreaView style={styles.container}>
+      <FontAwesome
+          onPress={() => navigation.navigate('Sign In')}
+          name='angle-double-left'
+          color='#034732'
+          size={32}
+          style={{marginLeft: 10, alignSelf: 'flex-start'}}
+        />
+      <View style={{alignItems:'center', justifyContent:'center', height: '100%', marginTop: -10}}>
       <View style={{marginTop:40}}>
         <TextInput
           style={styles.textInput}
@@ -75,9 +84,16 @@ const Registration = () => {
         onPress={() => registerUser(email,password,firstName,lastName)}
         style={styles.button}
       >
-        <Text style={{fontWeight:'bold',fontSize:22}}>Register</Text>
+        <Text style={{fontWeight:'bold',fontSize:22, color: 'white'}}>Register</Text>
+        <FontAwesome
+          name='pencil-square'
+          color='white'
+          size={22}
+          style={{marginLeft: 10}}
+        />
       </TouchableOpacity>
-    </View>
+      </View>
+    </SafeAreaView>
   )
 }
 
@@ -86,8 +102,8 @@ export default Registration
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor:'rgba(228, 241, 228, .5)'
   },
   textInput: {
     paddingTop: 20,
@@ -103,10 +119,11 @@ const styles = StyleSheet.create({
     marginTop: 50,
     height: 70,
     width: 250,
-    backgroundColor: '#026efd',
+    backgroundColor: '#034732',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
     borderRadius: 50,
+    flexDirection:'row'
   }
 })

@@ -309,7 +309,8 @@ export default SearchPlant
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#C9E4CA',
-    height: '100%'
+    height: '100%',
+    justifyContent:'center'
   },
   input: {
     height: 40,

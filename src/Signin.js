@@ -1,7 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, Image } from 'react-native'
 import React, {useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
+import LottieView from 'lottie-react-native';
 import { firebase } from '../config'
+import { FontAwesome } from '@expo/vector-icons'
 
 const Signin = () => {
   const navigation = useNavigation()
@@ -27,18 +29,18 @@ const Signin = () => {
 
   return (
     <View style={styles.container} >
-      {/* replace title text with lottiefile */}
-      <Text style={{fontWeight: 'bold', fontSize:26, textAlign:'center'}}>Sign In</Text>
-      <View style={{marginTop:40}}>
+      <View style={{marginTop:40, alignItems:'center'}}>
+      <Image style={{width: 376/2, height: 97/2}} source={require('../assets/growr-01.png')}/>
+      <LottieView style={{width: '90%'}} source={require('../assets/lf30_editor_9ah8dnv1.json')} autoPlay loop />
         <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, {marginTop: 25}]}
           placeholder='Email'
           onChangeText={(email) => setEmail(email)}
           autoCapitalize='none'
           autoCorrect={false}
         />
          <TextInput
-          style={styles.textInput}
+          style={[styles.textInput, {marginTop: 25, marginBottom:45}]}
           placeholder='Password'
           onChangeText={(password) => setPassword(password)}
           autoCapitalize='none'
@@ -51,9 +53,15 @@ const Signin = () => {
         onPress={() => signinUser(email, password)}
         style={styles.button}
       >
-        <Text style={{fontWeight: 'bold', fontSize:22}}>
+        <Text style={{fontWeight: 'bold', color:'white', fontSize:22}}>
           Sign In
         </Text>
+        <FontAwesome
+          name='sign-in'
+          color='white'
+          size={22}
+          style={{marginLeft: 10}}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => navigation.navigate('Registration')}
@@ -80,26 +88,25 @@ export default Signin
 
 const styles = StyleSheet.create({
   container: {
-    flex:1, justifyContent:'center', alignItems:'center'
+    flex:1, justifyContent:'center', alignItems:'center',
+    backgroundColor:'rgba(228, 241, 228, .5)'
   },
   textInput: {
-    paddingTop: 20,
-    paddingBottom: 10,
-    width: 400,
-    fontSize:  20,
+    width: 225,
+    paddingLeft: 5,
+    fontSize:  15,
     borderBottomWidth: 1,
     borderBottomColor: '#000',
-    textAlign:'center',
-    marginBottom: 10,
+    textAlign:'left'
   },
   button: {
-    marginTop: 50,
     height: 70,
     width: 250,
-    backgroundColor: '#026efd',
+    backgroundColor: '#034732',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
-    borderRadius: 50
+    borderRadius: 50,
+    flexDirection: 'row'
   }
 })

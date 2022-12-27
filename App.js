@@ -150,36 +150,14 @@ function App(){
 
   if(!user){
     return (
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown:false}}>
         <Stack.Screen
         name="Sign In"
         component={Signin}
-        options={{
-          headerTitle: () => <Header name="Growr"/>,
-          headerStyle: {
-            height: 150,
-            borderBottomLeftRadius: 50,
-            borderBottomRightRadius: 50,
-            backgroundColor: '#00e4d0',
-            shadowColor: '#000',
-            elevation: 25,
-          }
-        }}
         />
         <Stack.Screen
         name="Registration"
         component={Registration}
-        options={{
-          headerTitle: () => <Header name="Growr"/>,
-          headerStyle: {
-            height: 150,
-            borderBottomLeftRadius: 50,
-            borderBottomRightRadius: 50,
-            backgroundColor: '#00e4d0',
-            shadowColor: '#000',
-            elevation: 25,
-          }
-        }}
         />
       </Stack.Navigator>
     )
