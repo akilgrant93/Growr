@@ -172,22 +172,22 @@ const Dashboard = () => {
               </View>
                     <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
-                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Indoor
                           </Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={[{padding: 7.5, borderRadius: 15, marginRight: 2}, outdoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('outdoor')}>
-                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  outdoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Outdoor
                           </Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, hydroponic ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('hydroponic')}>
-                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  hydroponic ? {color: '#F97068'} : {color: 'white'}]}>
                                 Hydroponic
                           </Text>
                       </TouchableOpacity>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15}, potted ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('potted')}>
-                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  potted ? {color: '#F97068'} : {color: 'white'}]}>
                                 Potted
                           </Text>
                       </TouchableOpacity>
