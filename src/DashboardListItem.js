@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { SunIcon, HomeModernIcon } from 'react-native-heroicons/solid'
 import  Svg, { Path, G } from 'react-native-svg'
 import React from 'react'
@@ -8,28 +8,41 @@ const DashboardListItem = (props) => {
   const navigation = useNavigation()
   return (
     <View key={props.index}>
-              <View style={{
+              <View style={[{
               flexDirection: 'column',
-              marginBottom: 1,
+              marginVertical: 5,
               flex:1,
-              }}>
+              }, styles.shadow]}>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
                   onPress={() => navigation.navigate('UpdateModal',props.item)}>
-                    <View style={[{ flexDirection: 'row',overflow:'hidden',justifyContent: 'space-between'}, props.item.isThirsty ? {backgroundColor:'rgba(249, 112, 104, .5)'} :{backgroundColor:'white'}]}>
+                    <View style={[{ flexDirection: 'row',overflow:'hidden', borderRadius: 25}]}>
 
                       <View style={styles.textView}>
 
-                        <View style={{marginLeft: 35, alignSelf:'center'}}>
-                          <Text style={[{fontSize: 14, fontWeight: 'bold'}, props.item.isThirsty ? {color:'white'} : {color:'black'}]}>
-                        {props.item.name}
-                          </Text>
-                        </View>
+                        {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
+                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={{ width:125, height: 125, borderRadius: 100 }} />
+                        <View style={{width: 150, paddingVertical: 10, paddingLeft: 5, height: '100%', justifyContent:'center'}}>
+                          <View style={{flexDirection:'row', width: '125%', justifyContent:'space-between'}}>
+                            <View style={{backgroundColor: '#034732', padding: 7.5, borderRadius: 15, width: '95%'}}>
+                              <Text style={[{fontSize: 14, fontWeight: 'bold'}, props.item.isThirsty ? {color:'white'} : {color:'white'}]}>
+                                {props.item.name}
+                              </Text>
+                            </View>
 
-                        <View style={{flexDirection:'row',marginRight: 15, alignSelf:'center'}}>
-                        {props.item.isIndoors ?<HomeModernIcon color={'#fff'} size={20}/> :
-                        <SunIcon color={'#fff'} size={20}/>}
-                        {props.item.isHydroponic ? <Svg width={20}height={20} fill={'#fff'} viewBox="0 0 792 612">
+                          </View>
+
+                          <View style={{flexDirection:'row', marginTop: 5,
+                          // justifyContent:'center',
+                          width: '117.5%'}}>
+                        {props.item.isIndoors ?<HomeModernIcon color={'#000'} size={20}/> :
+                        <View style={{backgroundColor: '#fff', height: 25, borderRadius: '50%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
+                        <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Outdoor</Text>
+                        <SunIcon style={{marginRight: 5}}color={'#034732'} size={20}/>
+                        </View>
+                        }
+
+                        {props.item.isHydroponic ? <Svg width={20}height={20} fill={'#000'} viewBox="0 0 792 612">
                           <G>
                           <Path d="M244.5,272.9c-2.8-6-1.9-11.5-2-16.9c-0.1-8.3-0.1-16.6,0-24.9c0-2,0.2-4.1,0.8-6.1c1.4-4.7,5.6-8,10.6-8.4   c1.4-0.1,2.7-0.1,4.1-0.1c39.3,0,78.6,0,117.9,0c1.6,0,3.1,0,5.1,0c-0.1-1.3-0.1-2.2-0.3-3c-2.4-9-6.2-17.4-12.3-24.5   c-5.3-6.3-11.9-10.9-19.1-14.7c-9.8-5.2-20.2-8.8-30.7-12.4c-10.8-3.6-21.6-7.2-32.4-10.8c-14.2-4.8-26.4-12.7-36.8-23.5   c-9.4-9.8-16.6-21.1-22.1-33.5c-7.7-17.2-12.5-35.2-14.5-53.9c-0.6-5.4,2-8.8,7.4-9.4c15.2-1.6,30.4-1.8,45.7-0.8   c13.6,0.9,26.9,3,40,6.8c22.3,6.5,42,17.5,57.7,34.9c12.1,13.5,20.1,29.2,25.1,46.5c1.3,4.5,2.3,9.1,3.1,13.6   c0.8,4.5,1.4,9,2.1,13.9c0.8-4.8,1.4-9.3,2.2-13.7c3.3-19.2,10.4-36.8,21.9-52.5c11.7-15.9,26.7-27.5,44.6-35.6   c16.1-7.3,33.2-11.2,50.7-13.2c12.6-1.4,25.2-1.5,37.9-1.2c5.2,0.2,10.4,0.7,15.7,1.2c6.6,0.6,9.2,3.9,8.3,10.6   c-1.3,10-3.3,19.8-6,29.4c-4.3,14.9-10.1,29-18.7,41.9c-9.7,14.6-22,26.5-38,33.9c-8.1,3.8-16.8,6.4-25.3,9.4   c-15.3,5.3-30.8,9.7-45.4,16.9c-7.9,3.8-15,8.6-21,15c-6.8,7.4-10.7,16.3-13.4,25.8c-0.2,0.6-0.1,1.3-0.2,2.4   c1.7,0.2,3.2,0.4,4.7,0.4c13.6,0,27.1,0,40.7,0c26.2,0,52.4,0,78.6,0c1.9,0,3.9,0,5.7,0.6c5.1,1.5,8.3,6,8.5,11.6   c0.1,4.7,0,9.3,0,14c0,5.2,0,10.5,0,15.7c0,4.6,0.6,9.3-1.8,14.2c1.9,0.1,3.3,0.2,4.7,0.2c23.1,0,46.2,0,69.4,0   c3.9,0,7.8,0.1,11.4,1.7c7.9,3.4,12.1,9.4,12.6,17.9c0.2,3.3,0,6.6,0.1,9.9c0.2,12.1-10,20.6-20.5,20.5c-32.3-0.2-64.7-0.1-97-0.1   c-5.3,0-5.7-1-6.3,6c-0.9,11.5-2,22.9-3.1,34.3c-0.8,8.6-1.5,17.2-2.3,25.8c-0.8,9.2-1.7,18.4-2.5,27.5c-0.8,8.5-1.5,17-2.2,25.5   c-1.1,12.1-2.2,24.3-3.3,36.4c-0.8,8.6-1.5,17.2-2.2,25.9c-0.6,6.5-1.2,12.9-1.8,19.4c-1.1,11.9-11,20.1-22.8,20   c-43.6-0.2-87.2-0.1-130.9-0.1c-12.2,0-24.4-0.3-36.6,0.1c-12.8,0.4-22.1-9.9-23-21c-1.4-18.9-3.4-37.9-5.1-56.8   c-1.3-13.9-2.4-27.9-3.6-41.8c-1.3-14.3-2.6-28.6-3.9-42.8c-1.2-13.9-2.4-27.9-3.7-41.8c-0.4-4.5-0.8-9.1-1.3-13.6   c-0.2-2.5-0.6-2.9-3.2-2.9c-7.2-0.1-14.4,0-21.5,0c-26.1,0-52.2,0-78.2,0c-9.1,0-15.3-4.4-19-12.5c-2.5-5.5-2.4-19.7,0.1-25.2   c3.2-6.8,8.5-10.9,16-11.9c2.2-0.3,4.5-0.4,6.8-0.4c22.8,0,45.6,0,68.3,0C240.6,272.9,242.2,272.9,244.5,272.9z M322.4,323.2   c0,1.3,0,2.1,0,2.9c0.8,13.9,1.5,27.7,2.3,41.6c0.5,9.4,1,18.9,1.5,28.3c0.9,15,1.7,30,2.6,45c0.5,8.6,0.9,17.3,1.5,25.9   c0.3,4.7,0.4,9.3,1.2,13.9c1.6,9.6,10.5,16.3,19.9,15.4c9.7-1,17-8.8,16.9-18.6c0-4.5-0.4-9.1-0.6-13.6c-0.9-16-1.8-32-2.7-48.1   c-0.7-11.6-1.4-23.2-2-34.8c-1-18.1-2-36.1-2.9-54.2c-0.2-3.8-0.3-3.9-3.9-3.9c-10,0-20,0-30.1,0   C324.9,322.9,323.8,323.1,322.4,323.2z M447.2,322.9c-4.8,0-9.6,0-14.4,0c-4.2,0-4.4,0-4.7,4.3c-0.4,5.7-0.6,11.4-0.9,17   c-0.5,9.7-1,19.3-1.6,29c-0.8,14.1-1.7,28.2-2.5,42.3c-0.6,9.8-1,19.5-1.6,29.3c-0.3,5.5-0.8,10.9-1.1,16.4   c-0.3,5.3-0.5,10.7-0.8,16c-0.2,3.5,0.8,6.8,2.6,9.8c4.3,7.1,12.5,10.5,20.2,8.7c8.3-2,14-8.7,14.5-17.3c0.5-8.6,1-17.3,1.5-25.9   c0.3-4.9,0.5-9.8,0.8-14.7c0.8-13.6,1.7-27.3,2.4-40.9c0.6-10,1-20,1.6-30c0.8-13.4,1.6-26.8,2.4-40.2c0.2-3.3-0.2-3.7-3.6-3.7   C457.2,322.9,452.2,322.9,447.2,322.9z"/>
                           <Path d="M617.4,472.2c-0.7-10.2,8.3-22.5,22.6-22.3c12.5,0.1,22.1,10.1,22.1,22.9c0,11.8-10.4,22.2-23.1,22   C627,494.6,616.7,483.8,617.4,472.2z"/>
@@ -46,6 +59,18 @@ const DashboardListItem = (props) => {
                           <Path d="M260.3,467.2c0-20.3,0-39.9,0-60.2c83.1,0,165.9,0,249.4,0c0,19.8,0,39.7,0,60.2C426.8,467.2,343.9,467.2,260.3,467.2z"/></Svg>
                           : null}
                         </View>
+
+                        {/* tag icons will follow the hydroponic/potted/outdoor/indoor icons */}
+
+                        {/* needs to be fed the actual nextWateringDate */}
+
+
+
+                          <View style={{backgroundColor: 'rgba(255, 255, 255, .5)', height: 25, borderRadius: '50%', alignItems:'center',padding:2.5, flexDirection:'row', marginTop: 5}}>
+                        <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Water in 7 days</Text>
+                        </View>
+
+                        </View>
                       </View>
 
                     </View>
@@ -59,9 +84,15 @@ export default DashboardListItem
 
 const styles = StyleSheet.create({
   textView: {
-    height: 40,
     flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
+    width: '90%',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  shadow: {
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.4,
+    // shadowRadius: 2,
+    // elevation: 5,
   }
 })

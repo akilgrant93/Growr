@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
+import React, {useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
@@ -124,10 +124,20 @@ const customDatesStylesCallback = date => {
 
 
   return (
-    <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%', backgroundColor:'#E4F1E4'}}>
-      <CalendarPicker onDateChange={changeData}
-      previousTitleStyle={{fontWeight:'500', color: '#F97068'}}
-      nextTitleStyle={{fontWeight:'500', color: '#F97068'}}
+    <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
+      <View style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderTopLeftRadius: 25, borderTopRightRadius:25}}>
+      <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
+                <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
+                <FontAwesome
+                style={{paddingLeft: 5}}
+                name='calendar'
+                 color='#fff'
+                 size={22}
+              />
+      </View>
+      <CalendarPicker onDateChange={changeData} width={325}
+      previousTitleStyle={{fontWeight:'500', color: '#fff'}}
+      nextTitleStyle={{fontWeight:'500', color: '#fff'}}
       monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
@@ -270,6 +280,7 @@ const customDatesStylesCallback = date => {
       </View>
       </View>
 
+      </View>
       </View>
     </SafeAreaView>
   )

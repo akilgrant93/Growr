@@ -18,6 +18,10 @@ Notifications.setNotificationHandler({
 
 const Dashboard = () => {
   const [name, setName] = useState('')
+  const [indoor, toggleIndoor] = useState(false)
+  const [outdoor, toggleOutdoor] = useState(false)
+  const [potted, togglePotted] = useState(false)
+  const [hydroponic, togglehydroponic] = useState(false)
   const [plants, setPlants] = useState([])
   const [expoPushToken, setExpoPushToken] = useState('');
   const [notification, setNotification] = useState(false);
@@ -106,34 +110,100 @@ const Dashboard = () => {
     })
   }
 
+  //this function will change plants array fed to flatlist as well
+  const toggleEvent = (name) => {
+    if(name === 'indoor'){
+      if(indoor){
+        toggleIndoor(false)
+      } else {
+        toggleIndoor(true)
+      }
+    }
+
+    if(name === 'outdoor'){
+      if(outdoor){
+        toggleOutdoor(false)
+      } else {
+        toggleOutdoor(true)
+      }
+    }
+
+    if(name === 'potted'){
+      if(potted){
+        togglePotted(false)
+      } else {
+        togglePotted(true)
+      }
+    }
+
+    if(name === 'hydroponic'){
+      if(hydroponic){
+        togglehydroponic(false)
+      } else {
+        togglehydroponic(true)
+      }
+    }
+
+  }
+
   return (
 
     <SafeAreaView style={styles.formContainer}>
-      {plants.length ? <View style={{flexDirection:'row', alignItems:'center'}}>
-        <Text style={{padding: 10, fontSize: 15, fontWeight:'bold', color:'#034732'}}>My Garden</Text>
-        <FontAwesome
-                name='leaf'
-                 color='#034732'
-                 size={15}
-              />
-        </View>
-          : null}
+      {/* weather goes here */}
+
       <FlatList
         showsVerticalScrollIndicator={false}
-        style={{height: '40%',width: '100%'}}
+        style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderTopLeftRadius: 25, borderTopRightRadius:25}}
         data={plants}
         numColumns={1}
         renderItem={({item, index}) => {
             return (
-              <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
+              <View>
+                {index === 0 ?
+                <View>
+                <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
+                <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
+                <FontAwesome
+                style={{paddingLeft: 5}}
+                name='leaf'
+                 color='#fff'
+                 size={22}
+              />
+              </View>
+                    <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                      <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                                Indoor
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{padding: 7.5, borderRadius: 15, marginRight: 2}, outdoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('outdoor')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                                Outdoor
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, hydroponic ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('hydroponic')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                                Hydroponic
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15}, potted ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('potted')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', color:'white'}]}>
+                                Potted
+                          </Text>
+                      </TouchableOpacity>
+                    </View>
+                </View>
+              : null}
+                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
+              </View>
             )
         }}
       />
 
-      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5}}>
+      {/* <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5}}>
           <Weather />
           <Reminders plants={plants} nextWateringDays={nextWateringDays}/>
-      </View>
+      </View> */}
     </SafeAreaView>
   )
 }
@@ -178,7 +248,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    backgroundColor: '#C9E4CA',
+    backgroundColor: '#fff',
   },
   buttonText: {
     color: 'white',

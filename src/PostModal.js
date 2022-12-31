@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Keyboard, Platform, Button, Image, SafeAreaView, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Keyboard, Platform, Button, Image, SafeAreaView, TouchableOpacity, FlatList } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
@@ -8,6 +8,7 @@ import { XCircleIcon } from 'react-native-heroicons/solid';
 import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
+import { PlusCircleIcon } from 'react-native-heroicons/solid'
 import CustomSVG from './CustomSVG'
 import { FontAwesome } from '@expo/vector-icons';
 
@@ -15,9 +16,9 @@ const PostModal = ({route, navigation}) => {
   const [image, setImage] = useState(null);
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
-  //this state value will disable the checkboxes for isPotted and isIndoors
+  const [isResistant, setIsResistant]= useState(false)
+  const [isSusceptible, setIsSusceptible]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)
-
   const [active, setActive]= useState(false)
   const [sliderValue, setSliderValue]= useState(0)
   const [slidingState, setSlidingState]= useState('inactive')
@@ -28,6 +29,7 @@ const PostModal = ({route, navigation}) => {
     rootRot:'Root Rot',
     canker:'Canker',
     verticilliumWilt:'Verticillium Wilt',
+    bacterialWilt:'Bacterial Wilt',
     mosaicVirus:'Mosaic Virus',
     leafBlight:'Leaf Blight',
     blackSpot:'Black Spot',
@@ -320,6 +322,14 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
+  console.log(route.params.item.diseases);
+  route.params.item.diseases.forEach((disease) => {
+    if(disease.split(':')[1] === 'resistant'){
+      setIsResistant(true)
+    } else if(disease.split(':')[1] === 'susceptible'){
+      setIsSusceptible(true)
+    }
+  });
   (async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
@@ -329,7 +339,6 @@ useEffect(() => {
       setCalendars(userCalendars)
     }
   });
-
 }, []);
 
 const pickImage = async () => {
@@ -349,7 +358,7 @@ const pickImage = async () => {
 };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {paddingBottom: 10}]}>
       <View style={{flexDirection:'row', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom: 5,}}>
       <View style={{alignItems:'center', marginVertical: 10 }}>
       {image ?
@@ -378,7 +387,6 @@ const pickImage = async () => {
       </View>
 
       <View style={{alignSelf:'center', paddingLeft:10, width: '60%', paddingTop: 20}}>
-     {/* <TouchableOpacity onPress={pickImage}><Text style={{paddingBottom: 5, paddingLeft: 5,paddingTop: 15}}>Pick an image from camera roll</Text></TouchableOpacity> */}
       {/* if commonName exists, commonName else scientificName */}
       <TextInput editable={false} value={route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName} style={{backgroundColor:'green', borderColor:'green', borderWidth: 1, paddingVertical: 5, borderTopLeftRadius:5, borderTopRightRadius: 5,  paddingLeft: 5, color: 'white', fontWeight: '600'}}>
       </TextInput>
@@ -390,7 +398,7 @@ const pickImage = async () => {
 
       {/* if familyName exists, familyName else nothing */}
       {!route.params.item.family ?
-      <TextInput editable={false} value={route.params.item.familyName} style={{borderColor:'green', borderWidth: 1, paddingVertical: 5,  paddingLeft: 5, color: 'green', fontWeight:'600'}}/>
+      <TextInput editable={false} placeholder={'Family' || route.params.item.familyName}value={route.params.item.familyName} style={{borderColor:'green', borderWidth: 1, paddingVertical: 5,  paddingLeft: 5, color: 'green', fontWeight:'600'}}/>
       : <View/>}
 
       <TextInput placeholder='Cultivar' style={{borderColor:'green', borderWidth: 1, paddingVertical: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, paddingLeft: 5, color: 'green'}}>
@@ -407,41 +415,76 @@ const pickImage = async () => {
       {/* succulent icon ternary */}
       {/* tropical icon ternary */}
       {/* medicinalUse icon ternary */}
-
+      <View  style={{width: '90%', paddingVertical:10, borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2}}>
+      <Text style={{fontWeight:'bold', paddingBottom:5}}>Description: </Text>
+      <Text>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      </Text>
+      </View>
       {/* tag map ternary needs flexwrap*/}
       {route.params.item.tags.length > 0
-      ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:10, width: '85%'}]}>
+      ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:10, width: '90%'}]}>
        {route.params.item.tags.map((tag, idx) => {
        return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
       })}
       </View>
       : <View/>}
 
-      {/* disease map ternary needs restyle and formatting to be text based*/}
-      {route.params.item.diseases.length > 0
-      ?
-      <View style={{alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:10, width: '85%'}}>
-      <View style={styles.diseaseText}>
-       {route.params.item.diseases.map((disease, idx) => {
+      {route.params.item.medicinalUse ? <View style={{ borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:20, width: '90%'}}>
+        <Text style={{textAlign:'center'}}>{route.params.item.medicinalUse}</Text>
+      </View> : null}
 
-        const currDisease = disease.split(':')[0]
-        const currDiseaseStatus = disease.split(':')[1][0].toUpperCase()+disease.split(':')[1].slice(1)
+
+      {route.params.item.diseases.length ? <View style={{alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:10, width: '90%', flexDirection:'row'}}>
+      {/* disease map ternary needs restyle and formatting to be text based*/}
+      {isResistant
+      ?
+      <View style={{width: '100%'}}>
+        <Text style={{fontWeight:'bold', color:'white', paddingVertical: 3.5,backgroundColor:'green', paddingLeft: 5}}>Resistant to:</Text>
+      <View style={styles.diseaseText}>
+        <FlatList
+          data={route.params.item.diseases}
+          numColumns={2}
+          renderItem={({item, idx}) => {
+        const currDisease = item.split(':')[0]
+        const currDiseaseStatus = item.split(':')[1][0].toUpperCase()+item.split(':')[1].slice(1)
         const formattedDiseaseName = diseasesObj[currDisease]
 
-        if(currDiseaseStatus === 'Resistant'){
-          return <Text key={idx} style={{paddingTop:1}}>•Resistant to {formattedDiseaseName}</Text>
-        } else if (currDiseaseStatus === 'Susceptible'){
-          return <Text key={idx} style={{paddingTop:1, color:'red'}}>•Susceptible to {formattedDiseaseName}</Text>
+        if (currDiseaseStatus === 'resistant'){
+          return <Text key={idx} style={{paddingTop:1, }}>{formattedDiseaseName}</Text>
         }
-
-      })}
+          }}
+        />
       </View>
       </View>
       : <View/>}
+           {isSusceptible
+      ?
+      <View style={{width: '100%'}}>
+        <Text style={{fontWeight:'bold', color:'white', paddingVertical: 3.5,backgroundColor:'red', paddingLeft: 5}}>Susceptible to:</Text>
+      <View style={[styles.diseaseText, {width: '100%'}]}>
+      <FlatList
+          data={route.params.item.diseases}
+          numColumns={2}
+          renderItem={({item, index}) => {
+            // console.log(index)
+        const currDisease = item.split(':')[0]
+        const currDiseaseStatus = item.split(':')[1][0].toUpperCase()+item.split(':')[1].slice(1)
+        const formattedDiseaseName = diseasesObj[currDisease]
+        if (currDiseaseStatus === 'Susceptible'){
+          console.log(index % 2 == false)
+          return <Text style={[{paddingTop:1, width: '50%', paddingLeft:5, borderRightColor: 'black', borderRightWidth: 2}] }>{formattedDiseaseName}</Text>
+        }
+          }}
+        />
+      </View>
+      </View>
+      : <View/>}
+      </View> : null}
 
 
       {/* icons needed */}
-      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15, borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '85%'}}>
+      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15, borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '90%'}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
         size={20}
@@ -489,7 +532,7 @@ const pickImage = async () => {
       </View>
 
             {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-            <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '85%'}}>
+            <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '90%'}}>
             <Slider
           // value={value}
               style={{marginTop: 15,width:'100%', alignSelf:'center'}}
@@ -520,13 +563,19 @@ const pickImage = async () => {
             </View>
 
           {/* notes textInput */}
+          <View>
+            <TextInput placeholder='Write some notes about your plant' style={{backgroundColor:'white', marginTop: 5,padding: 5,width: 340}}/>
+          </View>
 
-        <Pressable
-          style={styles.postButton}
+      <View style={{width: '100%', alignItems:'flex-end', marginRight: 40, marginTop: 20}}>
+        <TouchableOpacity
+          // style={styles.postButton}
+          style={{flexDirection:'row'}}
           onPress={() => {postPlant(route.params.item, isIndoors, isPotted, isHydroponic)}}
         >
-        <Text>POST PLANT</Text>
-      </Pressable>
+          <PlusCircleIcon color={'green'} size={50}/>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   )
 }
@@ -535,14 +584,15 @@ export default PostModal
 
 const styles = StyleSheet.create({
   container: {
-    // marginHorizontal: 5,
+    backgroundColor: 'white',
+    marginTop: '25%',
     alignItems:'center'
   },
   diseaseText: {
     flexDirection:'column',
     justifyContent:'center',
     alignItems:'left',
-    marginTop: 10,
+    marginTop: 5,
     width: '70%'
   },
   postButton: {
@@ -557,7 +607,7 @@ const styles = StyleSheet.create({
   },
   tagBox: {
     flexDirection:'row',
-    justifyContent:'center',
+    justifyContent:'flex-start',
     alignItems:'center',
     marginTop: 10,
   },

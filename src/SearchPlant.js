@@ -12,7 +12,7 @@ const SearchPlant = ({route, navigation}) => {
   const [previousStart, setPreviousStart] = useState({})
   const [value, setValue]= useState('')
   const [tableData, setTableData] = useState([])
-  const limit = 12
+  const limit = 14
 
     const searchByName =  async ({search = ''}) => {
       if(search[search.length-1] === ' '){
@@ -142,7 +142,36 @@ const SearchPlant = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View>
+      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
+      <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
+                <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Discover</Text>
+                <FontAwesome
+                style={{paddingLeft: 5}}
+                name='search'
+                 color='#fff'
+                 size={22}
+              />
+      </View>
+
+      <View style={{width: '90%', marginLeft: '5%'}}>
+      <View style={{flexDirection:'row', marginTop: 5}}>
+      <TextInput
+        style={styles.input}
+        placeholder="Add A New Plant"
+        placeholderTextColor='#aaaaaa'
+        onChangeText={(heading) => setValue(heading)}
+        value={value}
+        underlineColorAndroid='transparent'
+        autoCapitalize='none'
+      />
+      <TouchableOpacity style={styles.button}onPress={cancelSearch}>
+         <Text style={{color:'white', fontWeight:'bold'}}>X</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button2}onPress={submitSearch}>
+         <Text style={styles.buttonText}>Search</Text>
+      </TouchableOpacity>
+      </View>
+
       {!tableData
            ? <View></View>
            :
@@ -151,6 +180,7 @@ const SearchPlant = ({route, navigation}) => {
           keyExtractor={(item) => item.key}
           scrollEnabled={false}
           renderItem={(item) => {
+            console.log(item)
              return (
               <View>
                 <View style={{
@@ -177,7 +207,7 @@ const SearchPlant = ({route, navigation}) => {
                             }).join(' ')}
                         </Text>
 
-                        <Text style={{fontSize: 10}}>{item.item.familyName}</Text>
+                        <Text style={{fontSize: 10, color:'rgba(0,0,0,.5)'}}>{item.item.familyName}</Text>
                         </View>
 
                         <View style={{ flexDirection: 'row-reverse', width: '25%',
@@ -203,27 +233,9 @@ const SearchPlant = ({route, navigation}) => {
               </View>
             )
           }} />}
-
-      <View style={{flexDirection:'row', marginTop: 5}}>
-      <TextInput
-        style={styles.input}
-        placeholder="Add A New Plant"
-        placeholderTextColor='#aaaaaa'
-        onChangeText={(heading) => setValue(heading)}
-        value={value}
-        underlineColorAndroid='transparent'
-        autoCapitalize='none'
-      />
-      <TouchableOpacity style={styles.button}onPress={cancelSearch}>
-         <Text style={{color:'white', fontWeight:'bold'}}>X</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button2}onPress={submitSearch}>
-         <Text style={styles.buttonText}>Search</Text>
-      </TouchableOpacity>
-      </View>
       </View>
 
-      <View style={{width:'95%', marginLeft: '2.5%', flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', width: '90%', marginLeft: '5%'}}>
 
      {!tableData.length
      ?
@@ -299,6 +311,7 @@ const SearchPlant = ({route, navigation}) => {
         </View>
       </View>
       : <View/>}
+      </View>
 
     </SafeAreaView>
   )
@@ -308,19 +321,17 @@ export default SearchPlant
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#C9E4CA',
     height: '100%',
-    justifyContent:'center'
   },
   input: {
     height: 40,
-    marginLeft: '2.5%',
+    fontWeight:'bold',
     borderTopLeftRadius:5,
     borderBottomLeftRadius: 5,
     overflow: 'hidden',
     backgroundColor: 'white',
     paddingLeft: 16,
-    width: '60%',
+    width: '65%',
     marginTop: '1%',
   },
   button: {
