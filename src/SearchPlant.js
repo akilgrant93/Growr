@@ -142,7 +142,7 @@ const SearchPlant = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderTopLeftRadius: 25, borderTopRightRadius: 25, height: '100%'}}>
+      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderRadius: 25, height:'95%',overflow:'hidden'}}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Discover</Text>
                 <FontAwesome
@@ -175,12 +175,11 @@ const SearchPlant = ({route, navigation}) => {
       {!tableData
            ? <View></View>
            :
-       <FlatList style={{flexDirection:'column', width:'100%',marginTop: '1%'}}
+       <FlatList style={{flexDirection:'column',marginTop: '1%'}}
           data={tableData}
           keyExtractor={(item) => item.key}
           scrollEnabled={false}
           renderItem={(item) => {
-            console.log(item)
              return (
               <View>
                 <View style={{

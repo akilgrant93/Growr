@@ -254,9 +254,7 @@ const Dashboard = () => {
             return (
               <View>
                 {index === 0 ?
-                <View
-                // style={{borderBottomColor: '#034732', borderBottomWidth: 15, marginBottom:5}}
-                >
+                <View>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
                     <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
                     <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#fff'
