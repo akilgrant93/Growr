@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native'
 import React, {useState} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
@@ -99,11 +99,21 @@ const customDatesStylesCallback = date => {
               <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
       </View>
       <View style={{paddingBottom: 15,borderColor: '#034732', borderBottomWidth: 2, width: '90%',marginLeft:'5%'}}>
-      <CalendarPicker width={325}
-      previousTitleStyle={{fontWeight:'500', color: '#fff'}}
-      nextTitleStyle={{fontWeight:'500', color: '#fff'}}
+      <CalendarPicker width={Dimensions.get('window').width*.8}
+      // previousTitleStyle={{fontWeight:'500', color: '#fff', backgroundColor:'rgba(255,255,255,.5)', padding: 5,borderRadius: 25}}
+      previousComponent={
+        <View style={{backgroundColor:'rgba(255,255,255,.25)', width:75, marginLeft:-7.5,padding: 10,borderRadius: 25}}>
+          <Text style={{fontWeight:'500', color: '#fff', fontSize:10, textAlign:'center'}}>Previous</Text>
+        </View>
+      }
+      nextComponent={
+        <View style={{backgroundColor:'rgba(255,255,255,.25)', width:75, marginRight: -7.5, padding: 10,borderRadius: 25}}>
+          <Text style={{fontWeight:'500', color: '#fff', fontSize:10, textAlign:'center'}}>Next</Text>
+        </View>
+      }
       monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
+      headerWrapperStyle={{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}}
       customDatesStyles={customDatesStylesCallback}/>
       </View>
 
