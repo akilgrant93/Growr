@@ -6,6 +6,7 @@ import moment from 'moment';
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native';
+import { CalendarDaysIcon, ChevronDownIcon } from 'react-native-heroicons/solid';
 
 const MyCalendar = () => {
   const navigation = useNavigation()
@@ -128,12 +129,7 @@ const customDatesStylesCallback = date => {
       <View style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderTopLeftRadius: 25, borderTopRightRadius:25}}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
-                <FontAwesome
-                style={{paddingLeft: 5}}
-                name='calendar'
-                 color='#fff'
-                 size={22}
-              />
+              <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
       </View>
       <CalendarPicker onDateChange={changeData} width={325}
       previousTitleStyle={{fontWeight:'500', color: '#fff'}}

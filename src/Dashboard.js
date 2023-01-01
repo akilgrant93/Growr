@@ -4,8 +4,8 @@ import {firebase} from '../config'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { FontAwesome } from '@expo/vector-icons'
-import Weather from './Weather'
-import Reminders from './Reminders'
+// import Weather from './Weather'
+// import Reminders from './Reminders'
 import DashboardListItem from './DashboardListItem'
 
 Notifications.setNotificationHandler({
@@ -23,13 +23,19 @@ const Dashboard = () => {
   const [potted, togglePotted] = useState(false)
   const [hydroponic, togglehydroponic] = useState(false)
   const [plants, setPlants] = useState([])
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
+  const [plantsList, setPlantsList] = useState([])
+  // const [plantsList, setPlantsList] = useState([])
+  // const [outdoorPlants, setOutdoorPlants] = useState([])
+  // const [indoorPlants, setIndoorPlants] = useState([])
+  // const [pottedPlants, setPottedPlants] = useState([])
+  // const [hydroponicPlants, setHydroponicPlants] = useState([])
+  const [expoPushToken, setExpoPushToken] = useState('')
+  const [notification, setNotification] = useState(false)
   const [nextWateringDays, setNextWateringDays] = useState([])
   const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
 
-  const notificationListener = useRef();
-  const responseListener = useRef();
+  const notificationListener = useRef()
+  const responseListener = useRef()
 
   useEffect(()=> {
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).get()
@@ -62,6 +68,7 @@ const Dashboard = () => {
           wateringDays.push(doc.data().nextWateringDate)
         })
         setPlants(plants)
+        setPlantsList(plants)
         setNextWateringDays(wateringDays)
       }
     )
@@ -89,6 +96,22 @@ const Dashboard = () => {
       console.log(response);
     });
 
+    // console.log('outdoors',plants.filter((plant) => {
+    //   return plant.isIndoors === false
+    // }))
+
+    // console.log('indoors',plants.filter((plant) => {
+    //   return plant.isIndoors === true
+    // }))
+
+    // console.log('hydroponic',plants.filter((plant) => {
+    //   return plant.isHydroponic === true
+    // }))
+
+    // console.log('potted',plants.filter((plant) => {
+    //   return plant.isPotted === true
+    // }))
+
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
       Notifications.removeNotificationSubscription(responseListener.current);
@@ -114,36 +137,63 @@ const Dashboard = () => {
   const toggleEvent = (name) => {
     if(name === 'indoor'){
       if(indoor){
+        setPlantsList(plants)
         toggleIndoor(false)
       } else {
+        setPlantsList([...plants.filter((plant) => {
+            return plant.isIndoors === true
+          }), 0])
         toggleIndoor(true)
+        toggleOutdoor(false)
+        togglePotted(false)
+        togglehydroponic(false)
       }
     }
 
     if(name === 'outdoor'){
       if(outdoor){
+        setPlantsList(plants)
         toggleOutdoor(false)
       } else {
+        setPlantsList([...plants.filter((plant) => {
+          return plant.isIndoors === false
+        }), 0])
         toggleOutdoor(true)
+        toggleIndoor(false)
+        togglePotted(false)
+        togglehydroponic(false)
       }
     }
 
     if(name === 'potted'){
       if(potted){
+        setPlantsList(plants)
         togglePotted(false)
       } else {
+        setPlantsList([...plants.filter((plant) => {
+          return plant.isPotted === true
+        }), 0])
         togglePotted(true)
+        toggleOutdoor(false)
+        toggleIndoor(false)
+        togglehydroponic(false)
       }
     }
 
     if(name === 'hydroponic'){
       if(hydroponic){
+        setPlantsList(plants)
         togglehydroponic(false)
       } else {
+        setPlantsList([...plants.filter((plant) => {
+          return plant.isHydroponic === true
+        }), 0])
         togglehydroponic(true)
+        togglePotted(false)
+        toggleOutdoor(false)
+        toggleIndoor(false)
       }
     }
-
   }
 
   return (
@@ -154,23 +204,22 @@ const Dashboard = () => {
       <FlatList
         showsVerticalScrollIndicator={false}
         style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderTopLeftRadius: 25, borderTopRightRadius:25}}
-        data={plants}
+        data={plantsList}
         numColumns={1}
         renderItem={({item, index}) => {
             return (
               <View>
                 {index === 0 ?
-                <View>
-                <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
-                <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
-                <FontAwesome
-                style={{paddingLeft: 5}}
-                name='leaf'
-                 color='#fff'
+                <View
+                // style={{borderBottomColor: '#034732', borderBottomWidth: 15, marginBottom:5}}
+                >
+                  <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
+                    <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
+                    <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#fff'
                  size={22}
               />
-              </View>
-                    <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                  </View>
+                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Indoor
@@ -191,10 +240,10 @@ const Dashboard = () => {
                                 Potted
                           </Text>
                       </TouchableOpacity>
-                    </View>
+                  </View>
                 </View>
               : null}
-                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
+                {item !== 0 ?<DashboardListItem item={item} lastIdx={plants.length-1} index={index}/> : null}
               </View>
             )
         }}

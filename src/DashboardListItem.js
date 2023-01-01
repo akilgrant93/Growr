@@ -25,7 +25,7 @@ const DashboardListItem = (props) => {
                         <View style={{width: 150, paddingVertical: 10, paddingLeft: 5, height: '100%', justifyContent:'center'}}>
                           <View style={{flexDirection:'row', width: '125%', justifyContent:'space-between'}}>
                             <View style={{backgroundColor: '#034732', padding: 7.5, borderRadius: 15, width: '95%'}}>
-                              <Text style={[{fontSize: 14, fontWeight: 'bold'}, props.item.isThirsty ? {color:'white'} : {color:'white'}]}>
+                              <Text style={{fontSize: 14, fontWeight: 'bold',color:'white'}}>
                                 {props.item.name}
                               </Text>
                             </View>
@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
     justifyContent:'center',
   },
   shadow: {
-    // shadowColor: '#000',
-    // shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.4,
-    // shadowRadius: 2,
-    // elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   }
 })
