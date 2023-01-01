@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity, Animated } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
 import * as Device from 'expo-device';
@@ -6,6 +6,8 @@ import * as Notifications from 'expo-notifications';
 import { FontAwesome } from '@expo/vector-icons'
 import DashboardListItem from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
+import { useFocusEffect } from '@react-navigation/native';
+import Blink from './Blink'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -26,18 +28,19 @@ const Dashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [plants, setPlants] = useState([])
   const [plantsList, setPlantsList] = useState([])
-  // const [plantsList, setPlantsList] = useState([])
-  // const [outdoorPlants, setOutdoorPlants] = useState([])
-  // const [indoorPlants, setIndoorPlants] = useState([])
-  // const [pottedPlants, setPottedPlants] = useState([])
-  // const [hydroponicPlants, setHydroponicPlants] = useState([])
+  const [bottomReached, setBottomReached] = useState(false)
   const [expoPushToken, setExpoPushToken] = useState('')
   const [notification, setNotification] = useState(false)
   const [nextWateringDays, setNextWateringDays] = useState([])
   const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
-
   const notificationListener = useRef()
   const responseListener = useRef()
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setBottomReached(false)
+    }, [])
+  )
 
   useEffect(()=> {
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).get()
@@ -97,22 +100,6 @@ const Dashboard = () => {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
     });
-
-    // console.log('outdoors',plants.filter((plant) => {
-    //   return plant.isIndoors === false
-    // }))
-
-    // console.log('indoors',plants.filter((plant) => {
-    //   return plant.isIndoors === true
-    // }))
-
-    // console.log('hydroponic',plants.filter((plant) => {
-    //   return plant.isHydroponic === true
-    // }))
-
-    // console.log('potted',plants.filter((plant) => {
-    //   return plant.isPotted === true
-    // }))
 
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
@@ -262,6 +249,7 @@ const Dashboard = () => {
         style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25}}
         data={plantsList}
         numColumns={1}
+        onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (
               <View>
@@ -328,6 +316,18 @@ const Dashboard = () => {
             )
         }}
       />
+
+      {plantsList.length > 2 && bottomReached === false ?
+      <Blink duration={1000}>
+        <FontAwesome
+        style={{position:'absolute', bottom:20, right:15}}
+        color='rgba(249,112,104,.75)'
+        name='sort-desc'
+        size={30}
+        />
+      </Blink>
+
+      : null}
 </View>
 
       {/* <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5}}>
@@ -387,6 +387,15 @@ const styles = StyleSheet.create({
   deleteIcon: {
     fontSize: 14,
     alignSelf:'center'
+  },
+  notification: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: 'red',
   },
 })
 
