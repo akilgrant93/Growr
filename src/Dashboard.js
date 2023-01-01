@@ -4,8 +4,6 @@ import {firebase} from '../config'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { FontAwesome } from '@expo/vector-icons'
-// import Weather from './Weather'
-// import Reminders from './Reminders'
 import DashboardListItem from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
 
@@ -19,6 +17,8 @@ Notifications.setNotificationHandler({
 
 const Dashboard = () => {
   const [name, setName] = useState('')
+  const [hungry, toggleHungry] = useState(false)
+  const [thirsty, toggleThirsty] = useState(false)
   const [indoor, toggleIndoor] = useState(false)
   const [outdoor, toggleOutdoor] = useState(false)
   const [potted, togglePotted] = useState(false)
@@ -151,6 +151,8 @@ const Dashboard = () => {
         toggleOutdoor(false)
         togglePotted(false)
         togglehydroponic(false)
+        toggleHungry(false)
+        toggleThirsty(false)
       }
     }
 
@@ -168,6 +170,8 @@ const Dashboard = () => {
         toggleIndoor(false)
         togglePotted(false)
         togglehydroponic(false)
+        toggleHungry(false)
+        toggleThirsty(false)
       }
     }
 
@@ -185,6 +189,8 @@ const Dashboard = () => {
         toggleOutdoor(false)
         toggleIndoor(false)
         togglehydroponic(false)
+        toggleHungry(false)
+        toggleThirsty(false)
       }
     }
 
@@ -202,6 +208,46 @@ const Dashboard = () => {
         togglePotted(false)
         toggleOutdoor(false)
         toggleIndoor(false)
+        toggleHungry(false)
+        toggleThirsty(false)
+      }
+    }
+
+    if(name === 'hungry'){
+      if(hungry){
+        setSelectedCategory('')
+        setPlantsList(plants)
+        toggleHungry(false)
+      } else {
+        setPlantsList([...plants.filter((plant) => {
+          return plant.isHungry === true
+        }), 0])
+        setSelectedCategory(name)
+        toggleHungry(true)
+        togglePotted(false)
+        toggleOutdoor(false)
+        toggleIndoor(false)
+        togglehydroponic(false)
+        toggleThirsty(false)
+      }
+    }
+
+    if(name === 'thirsty'){
+      if(thirsty){
+        setSelectedCategory('')
+        setPlantsList(plants)
+        toggleThirsty(false)
+      } else {
+        setPlantsList([...plants.filter((plant) => {
+          return plant.isThirsty === true
+        }), 0])
+        setSelectedCategory(name)
+        toggleThirsty(true)
+        togglePotted(false)
+        toggleOutdoor(false)
+        toggleIndoor(false)
+        togglehydroponic(false)
+        toggleHungry(false)
       }
     }
   }
@@ -228,6 +274,20 @@ const Dashboard = () => {
                     <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#fff'
                  size={22}
               />
+                  </View>
+
+                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                    {/* refactor these into standalone components */}
+                  <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, width: '50%',marginRight: 2}, thirsty ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('thirsty')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  thirsty ? {color: '#034732'} : {color: 'white'}]}>
+                                Needs Water
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{padding: 7.5, borderRadius: 15, width: '50%'}, hungry ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('hungry')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  hungry ? {color: '#034732'} : {color: 'white'}]}>
+                                Needs Fertilizer
+                          </Text>
+                      </TouchableOpacity>
                   </View>
                   <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>

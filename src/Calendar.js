@@ -12,46 +12,18 @@ const MyCalendar = () => {
   const navigation = useNavigation()
   const [wateringDays, setWateringDays] = useState([])
   const [nextWateringDays, setNextWateringDays] = useState([])
+  const [plants, setPlants] = useState([])
   const [date, setDate] = useState(moment().startOf('day'))
   const [lastWateredData, setLastWateredData] = useState({})
   const [nextWateredData, setNextWateredData] = useState([])
   const [toggled, setToggled] = useState(false)
-  const changeMonth = () => {
-    setLastWateredData({})
-    setNextWateredData({})
-  }
-
-  const changeData = (date) => {
-    setDate(date)
-    setToggled(false)
-    let nextWateringDaysInit = []
-    let lastWateringDaysInit = []
-    const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-    plantsRef
-    .orderBy('nextWateringDate', 'asc')
-    .onSnapshot(
-      querySnapshot => {
-        querySnapshot.forEach((plant) => {
-          if(moment(date).startOf('day').valueOf() === plant.data().nextWateringDate){
-            nextWateringDaysInit.push(plant.data())
-          }
-          if(plant.data().wateringDates.includes(moment(date).startOf('day').valueOf())){
-            lastWateringDaysInit.push(plant.data())
-          }
-        })
-        setLastWateredData(lastWateringDaysInit)
-        setNextWateredData(nextWateringDaysInit)
-      }
-    )
-  }
 
   useFocusEffect(
     React.useCallback(() => {
       const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-      let nextWateringDaysVisInit = []
-      let lastWateringDaysVisInit = []
       let wateringDaysInit = []
       let nextWateringDaysInit = []
+      let plantsArr = []
       plantsRef
       .orderBy('nextWateringDate','asc')
       .onSnapshot(
@@ -59,14 +31,7 @@ const MyCalendar = () => {
           querySnapshot.forEach((plant) => {
             nextWateringDaysInit.push(moment(plant.data().nextWateringDate).startOf('day').toString())
             wateringDaysInit.push(plant.data().wateringDates)
-
-            if(moment().startOf('day').valueOf() === plant.data().nextWateringDate){
-              nextWateringDaysVisInit.push(plant.data())
-            }
-
-            if(plant.data().wateringDates.includes(moment().startOf('day').valueOf())){
-              lastWateringDaysVisInit.push(plant.data())
-            }
+            plantsArr.push(plant.data())
           })
         setNextWateringDays(nextWateringDaysInit)
         let mergedArray = [];
@@ -79,12 +44,14 @@ const MyCalendar = () => {
         unproccessed.forEach(day => {
           daysRounded.push(moment(day).startOf('day').toString())
         })
-
-        setLastWateredData(lastWateringDaysVisInit)
-        setNextWateredData(nextWateringDaysVisInit)
+        setPlants(plantsArr)
         setWateringDays(daysRounded)
       }
     )
+
+    console.log('watering days',wateringDays)
+    console.log('next watering days',nextWateringDays)
+    // console.log('plants',plants[0])
     }, [])
   );
 
@@ -132,15 +99,33 @@ const customDatesStylesCallback = date => {
               <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
       </View>
       <View style={{paddingBottom: 15,borderColor: '#034732', borderBottomWidth: 2, width: '90%',marginLeft:'5%'}}>
-      <CalendarPicker onDateChange={changeData} width={325}
+      <CalendarPicker width={325}
       previousTitleStyle={{fontWeight:'500', color: '#fff'}}
       nextTitleStyle={{fontWeight:'500', color: '#fff'}}
       monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
-      customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
+      customDatesStyles={customDatesStylesCallback}/>
       </View>
-      <View style={{height: '100%'}}>
 
+      <View style={{height: '100%', width: '90%', marginLeft:'5%'}}>
+
+        {/* this will be the template for the flatlist item */}
+        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+          <Text style={{color:'#034732', fontWeight:'bold',fontSize:40, marginTop: 10}}>{moment().format('DD')}</Text>
+          <View style={{justifyContent:'center'}}>
+          <Text style={{color:'#034732', fontWeight:'bold',fontSize:16, textAlign:'right'}}>{moment().format('dddd')}</Text>
+          <Text style={{color:'rgba(3, 71, 50, .5)', fontWeight:'bold',fontSize:12, textAlign:'right'}}>{moment().format('MMMM')}</Text>
+          </View>
+        </View>
+
+          <View style={{flexDirection:'row'}}>
+            {/* map function or flatlist will populate these according to date */}
+          <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>TODO</Text><Text style={{color:'white'}}>Water Plants</Text>
+          </View>
+
+          <View style={{flexDirection:'row'}}>
+          <Text style={{fontWeight:'bold', color:'rgba(255,255,255,.5)', paddingRight: '5%'}}>DONE</Text><Text style={{color:'white'}}>Water Plants</Text>
+          </View>
       </View>
       </View>
     </SafeAreaView>
