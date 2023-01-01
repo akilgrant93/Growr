@@ -6,7 +6,7 @@ import moment from 'moment';
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native';
-import { CalendarDaysIcon, ChevronDownIcon } from 'react-native-heroicons/solid';
+import { CalendarDaysIcon } from 'react-native-heroicons/solid';
 
 const MyCalendar = () => {
   const navigation = useNavigation()
@@ -131,150 +131,15 @@ const customDatesStylesCallback = date => {
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
               <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
       </View>
+      <View style={{paddingBottom: 15,borderColor: '#034732', borderBottomWidth: 2, width: '90%',marginLeft:'5%'}}>
       <CalendarPicker onDateChange={changeData} width={325}
       previousTitleStyle={{fontWeight:'500', color: '#fff'}}
       nextTitleStyle={{fontWeight:'500', color: '#fff'}}
       monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
       yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
       customDatesStyles={customDatesStylesCallback} onMonthChange={changeMonth}/>
-      <View style={[styles.textView]}>
-      <View style={{flexDirection:'row'}}>
-      <View style={nextWateredData.length || lastWateredData.length ? {width: 20, alignSelf:'flex-end', marginBottom: 20, paddingLeft: 2.5} : null}>
-      {nextWateredData.length > 6 && !toggled ? <FontAwesome
-                size={25}
-                name='caret-down'
-                color='#F97068'
-              /> : null}
-
-      {lastWateredData.length > 6 && !toggled ? <FontAwesome
-                size={25}
-                name='caret-down'
-                color='#F97068'
-              /> : null}
       </View>
-      <View style={{alignSelf:'center', width: '95%'}}>
-
-      {!lastWateredData.length && !nextWateredData.length ?
-      <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', alignSelf:'center', marginTop: '35%'}}>No plants need water or have been watered {moment(date).startOf('day').valueOf() === moment().startOf('day').valueOf() ? 'today' : 'on this day'}</Text>
-      : <View/>}
-
-      {/* Needs Water - load tags into flatlist*/}
-      {nextWateredData.length ?
-      <View style={{height: 176}}>
-        <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', marginLeft: '2.5%',}}>What needs water:</Text>
-        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10, marginLeft: '2.5%',}}>
-        {moment(date).format("dddd, MMMM Do YYYY")}
-        </Text>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        style={{width: '100%'}}
-        data={nextWateredData}
-        numColumns={2}
-        onEndReached={() => setToggled(true)}
-        renderItem={({item, index}) => {
-            return (
-            <View key={item.index || index} style={{width:'50%'}}>
-              <View style={{
-              flexDirection: 'column',
-              width: '95%',
-              marginLeft: '2.5%',
-              marginBottom: 1,
-              flex:1,
-              }}>
-                {/* neeeds indoors and tags modularity */}
-                  <TouchableOpacity
-                  onPress={() => navigation.navigate('UpdateModal',item)}>
-                    <View style={{ flexDirection: 'row',
-                    height: 40,
-                     overflow:'hidden',
-                     alignItems:'center',
-                     justifyContent: 'space-between',
-                    shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
-                      <View>
-
-                      <View >
-                      <Text style={{fontSize: 12,
-                        fontWeight: 'bold', paddingLeft: 5}}>
-                        {item.name}
-                      </Text>
-                      </View>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-              </View>
-            </View>
-            )
-        }}
-      />
-      </View>
-      :<View/>}
-
-      {/* Was Watered - load tags into flatlist */}
-      {lastWateredData.length ?
-      <View style={{height: 176}}>
-        <Text style={{color:'#F97068', fontSize:20, fontWeight:'bold', marginLeft: '2.5%',}}>What you watered</Text>
-        <Text style={{fontSize: 16, fontWeight:'600', color: 'white', paddingBottom: 10, marginLeft: '2.5%',}}>
-        {moment(date).format("dddd, MMMM Do YYYY")}
-        </Text>
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        style={{width: '100%'}}
-        data={lastWateredData}
-        numColumns={2}
-        onEndReached={() => setToggled(true)}
-        renderItem={({item, index}) => {
-            return (
-            <View key={index} style={{width:'50%'}}>
-              <View style={{
-              flexDirection: 'column',
-              width: '95%',
-              marginLeft: '2.5%',
-              marginBottom: 1,
-              flex:1,
-              }}>
-                {/* neeeds indoors and tags modularity */}
-                  <TouchableOpacity
-                  onPress={() => navigation.navigate('UpdateModal',item)}>
-                    <View style={{ flexDirection: 'row',
-                    height: 40,
-                     overflow:'hidden',
-                     alignItems:'center',
-                     justifyContent: 'space-between',
-                    shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
-                      <View>
-                      <View >
-                      <Text style={{fontSize: 12,
-                        fontWeight: 'bold', paddingLeft: 5}}>
-                        {item.name}
-                      </Text>
-                      </View>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-              </View>
-            </View>
-            )
-        }}
-      />
-      </View>
-      :<View/>}
-
-      {lastWateredData.length
-      ? <Text style={{color:'#E4F1E4', fontSize:15, fontWeight:'bold', marginLeft: '1.5%', marginTop: 5}}>Nothing needs water</Text>
-      : <View/>
-      }
-
-      {nextWateredData.length
-      ? <Text style={{color:'#E4F1E4', fontSize:15, fontWeight:'bold', marginLeft: '1.5%', marginTop: 5}}>Nothing was watered</Text>
-      : <View/>
-      }
-{/*
-      {lastWateredData.length ? lastWateredData.map((dateInfo, idx) => {
-        return <Text style={{marginTop: '2%', color: 'white'}} key={idx}>Your {dateInfo.name} was watered</Text>
-      }) : <View/>} */}
-
-      </View>
-      </View>
+      <View style={{height: '100%'}}>
 
       </View>
       </View>

@@ -7,6 +7,7 @@ import { FontAwesome } from '@expo/vector-icons'
 // import Weather from './Weather'
 // import Reminders from './Reminders'
 import DashboardListItem from './DashboardListItem'
+import Svg, { Path } from 'react-native-svg';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const [outdoor, toggleOutdoor] = useState(false)
   const [potted, togglePotted] = useState(false)
   const [hydroponic, togglehydroponic] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [plants, setPlants] = useState([])
   const [plantsList, setPlantsList] = useState([])
   // const [plantsList, setPlantsList] = useState([])
@@ -137,12 +139,14 @@ const Dashboard = () => {
   const toggleEvent = (name) => {
     if(name === 'indoor'){
       if(indoor){
+        setSelectedCategory('')
         setPlantsList(plants)
         toggleIndoor(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
             return plant.isIndoors === true
           }), 0])
+        setSelectedCategory(name)
         toggleIndoor(true)
         toggleOutdoor(false)
         togglePotted(false)
@@ -152,12 +156,14 @@ const Dashboard = () => {
 
     if(name === 'outdoor'){
       if(outdoor){
+        setSelectedCategory('')
         setPlantsList(plants)
         toggleOutdoor(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isIndoors === false
         }), 0])
+        setSelectedCategory(name)
         toggleOutdoor(true)
         toggleIndoor(false)
         togglePotted(false)
@@ -167,12 +173,14 @@ const Dashboard = () => {
 
     if(name === 'potted'){
       if(potted){
+        setSelectedCategory('')
         setPlantsList(plants)
         togglePotted(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isPotted === true
         }), 0])
+        setSelectedCategory(name)
         togglePotted(true)
         toggleOutdoor(false)
         toggleIndoor(false)
@@ -182,12 +190,14 @@ const Dashboard = () => {
 
     if(name === 'hydroponic'){
       if(hydroponic){
+        setSelectedCategory('')
         setPlantsList(plants)
         togglehydroponic(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isHydroponic === true
         }), 0])
+        setSelectedCategory(name)
         togglehydroponic(true)
         togglePotted(false)
         toggleOutdoor(false)
@@ -241,9 +251,19 @@ const Dashboard = () => {
                           </Text>
                       </TouchableOpacity>
                   </View>
+                <View style={{borderBottomWidth: 2, borderColor: '#034732', width: '90%', marginLeft: '5%', paddingTop:10, marginBottom: 10}}></View>
                 </View>
               : null}
-                {item !== 0 ?<DashboardListItem item={item} lastIdx={plants.length-1} index={index}/> : null}
+                {item !== 0 ?<DashboardListItem item={item} lastIdx={plants.length-1} index={index}/> :
+                <View>
+                  <Text style={{textAlign:'center', color:'white', fontSize: 20, fontWeight:'bold', marginTop: '10%'}}>No {selectedCategory} plants.</Text>
+                  <Svg
+                  style={{alignSelf:'center', marginTop: 100}}
+                  fill={'rgba(255,255,255,.25)'}
+                  width={200}
+                  height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
+                </View>
+                }
               </View>
             )
         }}
