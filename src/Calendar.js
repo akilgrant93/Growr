@@ -103,16 +103,16 @@ const customDatesStylesCallback = date => {
       // previousTitleStyle={{fontWeight:'500', color: '#fff', backgroundColor:'rgba(255,255,255,.5)', padding: 5,borderRadius: 25}}
       previousComponent={
         <View style={{backgroundColor:'rgba(255,255,255,.25)', width:75, marginLeft:-7.5,padding: 10,borderRadius: 25}}>
-          <Text style={{fontWeight:'500', color: '#fff', fontSize:10, textAlign:'center'}}>Previous</Text>
+          <Text style={{fontWeight:'700', color: '#fff', fontSize:10, textAlign:'center'}}>Previous</Text>
         </View>
       }
       nextComponent={
         <View style={{backgroundColor:'rgba(255,255,255,.25)', width:75, marginRight: -7.5, padding: 10,borderRadius: 25}}>
-          <Text style={{fontWeight:'500', color: '#fff', fontSize:10, textAlign:'center'}}>Next</Text>
+          <Text style={{fontWeight:'700', color: '#fff', fontSize:10, textAlign:'center'}}>Next</Text>
         </View>
       }
-      monthTitleStyle={{fontWeight:'bold', color:'#034732'}}
-      yearTitleStyle={{fontWeight:'bold', color:'#034732'}}
+      monthTitleStyle={{fontWeight:'900', color:'#034732', fontSize:16}}
+      yearTitleStyle={{fontWeight:'900', color:'rgba(255,255,255,.75)', fontSize:16}}
       headerWrapperStyle={{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}}
       customDatesStyles={customDatesStylesCallback}/>
       </View>
