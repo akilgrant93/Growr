@@ -12,7 +12,7 @@ const SearchPlant = ({route, navigation}) => {
   const [previousStart, setPreviousStart] = useState({})
   const [value, setValue]= useState('')
   const [tableData, setTableData] = useState([])
-  const limit = 14
+  const limit = 12
 
     const searchByName =  async ({search = ''}) => {
       if(search[search.length-1] === ' '){
@@ -142,7 +142,7 @@ const SearchPlant = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderTopLeftRadius: 25, borderTopRightRadius: 25}}>
+      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderTopLeftRadius: 25, borderTopRightRadius: 25, height: '100%'}}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Discover</Text>
                 <FontAwesome
@@ -185,8 +185,7 @@ const SearchPlant = ({route, navigation}) => {
               <View>
                 <View style={{
                 flexDirection: 'column',
-                width: '95%',
-                marginLeft: '2.5%',
+                width: '100%',
                 marginBottom: 1,
                 }}>
                     <TouchableOpacity
@@ -356,7 +355,7 @@ const styles = StyleSheet.create({
   },
   button3: {
     height: 28,
-    borderRadius: 5,
+    borderRadius: 25,
     backgroundColor: '#E4F1E4',
     marginTop: '1%',
     alignItems: 'center',
@@ -367,7 +366,7 @@ const styles = StyleSheet.create({
   button4: {
     height: 28,
     marginLeft: '1.5%',
-    borderRadius: 5,
+    borderRadius: 25,
     backgroundColor: '#E4F1E4',
     marginTop: '1%',
     alignItems: 'center',

@@ -243,7 +243,7 @@ const Dashboard = () => {
 
     <SafeAreaView style={styles.formContainer}>
       {/* weather goes here */}
-<View style={{height: '68%'}}>
+<View style={{height: '67.5%'}}>
       <FlatList
         showsVerticalScrollIndicator={false}
         style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25}}
@@ -264,7 +264,7 @@ const Dashboard = () => {
               />
                   </View>
 
-                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:5}}>
                     {/* refactor these into standalone components */}
                   <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, width: '50%',marginRight: 2}, thirsty ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('thirsty')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  thirsty ? {color: '#034732'} : {color: 'white'}]}>
