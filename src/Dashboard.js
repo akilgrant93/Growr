@@ -256,10 +256,10 @@ const Dashboard = () => {
 
     <SafeAreaView style={styles.formContainer}>
       {/* weather goes here */}
-
+<View style={{height: '68%'}}>
       <FlatList
         showsVerticalScrollIndicator={false}
-        style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderTopLeftRadius: 25, borderTopRightRadius:25}}
+        style={{width: '90%', backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25}}
         data={plantsList}
         numColumns={1}
         renderItem={({item, index}) => {
@@ -328,6 +328,7 @@ const Dashboard = () => {
             )
         }}
       />
+</View>
 
       {/* <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5}}>
           <Weather />
@@ -376,7 +377,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     backgroundColor: '#fff',
   },
   buttonText: {
