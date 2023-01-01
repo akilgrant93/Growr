@@ -94,14 +94,13 @@ const customDatesStylesCallback = date => {
   return (
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
       <View style={{width: '90%'}}>
-        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '37.5%' }}>
+        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '50%', marginBottom: 15 }}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
               <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
       </View>
       <View style={{paddingBottom: 15, width: '90%',marginLeft:'5%'}}>
       <CalendarPicker width={Dimensions.get('window').width*.8}
-      // previousTitleStyle={{fontWeight:'500', color: '#fff', backgroundColor:'rgba(255,255,255,.5)', padding: 5,borderRadius: 25}}
       previousComponent={
         <View style={{backgroundColor:'rgba(255,255,255,.25)', width:75, marginLeft:-7.5,padding: 10,borderRadius: 25}}>
           <Text style={{fontWeight:'700', color: '#fff', fontSize:10, textAlign:'center'}}>Previous</Text>
@@ -119,7 +118,7 @@ const customDatesStylesCallback = date => {
       </View>
         </View>
 
-      <View style={{height: '100%', width: '90%', marginLeft:'5%'}}>
+      <View style={{height: '46.5%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, paddingHorizontal: '5%'}}>
 
         {/* this will be the template for the flatlist item */}
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
