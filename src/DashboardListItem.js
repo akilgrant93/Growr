@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 const DashboardListItem = (props) => {
   const navigation = useNavigation()
   return (
-    <View key={props.index}>
+    <View key={props.index} style={[props.index === props.lastIdx ? {marginBottom: 25} : null]}>
               <View style={[{
               flexDirection: 'column',
               marginVertical: 5,
@@ -24,7 +24,7 @@ const DashboardListItem = (props) => {
                       <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={{ width:125, height: 125, borderRadius: 100 }} />
                         <View style={{width: 150, paddingVertical: 10, paddingLeft: 5, height: '100%', justifyContent:'center'}}>
                           <View style={{flexDirection:'row', width: '125%', justifyContent:'space-between'}}>
-                            <View style={{backgroundColor: '#034732', padding: 7.5, borderRadius: 15, width: '95%'}}>
+                            <View style={[{padding: 7.5, borderRadius: 15, width: '95%'}, props.item.isThirsty === true ? {backgroundColor: '#F97068'} : {backgroundColor: '#034732'} ]}>
                               <Text style={{fontSize: 14, fontWeight: 'bold',color:'white'}}>
                                 {props.item.name}
                               </Text>
