@@ -12,6 +12,7 @@ const MyCalendar = () => {
   const navigation = useNavigation()
   const [wateringDays, setWateringDays] = useState([])
   const [nextWateringDays, setNextWateringDays] = useState([])
+  const [dates, setDates] = useState([])
   const [plants, setPlants] = useState([])
   const [date, setDate] = useState(moment().startOf('day'))
   const [lastWateredData, setLastWateredData] = useState({})
@@ -49,9 +50,37 @@ const MyCalendar = () => {
       }
     )
 
-    console.log('watering days',wateringDays)
-    console.log('next watering days',nextWateringDays)
-    // console.log('plants',plants[0])
+    let range = 1 + moment(nextWateringDays[nextWateringDays.length-1]).diff(moment(wateringDays[0]).startOf('day'), 'days')
+    let datesArr = []
+
+    for(let i = 0; i < range; i++){
+      let nextPlantsToWaterArr = []
+      let previouslyWateredPlantsArr = []
+
+      datesArr.push({date:moment(wateringDays[0]).startOf('day').add(i,'days')})
+
+      if(wateringDays.includes(moment(wateringDays[0]).startOf('day').add(i,'days').toString())){
+        datesArr[i].previousWateringDay = true
+        plants.forEach((plant) => {
+          if(plant.wateringDates.includes(moment(wateringDays[0]).startOf('day').add(i,'days').valueOf())){
+            previouslyWateredPlantsArr.push(plant)
+          }
+        })
+        datesArr[i].previouslyWateredPlants = previouslyWateredPlantsArr
+      }
+
+      if(nextWateringDays.includes(moment(wateringDays[0]).startOf('day').add(i,'days').toString())){
+        datesArr[i].nextWateringDay = true
+        plants.forEach((plant) => {
+          if(plant.nextWateringDate === moment(wateringDays[0]).startOf('day').add(i,'days').valueOf()){
+            nextPlantsToWaterArr.push(plant)
+          }
+        })
+        datesArr[i].nextPlantsToWater = nextPlantsToWaterArr
+      }
+
+    }
+    setDates(datesArr)
     }, [])
   );
 
@@ -95,10 +124,10 @@ const customDatesStylesCallback = date => {
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
       <View style={{width: '90%'}}>
         <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '52%', marginBottom: 15 }}>
-      <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
+            <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
-              <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
-      </View>
+                <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
+            </View>
       <View style={{paddingBottom: 15, width: '90%',marginLeft:'5%'}}>
       <CalendarPicker
       width={Dimensions.get('window').width*.8}
@@ -119,25 +148,61 @@ const customDatesStylesCallback = date => {
       </View>
         </View>
 
-      <View style={{height: '44.5%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, paddingHorizontal: '5%'}}>
+      <View style={{height: '44.5%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25}}>
 
-        {/* this will be the template for the flatlist item */}
-        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-          <Text style={{color:'#034732', fontWeight:'bold',fontSize:40, marginTop: 10}}>{moment().format('DD')}</Text>
-          <View style={{justifyContent:'center'}}>
-          <Text style={{color:'#034732', fontWeight:'bold',fontSize:16, textAlign:'right'}}>{moment().format('dddd')}</Text>
-          <Text style={{color:'rgba(3, 71, 50, .5)', fontWeight:'bold',fontSize:12, textAlign:'right'}}>{moment().format('MMMM')}</Text>
-          </View>
-        </View>
+      <View style={{flexDirection:'row', alignItems:'center', paddingTop:10, paddingTop:30, marginLeft: 15}}>
+                <Text style={{fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Reminders</Text>
+                <FontAwesome
+                style={{marginLeft: 5}}
+                name='bell'
+                size={20}
+                color='rgba(249,112,104,1)'
+                />
+            </View>
 
-          <View style={{flexDirection:'row'}}>
-            {/* map function or flatlist will populate these according to date */}
-          <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>TODO</Text><Text style={{color:'white'}}>Water Plants</Text>
-          </View>
+      <FlatList
+          showsVerticalScrollIndicator={false}
+          data={dates}
+          renderItem={({item, index}) => {
+            return (
+            <View key={index} style={[{paddingBottom: 40}, item.date.toString() === moment().startOf('day').toString() ? {backgroundColor:'rgba(249,112,104,.5)'}: null]}>
+              {/* <Text>
+                {moment(item.date).format('DD')}
+                </Text> */}
+                <View style={{paddingHorizontal:15}}>
+                  <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom: 15}}>
+                      <Text style={[{ fontWeight:'bold',fontSize:40, marginTop: 10}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.5)'} : {color:'#fff',}]}>{moment(item.date).format('DD')}</Text>
+                      <View style={{justifyContent:'center'}}>
+                          <Text style={[{ fontWeight:'bold',fontSize:16, textAlign:'right'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.5)'} : {color:'rgba(255,255,255,.9)'}]}>{moment(item.date).format('dddd')}</Text>
+                          <Text style={[{fontWeight:'bold',fontSize:12, textAlign:'right'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.25)'} : {color:'rgba(255,255,255,.75)',}]}>{moment(item.date).format('MMMM')}</Text>
+                      </View>
+                  </View>
 
-          <View style={{flexDirection:'row'}}>
-          <Text style={{fontWeight:'bold', color:'rgba(255,255,255,.5)', paddingRight: '5%'}}>DONE</Text><Text style={{color:'white'}}>Water Plants</Text>
-          </View>
+
+                  {item.nextPlantsToWater ? item.nextPlantsToWater.map((plant, index) => {
+                    return (
+                      <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
+                        <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>Water {plant.name}</Text>
+                      </View>
+                    )
+                  }) : null}
+
+                  {item.previouslyWateredPlants ? item.previouslyWateredPlants.map((plant) => {
+                    return (
+                      <View style={{flexDirection:'row', marginBottom:7.5}}>
+                        <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>DONE</Text><Text style={{color:'white'}}>Water {plant.name}</Text>
+                      </View>
+                    )
+                  }) : null}
+
+                </View>
+            </View>
+            )
+          }}
+        />
+
+        {wateringDays && nextWateringDays ? null : <Text style={{textAlign:'center', fontSize: 18,fontWeight:'bold', color:'white', paddingTop: 100}}>No Reminders</Text>}
+
       </View>
       </View>
     </SafeAreaView>

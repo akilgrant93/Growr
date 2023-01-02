@@ -310,8 +310,6 @@ const Dashboard = () => {
         }
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
-          console.log(item)
-          console.log(index)
             return (
               <View>
                 {index === 0 ?

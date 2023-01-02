@@ -85,13 +85,13 @@ const Weather = () => {
     <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginHorizontal: '5%', marginTop: '5%'}}>
       <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}}>
         <View style={{paddingVertical:10, paddingTop:30}}>
-    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#fff'}}>{location.city}</Text>
-    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
-      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
+    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#034732'}}>{location.city}</Text>
+    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#034732'}}>{Math.round(weatherData.main.temp)}º F</Text>
         </View>
         <View style={{paddingVertical:10, paddingTop:30}}>
-    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
-      <Text style={{fontSize: 10, fontWeight: 'bold', color: '#fff'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
+      <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
         </View>
       </View>
     </View>
@@ -117,7 +117,6 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems:'center',
-    // backgroundColor:'#034732',
     width: '100%',
     justifyContent: 'center',
     flexDirection: 'row',
