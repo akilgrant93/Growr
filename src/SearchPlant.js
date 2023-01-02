@@ -154,7 +154,7 @@ const SearchPlant = ({route, navigation}) => {
       </View>
 
       <View style={{width: '90%', marginLeft: '5%'}}>
-      <View style={{flexDirection:'row', marginTop: 5}}>
+      <View style={[{flexDirection:'row', marginTop: 5}, styles.shadow]}>
       <TextInput
         style={styles.input}
         placeholder="Add A New Plant"
@@ -164,10 +164,10 @@ const SearchPlant = ({route, navigation}) => {
         underlineColorAndroid='transparent'
         autoCapitalize='none'
       />
-      <TouchableOpacity style={styles.button}onPress={cancelSearch}>
+      <TouchableOpacity style={[styles.button, styles.shadow]}onPress={cancelSearch}>
          <Text style={{color:'white', fontWeight:'bold'}}>X</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button2}onPress={submitSearch}>
+      <TouchableOpacity style={[styles.button2, styles.shadow]}onPress={submitSearch}>
          <Text style={styles.buttonText}>Search</Text>
       </TouchableOpacity>
       </View>
@@ -237,7 +237,7 @@ const SearchPlant = ({route, navigation}) => {
 
      {!tableData.length
      ?
-      <TouchableOpacity style={styles.button3} disabled={true}>
+      <TouchableOpacity style={[styles.button3, styles.shadow]} disabled={true}>
           <FontAwesome
                 size={25}
                 name='caret-left'
@@ -246,7 +246,7 @@ const SearchPlant = ({route, navigation}) => {
               <Text style={{marginLeft: 10, fontWeight:'bold', color:'#C9E4CA'}}>Prev</Text>
       </TouchableOpacity>
       : initialValue.data().scientificName === tableData[0].scientificName
-     ? <TouchableOpacity style={styles.button3} disabled={true}>
+     ? <TouchableOpacity style={[styles.button3, styles.shadow]} disabled={true}>
      <FontAwesome
            size={25}
            name='caret-left'
@@ -255,7 +255,7 @@ const SearchPlant = ({route, navigation}) => {
          <Text style={{marginLeft: 10, fontWeight:'bold', color:'#C9E4CA'}}>Prev</Text>
  </TouchableOpacity>
      :
-     <TouchableOpacity style={styles.button3} onPress={prev}>
+     <TouchableOpacity style={[styles.button3, styles.shadow]} onPress={prev}>
           <FontAwesome
                 size={25}
                 name='caret-left'
@@ -266,7 +266,7 @@ const SearchPlant = ({route, navigation}) => {
       }
 
       {!tableData.length ?
-      <TouchableOpacity style={styles.button4} onPress={next} disabled={true}>
+      <TouchableOpacity style={[styles.button4, styles.shadow]} onPress={next} disabled={true}>
       <Text style={{marginRight: 10, fontWeight:'bold',color:'#C9E4CA'}}>Next</Text>
       <FontAwesome
                 size={25}
@@ -275,7 +275,7 @@ const SearchPlant = ({route, navigation}) => {
               />
       </TouchableOpacity>
       : limit > tableData.length
-      ? <TouchableOpacity style={styles.button4} onPress={next} disabled={true}>
+      ? <TouchableOpacity style={[styles.button4, styles.shadow]} onPress={next} disabled={true}>
       <Text style={{marginRight: 10, fontWeight:'bold',color:'#C9E4CA'}}>Next</Text>
       <FontAwesome
                 size={25}
@@ -283,7 +283,7 @@ const SearchPlant = ({route, navigation}) => {
                 color='#C9E4CA'
               />
       </TouchableOpacity>
-      : <TouchableOpacity style={styles.button4} onPress={next}>
+      : <TouchableOpacity style={[styles.button4, styles.shadow]} onPress={next}>
       <Text style={{marginRight: 10, fontWeight:'bold',color:'#034732'}}>Next</Text>
       <FontAwesome
                 size={25}
@@ -381,5 +381,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   }
 })

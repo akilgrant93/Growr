@@ -260,7 +260,7 @@ const Dashboard = () => {
               />
                   </View>
 
-                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:5}}>
+                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:5}, styles.shadow]}>
                     {/* refactor these into standalone components */}
                   <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, width: '50%',marginRight: 2}, thirsty ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('thirsty')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  thirsty ? {color: '#034732'} : {color: 'white'}]}>
@@ -273,7 +273,7 @@ const Dashboard = () => {
                           </Text>
                       </TouchableOpacity>
                   </View>
-                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}, styles.shadow]}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Indoor
@@ -322,7 +322,7 @@ const Dashboard = () => {
               />
                   </View>
 
-                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:5}}>
+                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:5}, styles.shadow]}>
                     {/* refactor these into standalone components */}
                   <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, width: '50%',marginRight: 2}, thirsty ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('thirsty')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  thirsty ? {color: '#034732'} : {color: 'white'}]}>
@@ -335,7 +335,7 @@ const Dashboard = () => {
                           </Text>
                       </TouchableOpacity>
                   </View>
-                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}, styles.shadow]}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Indoor
@@ -445,6 +445,12 @@ const styles = StyleSheet.create({
     right: 10,
     backgroundColor: 'red',
   },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  }
 })
 
 async function registerForPushNotificationsAsync() {

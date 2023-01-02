@@ -100,7 +100,8 @@ const customDatesStylesCallback = date => {
               <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
       </View>
       <View style={{paddingBottom: 15, width: '90%',marginLeft:'5%'}}>
-      <CalendarPicker width={Dimensions.get('window').width*.8}
+      <CalendarPicker
+      width={Dimensions.get('window').width*.8}
       previousComponent={
         <View style={{backgroundColor:'rgba(255,255,255,.25)', width:75, marginLeft:-7.5,padding: 10,borderRadius: 25}}>
           <Text style={{fontWeight:'700', color: '#fff', fontSize:10, textAlign:'center'}}>Previous</Text>
@@ -113,7 +114,7 @@ const customDatesStylesCallback = date => {
       }
       monthTitleStyle={{fontWeight:'900', color:'#034732', fontSize:16}}
       yearTitleStyle={{fontWeight:'900', color:'rgba(255,255,255,.75)', fontSize:16}}
-      headerWrapperStyle={{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}}
+      headerWrapperStyle={[{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}, styles.shadow]}
       customDatesStyles={customDatesStylesCallback}/>
       </View>
         </View>
@@ -167,5 +168,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     overflow: 'scroll',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   }
 });
