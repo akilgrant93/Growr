@@ -1,28 +1,9 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, Dimensions } from 'react-native'
 import moment from 'moment';
 import React, {useEffect} from 'react'
-'react-native-gesture-handler';
-import Animated, {
-  useAnimatedStyle,
-  withSpring
-} from 'react-native-reanimated';
 
 const WeatherInfo = ({weatherData, pressed, forecast}) => {
-  // useEffect(() => {
-  //   console.log(weatherData)
-  // }, [])
-  const uas = useAnimatedStyle(() => {
-    return {
-      // marginLeft: withSpring(pressed.value ? '0%' : '0%'),
-      width: withSpring(pressed.value ? '40%' : '100%'),
-    };
-  });
 
-  // const forecastAnim = useAnimatedStyle(() => {
-  //   return {
-  //     marginLeft: withSpring(pressed.value ? '0%' : '0%')
-  //   }
-  // })
   const {
     name,
     visibility,
@@ -35,48 +16,27 @@ const WeatherInfo = ({weatherData, pressed, forecast}) => {
   // use sunrise and sunset to configure day/night shifts
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{width: '100%', flexDirection:'row'}}>
+        <View style={{marginTop: 8, width: '100%'}}>
 
-      <Animated.View style={[uas]}>
-        <View style={{marginTop: 8}}>
-      <Text style={styles.title}>{name}</Text>
-      <View style={{backgroundColor: '#F97068', width: '80%', alignSelf:'center', borderRadius: 5, padding: 2, marginTop: 2}}>
+        <Text style={styles.title}>{name}</Text>
+
+        <View style={{backgroundColor: '#F97068', width: '80%', alignSelf:'center', borderRadius: 5, padding: 2, marginTop: 2}}>
       <Text style={[styles.currentTemp, {color: 'white'}]}>{moment().format('ddd')}, {moment().format('MMM do')}</Text>
       <Text style={[styles.currentTemp, {color: 'white'}]}>{moment().format('h:mma')}</Text>
-      </View>
+        </View>
+
         <Image
         style={styles.largeIcon}
         // will be retooled for custom icons
         source={{uri: `http://openweathermap.org/img/wn/${icon}.png`}}
         />
-      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width: '80%', alignSelf:'center', borderRadius: 5, padding: 2}}>
+
+        <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width: '80%', alignSelf:'center', borderRadius: 5, padding: 2}}>
       <Text style={[styles.currentTemp, {color: 'white'}]}>{description[0].toUpperCase()+description.slice(1)}</Text>
       <Text style={[styles.currentTemp, {color: 'white'}]}>H:{Math.round(temp_max)}ºF | L:{Math.round(temp_min)}ºF</Text>
-      </View>
         </View>
-      </Animated.View>
-
-      {/* weekly forecast */}
-      <Animated.View style={[{flexDirection:'column',  marginTop: 7.5, width: '80%'}]}>
-      {forecast.map((dailyForecast, idx) => {
-        // console.log(dailyForecast.temp)
-        if(idx > 0){return <View key={idx} style={{flexDirection:'row', backgroundColor:'white', borderRadius: 5, padding: 2, paddingLeft: 5, marginBottom: 1, alignItems:'center'}}>
-          <Text style={[{fontSize: 10, color:'#034732'}, {marginRight: 5, width: '33%'}]}>{moment().add(idx,'days').format('ddd')}, {moment().add(idx,'days').format('MMM Do')}</Text>
-
-          <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-          <Image
-            style={{width: 20, height: 20, marginRight: 5}}
-            // will be retooled for custom icons
-            source={{uri: `http://openweathermap.org/img/wn/${dailyForecast.weather[0].icon}.png`}}
-            />
-          <Text style={{fontSize: 10, color:'#034732'}}>{dailyForecast.weather[0].description}</Text>
-          </View>
-        </View>}
-      })}
-      </Animated.View>
 
       </View>
-
     </SafeAreaView>
   )
 }
@@ -86,7 +46,6 @@ export default WeatherInfo
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
   },
   title: {
     textAlign:'center',

@@ -148,7 +148,7 @@ const SearchPlant = ({route, navigation}) => {
                 <FontAwesome
                 style={{paddingLeft: 5}}
                 name='search'
-                 color='#fff'
+                 color='#034732'
                  size={22}
               />
       </View>

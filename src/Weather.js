@@ -3,15 +3,7 @@ import React, { useState, useEffect } from 'react'
 import Svg, { Path } from 'react-native-svg'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
-import WeatherInfo from './WeatherInfo';
 import moment from 'moment';
-import { TapGestureHandler } from 'react-native-gesture-handler';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  useAnimatedGestureHandler,
-  withSpring
-} from 'react-native-reanimated';
 
 const api_key = 'a3999e97ddb681be056baca3b261d939'
 
@@ -39,8 +31,6 @@ const Weather = () => {
         setWeatherData(null)
       }
 
-      console.log(latitude)
-      console.log(longitude)
       const forecastResponse = await fetch( `${url}&lat=${latitude}&lon=${longitude}`);
       if(forecastResponse.status === 200){
         const data = await forecastResponse.json()
@@ -78,46 +68,42 @@ const Weather = () => {
       fetchWeatherData(res[0].city)
       setLocation(res[0])
       userRef.update({location:res[0]})
-
     })()
   }, [])
 
-  const pressed = useSharedValue(false);
-  const scaleAnimation = useAnimatedStyle(() => {
-    return {
-      width: withSpring(pressed.value ? '100%' : '50%') ,
-    };
-  });
-
-  const expand = useAnimatedGestureHandler({
-    onStart: (event, ctx) => {
-      pressed.value = true;
-    },
-    onEnd: (event, ctx) => {
-      pressed.value = false;
-    },
-  });
-
-
   if(!loaded){
     return (
-      <View style={styles.container}>
-        <SafeAreaView style={{flex: 1}}>
-        <View style={{flex: 1, justifyContent:'center', alignItems:'center'}}>
-          <ActivityIndicator size='large' color="green"/>
+      <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginHorizontal: '5%', marginTop: '5%'}}>
+      <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}}>
+        <View style={{paddingVertical:10, paddingTop:30}}>
+    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#fff'}}>{location.city}</Text>
+    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
         </View>
-        </SafeAreaView>
+        <View style={{paddingVertical:10, paddingTop:30}}>
+    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
+      <Text style={{fontSize: 10, fontWeight: 'bold', color: '#fff'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+        </View>
       </View>
+    </View>
     )
   }
 
 
   return (
-    <TapGestureHandler onGestureEvent={expand} >
-      <Animated.View style={[styles.container, scaleAnimation]}>
-      <WeatherInfo pressed={pressed} weatherData={weatherData}forecast={weeklyForecast}/>
-      </Animated.View>
-    </TapGestureHandler>
+    <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginHorizontal: '5%', marginTop: '5%'}}>
+      <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}}>
+        <View style={{paddingVertical:10, paddingTop:30}}>
+    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#fff'}}>{location.city}</Text>
+    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
+        </View>
+        <View style={{paddingVertical:10, paddingTop:30}}>
+    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
+      <Text style={{fontSize: 10, fontWeight: 'bold', color: '#fff'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+        </View>
+      </View>
+    </View>
   )
 }
 
@@ -126,7 +112,6 @@ export default Weather
 const styles = StyleSheet.create({
   container: {
     overflow: 'hidden',
-    width: '50%',
     backgroundColor: '#E4F1E4',
     borderTopRightRadius: 5,
     alignSelf: 'flex-start',
@@ -134,7 +119,6 @@ const styles = StyleSheet.create({
   },
   activityContainer: {
     flex: 1,
-    width: '50%',
     backgroundColor: '#fff',
     alignSelf: 'flex-start',
     alignItems: 'center',

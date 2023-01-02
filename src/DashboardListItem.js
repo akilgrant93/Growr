@@ -24,7 +24,7 @@ const DashboardListItem = (props) => {
                       <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={{ width:125, height: 125, borderRadius: 100 }} />
                         <View style={{width: 150, paddingVertical: 10, paddingLeft: 5, height: '100%', justifyContent:'center'}}>
                           <View style={{flexDirection:'row', width: '125%', justifyContent:'space-between'}}>
-                            <View style={[{padding: 7.5, borderRadius: 15, width: '95%'}, props.item.isThirsty === true ? {backgroundColor: '#F97068'} : {backgroundColor: '#034732'} ]}>
+                            <View style={[{padding: 7.5, borderRadius: 5, width: '95%'}, props.item.isThirsty === true ? {backgroundColor: '#F97068'} : {backgroundColor: '#034732'} ]}>
                               <Text style={{fontSize: 14, fontWeight: 'bold',color:'white'}}>
                                 {props.item.name}
                               </Text>
@@ -32,11 +32,13 @@ const DashboardListItem = (props) => {
 
                           </View>
 
-                          <View style={{flexDirection:'row', marginTop: 5,
-                          // justifyContent:'center',
-                          width: '117.5%'}}>
+                          <View style={{backgroundColor: '#fff', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row', width: '117.5%', marginTop: 5}}>
+                        <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Water in 7 days</Text>
+                        </View>
+
+                          <View style={{flexDirection:'row', marginTop: 5, width: '117.5%'}}>
                         {props.item.isIndoors ?<HomeModernIcon color={'#000'} size={20}/> :
-                        <View style={{backgroundColor: '#fff', height: 25, borderRadius: '50%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
+                        <View style={{backgroundColor: 'rgba(255,255,255,.5)', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
                         <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Outdoor</Text>
                         <SunIcon style={{marginRight: 5}}color={'#034732'} size={20}/>
                         </View>
@@ -63,13 +65,6 @@ const DashboardListItem = (props) => {
                         {/* tag icons will follow the hydroponic/potted/outdoor/indoor icons */}
 
                         {/* needs to be fed the actual nextWateringDate */}
-
-
-
-                          <View style={{backgroundColor: 'rgba(255, 255, 255, .5)', height: 25, borderRadius: '50%', alignItems:'center',padding:2.5, flexDirection:'row', marginTop: 5}}>
-                        <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Water in 7 days</Text>
-                        </View>
-
                         </View>
                       </View>
 

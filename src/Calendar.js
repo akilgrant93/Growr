@@ -97,7 +97,7 @@ const customDatesStylesCallback = date => {
         <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '52%', marginBottom: 15 }}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
-              <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
+              <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
       </View>
       <View style={{paddingBottom: 15, width: '90%',marginLeft:'5%'}}>
       <CalendarPicker

@@ -8,6 +8,7 @@ import DashboardListItem from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import Blink from './Blink'
+import Weather from './Weather'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -255,7 +256,7 @@ const Dashboard = () => {
           <View>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
                     <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
-                    <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#fff'
+                    <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#034732'
                  size={22}
               />
                   </View>
@@ -317,7 +318,7 @@ const Dashboard = () => {
                 <View>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
                     <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
-                    <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#fff'
+                    <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#034732'
                  size={22}
               />
                   </View>
@@ -378,10 +379,16 @@ const Dashboard = () => {
       : null}
 </View>
 
-      {/* <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.8, shadowRadius: 2, elevation: 5}}>
+{/* <View style={{height: '27.5%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginTop: '5%'}}>
+    <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
+        <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Weather</Text>
+    </View>
+</View> */}
+
+      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000'}}>
           <Weather />
-          <Reminders plants={plants} nextWateringDays={nextWateringDays}/>
-      </View> */}
+          {/* <Reminders plants={plants} nextWateringDays={nextWateringDays}/> */}
+      </View>
     </SafeAreaView>
   )
 }
@@ -426,7 +433,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    backgroundColor: '#fff',
   },
   buttonText: {
     color: 'white',
