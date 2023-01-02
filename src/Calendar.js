@@ -94,7 +94,7 @@ const customDatesStylesCallback = date => {
   return (
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
       <View style={{width: '90%'}}>
-        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '50%', marginBottom: 15 }}>
+        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '52%', marginBottom: 15 }}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
               <CalendarDaysIcon size={25} style={{color:'#fff', marginLeft: 5}}/>
@@ -118,7 +118,7 @@ const customDatesStylesCallback = date => {
       </View>
         </View>
 
-      <View style={{height: '46.5%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, paddingHorizontal: '5%'}}>
+      <View style={{height: '44.5%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, paddingHorizontal: '5%'}}>
 
         {/* this will be the template for the flatlist item */}
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
