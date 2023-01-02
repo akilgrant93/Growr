@@ -132,7 +132,7 @@ const Dashboard = () => {
       } else {
         setPlantsList([...plants.filter((plant) => {
             return plant.isIndoors === true
-          }), 0])
+          })])
         setSelectedCategory(name)
         toggleIndoor(true)
         toggleOutdoor(false)
@@ -151,7 +151,7 @@ const Dashboard = () => {
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isIndoors === false
-        }), 0])
+        })])
         setSelectedCategory(name)
         toggleOutdoor(true)
         toggleIndoor(false)
@@ -170,7 +170,7 @@ const Dashboard = () => {
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isPotted === true
-        }), 0])
+        })])
         setSelectedCategory(name)
         togglePotted(true)
         toggleOutdoor(false)
@@ -189,7 +189,7 @@ const Dashboard = () => {
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isHydroponic === true
-        }), 0])
+        })])
         setSelectedCategory(name)
         togglehydroponic(true)
         togglePotted(false)
@@ -208,7 +208,7 @@ const Dashboard = () => {
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isHungry === true
-        }), 0])
+        })])
         setSelectedCategory(name)
         toggleHungry(true)
         togglePotted(false)
@@ -227,7 +227,7 @@ const Dashboard = () => {
       } else {
         setPlantsList([...plants.filter((plant) => {
           return plant.isThirsty === true
-        }), 0])
+        })])
         setSelectedCategory(name)
         toggleThirsty(true)
         togglePotted(false)
@@ -251,8 +251,66 @@ const Dashboard = () => {
       }}
         data={plantsList}
         numColumns={1}
+        ListEmptyComponent={
+          <View>
+                  <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
+                    <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
+                    <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#fff'
+                 size={22}
+              />
+                  </View>
+
+                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#F97068', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:5}}>
+                    {/* refactor these into standalone components */}
+                  <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, width: '50%',marginRight: 2}, thirsty ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('thirsty')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  thirsty ? {color: '#034732'} : {color: 'white'}]}>
+                                Needs Water
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{padding: 7.5, borderRadius: 15, width: '50%'}, hungry ? {backgroundColor: '#fff'} : null]} onPress={() => toggleEvent('hungry')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold', textAlign:'center'},  hungry ? {color: '#034732'} : {color: 'white'}]}>
+                                Needs Fertilizer
+                          </Text>
+                      </TouchableOpacity>
+                  </View>
+                  <View style={{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}}>
+                      <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
+                                Indoor
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{padding: 7.5, borderRadius: 15, marginRight: 2}, outdoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('outdoor')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  outdoor ? {color: '#F97068'} : {color: 'white'}]}>
+                                Outdoor
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, hydroponic ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('hydroponic')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  hydroponic ? {color: '#F97068'} : {color: 'white'}]}>
+                                Hydroponic
+                          </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15}, potted ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('potted')}>
+                          <Text style={[{fontSize: 14, fontWeight: 'bold'},  potted ? {color: '#F97068'} : {color: 'white'}]}>
+                                Potted
+                          </Text>
+                      </TouchableOpacity>
+                  </View>
+                <View style={{borderBottomWidth: 2, borderColor: '#034732', width: '90%', marginLeft: '5%', paddingTop:10, marginBottom: 10}}></View>
+
+                <View>
+                <Text style={{textAlign:'center', color:'white', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
+                <Svg
+                style={{alignSelf:'center', marginTop: 5}}
+                fill={'rgba(255,255,255,.25)'}
+                width={200}
+                height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
+              </View>
+                </View>
+        }
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
+          console.log(item)
+          console.log(index)
             return (
               <View>
                 {index === 0 ?
@@ -302,16 +360,7 @@ const Dashboard = () => {
                 <View style={{borderBottomWidth: 2, borderColor: '#034732', width: '90%', marginLeft: '5%', paddingTop:10, marginBottom: 10}}></View>
                 </View>
               : null}
-                {item !== 0 ?<DashboardListItem item={item} lastIdx={plants.length-1} index={index}/> :
-                <View>
-                  <Text style={{textAlign:'center', color:'white', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
-                  <Svg
-                  style={{alignSelf:'center', marginTop: 5}}
-                  fill={'rgba(255,255,255,.25)'}
-                  width={200}
-                  height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
-                </View>
-                }
+                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
               </View>
             )
         }}
@@ -326,7 +375,6 @@ const Dashboard = () => {
         size={30}
         />
       </Blink>
-
       : null}
 </View>
 
