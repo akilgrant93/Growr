@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView, } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import Svg, { Path } from 'react-native-svg'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
 import moment from 'moment';
@@ -73,19 +72,11 @@ const Weather = () => {
 
   if(!loaded){
     return (
-      <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginHorizontal: '5%', marginTop: '5%'}}>
-      <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}}>
-        <View style={{paddingVertical:10, paddingTop:30}}>
-    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#fff'}}>{location.city}</Text>
-    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
-      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
-        </View>
-        <View style={{paddingVertical:10, paddingTop:30}}>
-    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
-      <Text style={{fontSize: 10, fontWeight: 'bold', color: '#fff'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+      <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginLeft: '5%', marginTop: '5%'}}>
+        <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
+          <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Weather</Text>
         </View>
       </View>
-    </View>
     )
   }
 
