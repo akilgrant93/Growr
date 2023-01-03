@@ -289,6 +289,7 @@ const Dashboard = () => {
                   </View>
                 </View>
       <FlatList
+        style={{backgroundColor:'rgba(3,71,50,.25)'}}
         showsVerticalScrollIndicator={false}
         data={plantsList}
         numColumns={1}
