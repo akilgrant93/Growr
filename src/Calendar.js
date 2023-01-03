@@ -118,7 +118,6 @@ const customDatesStylesCallback = date => {
           }
         };}
         if(moment(date).startOf('day').toString() === moment().startOf('day').toString()){
-          console.log('????')
           return {
             style:{
               backgroundColor: '#FBD9D2',
@@ -226,14 +225,26 @@ const changeDate = (date) => {
           data={dateInfo}
           initialScrollIndex={moment().startOf('day').diff(dates[0], 'days')}
           getItemLayout={(data, index) => ({
-             length: 183,
-             offset: 183 * index,
+             length: 184,
+             offset: 184 * index,
              index,
              })}
           renderItem={({item, index}) => {
             let total = 0
+            console.log('index',index)
+            console.log((dateInfo.length-2))
             return (
-            <View key={index} style={[{paddingBottom: 20}, item.date.toString() === moment().startOf('day').toString() ? {backgroundColor:'rgba(249,112,104,.5)'}: null]}>
+            <View key={index} style={[
+            {paddingBottom: 20},
+
+            item.date.toString() === moment().startOf('day').toString()
+            ? {backgroundColor:'rgba(249,112,104,.5)'}
+            : null,
+
+            index === dateInfo.length-1
+            ? null
+            : {borderBottomColor:'rgba(255,255,255,.5)', borderBottomWidth: 1}
+            ]}>
                 <View style={{paddingHorizontal:15}}>
                   <View style={[{flexDirection:'row', justifyContent:'space-between', marginBottom: 15, backgroundColor:'#FBD9D2', paddingRight: '5%', borderRadius: 50, marginTop: 15}, styles.shadow]}>
                       <Text style={[{ fontWeight:'bold',fontSize:40, marginVertical: 5, marginLeft: '5%'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(249,112,104,.5)'} : {color:'#F97068',}]}>{moment(item.date).format('DD')}</Text>

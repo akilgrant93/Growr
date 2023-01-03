@@ -11,7 +11,7 @@ const DashboardListItem = (props) => {
   const navigation = useNavigation()
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
   return (
-    <View key={props.index} style={[props.index === props.lastIdx ? {paddingBottom: 25} : null, wateringDateDifference < 0 ? {backgroundColor: 'rgba(3,71,50,.5)'} : null]}>
+    <View key={props.index} style={[props.index === props.lastIdx ? {paddingBottom: 25} : {borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,.25)'}, wateringDateDifference < 0 ? {backgroundColor: 'rgba(3,71,50,.5)'} : null]}>
               <View style={[{
               flexDirection: 'column',
               marginVertical: 5,
