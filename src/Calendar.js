@@ -165,7 +165,7 @@ const changeDate = (date) => {
   return (
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
       <View style={{width: '90%'}}>
-        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '53%', marginBottom: 15 }}>
+        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '53.5%', marginBottom: 15 }}>
             <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
                 <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
@@ -207,7 +207,7 @@ const changeDate = (date) => {
       </View>
         </View>
 
-      <View style={{height: '44.5%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, overflow:'hidden'}}>
+      <View style={{height: '43%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, overflow:'hidden'}}>
 
           <View style={{flexDirection:'row', alignItems:'center', paddingTop:10, paddingTop:30, marginLeft: 15}}>
               <Text style={{fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Reminders</Text>
@@ -249,8 +249,8 @@ const changeDate = (date) => {
                   <ScrollView style={{height: 75}}
                   persistentScrollbar={true}
                   >
-                  {item.date.toString() === moment().startOf('day').toString() && item.nextPlantsToWater === undefined && item.previouslyWateredPlants === undefined ? <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
-                  <Text style={{fontWeight:'bold', opacity:0,paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>No tasks today</Text>
+                  {item.nextPlantsToWater === undefined && item.previouslyWateredPlants === undefined ? <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
+                  <Text style={{fontWeight:'bold', opacity:0,paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>No reminders {item.date.toString() === moment().startOf('day').toString() ? 'today' : 'on this day'}</Text>
                       </View> : null}
 
                   {item.nextPlantsToWater ? item.nextPlantsToWater.map((plant, index) => {

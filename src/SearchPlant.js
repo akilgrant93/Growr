@@ -142,7 +142,7 @@ const SearchPlant = ({route, navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderRadius: 25, height:'95%',overflow:'hidden'}}>
+      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderRadius: 25, height:'97.5%',overflow:'hidden'}}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Discover</Text>
                 <FontAwesome
@@ -233,7 +233,7 @@ const SearchPlant = ({route, navigation}) => {
           }} />}
       </View>
 
-      <View style={{flexDirection: 'row', width: '90%', marginLeft: '5%'}}>
+      <View style={{flexDirection: 'row', width: '90%', marginLeft: '5%', paddingTop:'2%'}}>
 
      {!tableData.length
      ?
@@ -294,7 +294,7 @@ const SearchPlant = ({route, navigation}) => {
       </View>
 
       {tableData.length < 1 ?
-      <View style={{marginTop: 10}}>
+      <View style={{marginTop: '6%'}}>
         <View style={{flexDirection:'row'}}>
         <CategoryLink navigation={navigation} type='edible'/>
         <CategoryLink navigation={navigation} type='medicinal'/>
@@ -374,7 +374,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   buttonText: {
-    color: 'white'
+    color: 'white',
+    fontWeight:'bold'
   },
   textView: {
     height: 40,
