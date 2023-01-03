@@ -3,11 +3,19 @@ import { SunIcon, HomeModernIcon } from 'react-native-heroicons/solid'
 import  Svg, { Path, G } from 'react-native-svg'
 import React from 'react'
 import { useNavigation } from '@react-navigation/native'
+import moment from 'moment';
 
 const DashboardListItem = (props) => {
   const navigation = useNavigation()
+  const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
+
+  //if difference is negative the date has passed
+
+  //if difference is positive date is to come
+
+  //no difference means date is today
   return (
-    <View key={props.index} style={[props.index === props.lastIdx ? {marginBottom: 25} : null, props.item.isThirsty === true ? {backgroundColor: 'rgba(3,71,50,.5)'} : null]}>
+    <View key={props.index} style={[props.index === props.lastIdx ? {paddingBottom: 25} : null, props.item.isThirsty === true ? {backgroundColor: 'rgba(3,71,50,.5)'} : null]}>
               <View style={[{
               flexDirection: 'column',
               marginVertical: 5,
@@ -33,7 +41,18 @@ const DashboardListItem = (props) => {
                           </View>
 
                           <View style={{backgroundColor: '#fff', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row', width: '117.5%', marginTop: 5}}>
-                        <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Water in 7 days</Text>
+                        { wateringDateDifference < 0
+                        ? <Text style={{marginLeft:5, fontSize: 12}} color={'#034732'}>
+                          Needed water {wateringDateDifference === -1
+                          ? 'yesterday'
+                          : `${Math.abs(wateringDateDifference)} days ago`}</Text> : null }
+                        { wateringDateDifference >= 0
+                        ? <Text style={{marginLeft:5, fontSize: 12}} color={'#034732'}>
+                          Water { wateringDateDifference === 0
+                          ? 'today'
+                          : wateringDateDifference === 1
+                          ? 'tomorrow'
+                          : `in ${wateringDateDifference} days`}</Text> : null }
                         </View>
 
                           <View style={{flexDirection:'row', marginTop: 5, width: '117.5%'}}>
