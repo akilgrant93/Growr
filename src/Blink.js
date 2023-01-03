@@ -12,15 +12,15 @@ export default class Blink extends Component {
         Animated.loop(
             Animated.sequence([
                 Animated.timing(this.fadeAnimation, {
-                    toValue: 0,
+                    toValue: 1,
                     duration: this.props.duration,
                     useNativeDriver: true,
                 }),
                 Animated.timing(this.fadeAnimation, {
-                    toValue: 1,
+                    toValue: 0,
                     duration: this.props.duration,
                     useNativeDriver: true,
-                })
+                }),
             ]),
             {
                 iterations: this.props.repeat_count
