@@ -147,7 +147,6 @@ const customDatesStylesCallback = date => {
 const changeDate = (date) => {
   //scroll to date
   if(dates.includes(date.startOf('day').toString())){
-
     for(let i = 0; i < dates.length; i++){
       if(dates[i] === date.startOf('day').toString()){
         ref.scrollToIndex({animated: true, index: i})
