@@ -51,7 +51,7 @@ const Signin = () => {
       <View>
       <TouchableOpacity
         onPress={() => signinUser(email, password)}
-        style={styles.button}
+        style={[styles.button, styles.shadow]}
       >
         <Text style={{fontWeight: 'bold', color:'white', fontSize:22}}>
           Sign In
@@ -108,5 +108,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 50,
     flexDirection: 'row'
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   }
 })

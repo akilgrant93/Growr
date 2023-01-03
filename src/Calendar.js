@@ -17,8 +17,6 @@ const MyCalendar = () => {
   const [dates, setDates] = useState([])
   const [plants, setPlants] = useState([])
   const [ref, setRef] = useState(null);
-  const [bottomReached, setBottomReached] = useState(false)
-  const scrollViewRef = useRef(null);
 
   useEffect(() => {
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
@@ -85,9 +83,9 @@ const MyCalendar = () => {
     setDateInfo(datesArr)
     setPlants(plantsArr)
     setWateringDays(daysRounded)
-    setTimeout(function () {
-      scrollViewRef.current?.flashScrollIndicators();
-  }, 500);
+
+    console.log(moment().startOf('day').diff(datesArr2[0], 'days'))
+
     // if(dates.length){
     //   for(let i = 0; i < dates.length; i++){
     //   if(dates[i] === moment().startOf('day').toString()){
@@ -159,12 +157,6 @@ const changeDate = (date) => {
   }
 }
 
-const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
-  const paddingToBottom = 20;
-  return layoutMeasurement.height + contentOffset.y >=
-    contentSize.height - paddingToBottom;
-};
-
   return (
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
       <View style={{width: '90%'}}>
@@ -212,6 +204,7 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
              }}
           showsVerticalScrollIndicator={false}
           data={dateInfo}
+          initialScrollIndex={moment().startOf('day').diff(dates[0], 'days')}
           getItemLayout={(data, index) => ({
              length: 168,
              offset: 168 * index,
@@ -236,9 +229,7 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
 
 
                   <ScrollView style={{height: 75}}
-                  ref={scrollViewRef}
                   persistentScrollbar={true}
-                  scrollEventThrottle={400}
                   >
                   {item.date.toString() === moment().startOf('day').toString() && item.nextPlantsToWater === undefined && item.previouslyWateredPlants === undefined ? <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
                   <Text style={{fontWeight:'bold', opacity:0,paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>No tasks today</Text>
