@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native'
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
@@ -20,6 +20,15 @@ const MyCalendar = () => {
   const [nextWateredData, setNextWateredData] = useState([])
   const [toggled, setToggled] = useState(false)
   const [ref, setRef] = useState(null);
+
+  useEffect(() => {
+    if(dates.length){
+      for(let i = 0; i < dates.length; i++){
+      if(dates[i] === date.startOf('day').toString()){
+        ref.scrollToIndex({animated: false, index: i})
+      }}
+    }
+  }, [])
 
   useFocusEffect(
     React.useCallback(() => {
