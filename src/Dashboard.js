@@ -377,15 +377,8 @@ const Dashboard = () => {
       : null}
 </View>
 
-{/* <View style={{height: '27.5%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginTop: '5%'}}>
-    <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
-        <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Weather</Text>
-    </View>
-</View> */}
-
       <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000'}}>
           <Weather />
-          {/* <Reminders plants={plants} nextWateringDays={nextWateringDays}/> */}
       </View>
     </SafeAreaView>
   )

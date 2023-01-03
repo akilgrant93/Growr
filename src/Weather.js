@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView, } from 'react-native'
+import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView, Image, } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
 import moment from 'moment';
+import LottieView from 'lottie-react-native';
 
 const api_key = 'a3999e97ddb681be056baca3b261d939'
 
@@ -67,6 +68,8 @@ const Weather = () => {
       fetchWeatherData(res[0].city)
       setLocation(res[0])
       userRef.update({location:res[0]})
+
+      // console.log()
     })()
   }, [])
 
@@ -85,13 +88,18 @@ const Weather = () => {
     <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginHorizontal: '5%', marginTop: '5%'}}>
       <View style={{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}}>
         <View style={{paddingVertical:10, paddingTop:30}}>
-    <Text style={{fontSize: 22, fontWeight: 'bold', color: '#034732'}}>{location.city}</Text>
-    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
-      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#034732'}}>{Math.round(weatherData.main.temp)}º F</Text>
+            <Text style={{fontSize: 22, fontWeight: 'bold', color: '#034732'}}>{location.city}</Text>
+            <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732', marginVertical: 5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+            <Text style={{fontSize: 18, fontWeight: 'bold', color: '#034732'}}>{Math.round(weatherData.main.temp)}º F</Text>
         </View>
         <View style={{paddingVertical:10, paddingTop:30}}>
-    <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
-      <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+          <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
+          <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+            {/* <Image style={{
+                width: 100,
+                height: 100,
+              }}
+              source={require(`../assets/broken_clouds.gif`)}/> */}
         </View>
       </View>
     </View>

@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native'
-import React, {useState, useEffect} from 'react'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView, Dimensions, ScrollView } from 'react-native'
+import React, {useState, useEffect, useRef} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
@@ -7,6 +7,7 @@ import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import { useFocusEffect } from '@react-navigation/native';
 import { CalendarDaysIcon } from 'react-native-heroicons/solid';
+import Blink from './Blink'
 
 const MyCalendar = () => {
   const navigation = useNavigation()
@@ -15,24 +16,12 @@ const MyCalendar = () => {
   const [dateInfo, setDateInfo] = useState([])
   const [dates, setDates] = useState([])
   const [plants, setPlants] = useState([])
-  const [date, setDate] = useState(moment().startOf('day'))
-  const [lastWateredData, setLastWateredData] = useState({})
-  const [nextWateredData, setNextWateredData] = useState([])
-  const [toggled, setToggled] = useState(false)
   const [ref, setRef] = useState(null);
+  const [bottomReached, setBottomReached] = useState(false)
+  const scrollViewRef = useRef(null);
 
   useEffect(() => {
-    if(dates.length){
-      for(let i = 0; i < dates.length; i++){
-      if(dates[i] === date.startOf('day').toString()){
-        ref.scrollToIndex({animated: false, index: i})
-      }}
-    }
-  }, [])
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+    const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
       let wateringDaysInit = []
       let nextWateringDaysInit = []
       let plantsArr = []
@@ -46,6 +35,7 @@ const MyCalendar = () => {
             plantsArr.push(plant.data())
           })
         setNextWateringDays(nextWateringDaysInit)
+
         let mergedArray = [];
         wateringDaysInit.forEach(wateringDaysArray => {
           mergedArray = [...mergedArray, ...wateringDaysArray]
@@ -56,36 +46,34 @@ const MyCalendar = () => {
         unproccessed.forEach(day => {
           daysRounded.push(moment(day).startOf('day').toString())
         })
-        setPlants(plantsArr)
-        setWateringDays(daysRounded)
-      }
-    )
 
-    let range = 1 + moment(nextWateringDays[nextWateringDays.length-1]).diff(moment(wateringDays[0]).startOf('day'), 'days')
-    let datesArr = []
-    let datesArr2 = []
+
+        let range = 1 + moment(nextWateringDaysInit[nextWateringDaysInit.length-1]).diff(moment(daysRounded[0]).startOf('day'), 'days')
+
+        let datesArr = []
+        let datesArr2 = []
 
     for(let i = 0; i < range; i++){
       let nextPlantsToWaterArr = []
       let previouslyWateredPlantsArr = []
 
-      datesArr.push({date:moment(wateringDays[0]).startOf('day').add(i,'days')})
-      datesArr2.push(moment(wateringDays[0]).startOf('day').add(i,'days').toString())
+      datesArr.push({date:moment(daysRounded[0]).startOf('day').add(i,'days')})
+      datesArr2.push(moment(daysRounded[0]).startOf('day').add(i,'days').toString())
 
-      if(wateringDays.includes(moment(wateringDays[0]).startOf('day').add(i,'days').toString())){
+      if(daysRounded.includes(moment(daysRounded[0]).startOf('day').add(i,'days').toString())){
         datesArr[i].previousWateringDay = true
-        plants.forEach((plant) => {
-          if(plant.wateringDates.includes(moment(wateringDays[0]).startOf('day').add(i,'days').valueOf())){
+        plantsArr.forEach((plant) => {
+          if(plant.wateringDates.includes(moment(daysRounded[0]).startOf('day').add(i,'days').valueOf())){
             previouslyWateredPlantsArr.push(plant)
           }
         })
         datesArr[i].previouslyWateredPlants = previouslyWateredPlantsArr
       }
 
-      if(nextWateringDays.includes(moment(wateringDays[0]).startOf('day').add(i,'days').toString())){
+      if(nextWateringDaysInit.includes(moment(daysRounded[0]).startOf('day').add(i,'days').toString())){
         datesArr[i].nextWateringDay = true
-        plants.forEach((plant) => {
-          if(plant.nextWateringDate === moment(wateringDays[0]).startOf('day').add(i,'days').valueOf()){
+        plantsArr.forEach((plant) => {
+          if(plant.nextWateringDate === moment(daysRounded[0]).startOf('day').add(i,'days').valueOf()){
             nextPlantsToWaterArr.push(plant)
           }
         })
@@ -95,6 +83,26 @@ const MyCalendar = () => {
     }
     setDates(datesArr2)
     setDateInfo(datesArr)
+    setPlants(plantsArr)
+    setWateringDays(daysRounded)
+    setTimeout(function () {
+      scrollViewRef.current?.flashScrollIndicators();
+  }, 500);
+    // if(dates.length){
+    //   for(let i = 0; i < dates.length; i++){
+    //   if(dates[i] === moment().startOf('day').toString()){
+    //     ref.scrollToIndex({animated: false, index: i})
+    //   }}
+    // }
+      }
+    )
+
+
+  }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+
     }, [])
   );
 
@@ -136,7 +144,7 @@ const customDatesStylesCallback = date => {
 const changeDate = (date) => {
   //scroll to date
   if(dates.includes(date.startOf('day').toString())){
-    console.log('included')
+
     for(let i = 0; i < dates.length; i++){
       if(dates[i] === date.startOf('day').toString()){
         ref.scrollToIndex({animated: true, index: i})
@@ -150,6 +158,12 @@ const changeDate = (date) => {
     ref.scrollToIndex({animated: true, index: dates.length-1})
   }
 }
+
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >=
+    contentSize.height - paddingToBottom;
+};
 
   return (
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
@@ -198,9 +212,15 @@ const changeDate = (date) => {
              }}
           showsVerticalScrollIndicator={false}
           data={dateInfo}
+          getItemLayout={(data, index) => ({
+             length: 168,
+             offset: 168 * index,
+             index,
+             })}
           renderItem={({item, index}) => {
+            let total = 0
             return (
-            <View key={index} style={[{paddingBottom: 40}, item.date.toString() === moment().startOf('day').toString() ? {backgroundColor:'rgba(249,112,104,.5)'}: null]}>
+            <View key={index} style={[{paddingBottom: 20}, item.date.toString() === moment().startOf('day').toString() ? {backgroundColor:'rgba(249,112,104,.5)'}: null]}>
               {/* <Text>
                 {moment(item.date).format('DD')}
                 </Text> */}
@@ -213,11 +233,19 @@ const changeDate = (date) => {
                       </View>
                   </View>
 
+
+
+                  <ScrollView style={{height: 75}}
+                  ref={scrollViewRef}
+                  persistentScrollbar={true}
+                  scrollEventThrottle={400}
+                  >
                   {item.date.toString() === moment().startOf('day').toString() && item.nextPlantsToWater === undefined && item.previouslyWateredPlants === undefined ? <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
                   <Text style={{fontWeight:'bold', opacity:0,paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>No tasks today</Text>
                       </View> : null}
 
                   {item.nextPlantsToWater ? item.nextPlantsToWater.map((plant, index) => {
+                    total += 1
                     return (
                       <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
                         <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>Water {plant.name}</Text>
@@ -226,12 +254,25 @@ const changeDate = (date) => {
                   }) : null}
 
                   {item.previouslyWateredPlants ? item.previouslyWateredPlants.map((plant, idx) => {
+                    total +=1
                     return (
                       <View key={idx} style={{flexDirection:'row', marginBottom:7.5}}>
                         <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>DONE</Text><Text style={{color:'white'}}>Water {plant.name}</Text>
                       </View>
                     )
                   }) : null}
+                  </ScrollView>
+
+                    {total >= 4 ?<Blink duration={1000}>
+                      <FontAwesome
+                        style={{position:'absolute', bottom:10, right:8.5}}
+                        color='rgba(249,112,104,.75)'
+                        name='sort-desc'
+                        size={35}
+                      />
+                    </Blink> : null}
+
+
 
                 </View>
             </View>
