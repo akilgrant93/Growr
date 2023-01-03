@@ -274,7 +274,7 @@ const Dashboard = () => {
                           </Text>
                       </TouchableOpacity>
                   </View>
-                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}, styles.shadow]}>
+                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#4A7666', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}, styles.shadow]}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Indoor
@@ -334,7 +334,7 @@ const Dashboard = () => {
                           </Text>
                       </TouchableOpacity>
                   </View>
-                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: 'rgba(3, 71, 50, .5)', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}, styles.shadow]}>
+                  <View style={[{marginHorizontal: '5%', flexDirection:'row', backgroundColor: '#4A7666', padding: 5, borderRadius: 25, justifyContent:'center', marginBottom:10}, styles.shadow]}>
                       <TouchableOpacity style={[{ padding: 7.5, borderRadius: 15, marginRight: 2}, indoor ? {backgroundColor: '#034732'} : null]} onPress={() => toggleEvent('indoor')}>
                           <Text style={[{fontSize: 14, fontWeight: 'bold'},  indoor ? {color: '#F97068'} : {color: 'white'}]}>
                                 Indoor

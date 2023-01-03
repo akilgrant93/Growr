@@ -5,7 +5,6 @@ import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
-import { useFocusEffect } from '@react-navigation/native';
 import { CalendarDaysIcon } from 'react-native-heroicons/solid';
 import Blink from './Blink'
 
@@ -15,7 +14,6 @@ const MyCalendar = () => {
   const [nextWateringDays, setNextWateringDays] = useState([])
   const [dateInfo, setDateInfo] = useState([])
   const [dates, setDates] = useState([])
-  const [plants, setPlants] = useState([])
   const [ref, setRef] = useState(null);
 
   useEffect(() => {
@@ -81,28 +79,11 @@ const MyCalendar = () => {
     }
     setDates(datesArr2)
     setDateInfo(datesArr)
-    setPlants(plantsArr)
     setWateringDays(daysRounded)
-
-    console.log(moment().startOf('day').diff(datesArr2[0], 'days'))
-
-    // if(dates.length){
-    //   for(let i = 0; i < dates.length; i++){
-    //   if(dates[i] === moment().startOf('day').toString()){
-    //     ref.scrollToIndex({animated: false, index: i})
-    //   }}
-    // }
       }
     )
-
-
   }, [])
 
-  useFocusEffect(
-    React.useCallback(() => {
-
-    }, [])
-  );
 
 
 const customDatesStylesCallback = date => {
@@ -112,6 +93,10 @@ const customDatesStylesCallback = date => {
           return {
           style:{
             backgroundColor: '#034732',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+            shadowRadius: 2,
+            elevation: 5,
           },
           textStyle: {
             color: 'white',
@@ -122,12 +107,32 @@ const customDatesStylesCallback = date => {
           return {
           style:{
             backgroundColor: '#C9E4CA',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+            shadowRadius: 2,
+            elevation: 5,
           },
           textStyle: {
             color: 'white',
             fontWeight: 'bold',
           }
         };}
+        if(moment(date).startOf('day').toString() === moment().startOf('day').toString()){
+          console.log('????')
+          return {
+            style:{
+              backgroundColor: '#FBD9D2',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+              shadowRadius: 2,
+              elevation: 5,
+            },
+            textStyle: {
+              color: '#fff',
+              fontWeight: 'bold',
+            }
+        }}
+        //there might need to be a conditional statement for a colorway when a date includes both previously watered plants and plants that need to be watered
         else {
           return {
             textStyle: {
@@ -160,7 +165,7 @@ const changeDate = (date) => {
   return (
     <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
       <View style={{width: '90%'}}>
-        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '52%', marginBottom: 15 }}>
+        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '53%', marginBottom: 15 }}>
             <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
                 <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
@@ -183,6 +188,22 @@ const changeDate = (date) => {
       yearTitleStyle={{fontWeight:'900', color:'rgba(255,255,255,.75)', fontSize:16}}
       headerWrapperStyle={[{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}, styles.shadow]}
       customDatesStyles={customDatesStylesCallback}/>
+
+
+      <View style={{flexDirection:'row', justifyContent:'space-evenly', position:'absolute', top: 268, alignSelf:'center', width: '90%'}}>
+      <View style={{flexDirection:'row', alignItems:'center'}}>
+        <View style={{borderRadius: 50, height: 10, width:10, backgroundColor:'#C9E4CA', marginRight:5}}></View>
+        <Text style={{fontWeight:'bold', color:'rgba(255,255,255,.5)'}}>DONE</Text>
+      </View>
+      <View style={{flexDirection:'row', alignItems:'center'}}>
+        <View style={{borderRadius: 50, height: 10, width:10, backgroundColor:'#034732', marginRight:5}}></View>
+        <Text style={{fontWeight:'bold', color:'rgba(255,255,255,.5)'}}>TODO</Text>
+      </View>
+      <View style={{flexDirection:'row', alignItems:'center'}}>
+        <View style={{borderRadius: 50, height: 10, width:10, backgroundColor:'#FBD9D2', marginRight:5}}></View>
+        <Text style={{fontWeight:'bold', color:'rgba(255,255,255,.5)'}}>TODAY</Text>
+      </View>
+      </View>
       </View>
         </View>
 
@@ -206,23 +227,20 @@ const changeDate = (date) => {
           data={dateInfo}
           initialScrollIndex={moment().startOf('day').diff(dates[0], 'days')}
           getItemLayout={(data, index) => ({
-             length: 168,
-             offset: 168 * index,
+             length: 183,
+             offset: 183 * index,
              index,
              })}
           renderItem={({item, index}) => {
             let total = 0
             return (
             <View key={index} style={[{paddingBottom: 20}, item.date.toString() === moment().startOf('day').toString() ? {backgroundColor:'rgba(249,112,104,.5)'}: null]}>
-              {/* <Text>
-                {moment(item.date).format('DD')}
-                </Text> */}
                 <View style={{paddingHorizontal:15}}>
-                  <View style={{flexDirection:'row', justifyContent:'space-between', marginBottom: 15}}>
-                      <Text style={[{ fontWeight:'bold',fontSize:40, marginTop: 10}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.5)'} : {color:'#fff',}]}>{moment(item.date).format('DD')}</Text>
+                  <View style={[{flexDirection:'row', justifyContent:'space-between', marginBottom: 15, backgroundColor:'#FBD9D2', paddingRight: '5%', borderRadius: 50, marginTop: 15}, styles.shadow]}>
+                      <Text style={[{ fontWeight:'bold',fontSize:40, marginVertical: 5, marginLeft: '5%'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(249,112,104,.5)'} : {color:'#F97068',}]}>{moment(item.date).format('DD')}</Text>
                       <View style={{justifyContent:'center'}}>
-                          <Text style={[{ fontWeight:'bold',fontSize:16, textAlign:'right'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.5)'} : {color:'rgba(255,255,255,.9)'}]}>{moment(item.date).format('dddd')}</Text>
-                          <Text style={[{fontWeight:'bold',fontSize:12, textAlign:'right'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.25)'} : {color:'rgba(255,255,255,.75)',}]}>{moment(item.date).format('MMMM')}</Text>
+                          <Text style={[{ fontWeight:'bold',fontSize:16, textAlign:'right'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(249,112,104,.5)'} : {color:'rgba(249,112,104,.9)'}]}>{moment(item.date).format('dddd')}</Text>
+                          <Text style={[{fontWeight:'bold',fontSize:12, textAlign:'right'}, !item.nextPlantsToWater && !item.previouslyWateredPlants ? {color:'rgba(255,255,255,.75)'} : {color:'rgba(255,255,255,1)',}]}>{moment(item.date).format('MMMM')}</Text>
                       </View>
                   </View>
 
