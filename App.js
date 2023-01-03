@@ -97,10 +97,10 @@ function Home() {
             </TouchableOpacity>
           </View>
         ),
-        tabBarIcon: ({color, size}) => (
+        tabBarIcon: ({focused, color, size}) => (
           <FontAwesome
                 name='leaf'
-                 color='#034732'
+                 color={focused ? '#034732' : '#C9E4CA' }
                  size={size}
               />
         ),
@@ -111,8 +111,8 @@ function Home() {
       label="Planst"
       component={SearchPlant}
       options={({route}) => ({
-        tabBarIcon: ({color, size}) => (
-          <PlusCircleIcon size={size} style={{color:'#034732'}}/>
+        tabBarIcon: ({focused, color, size}) => (
+          <PlusCircleIcon size={size} style={focused ? {color:'#034732'} : {color:'#C9E4CA'}}/>
         ),
       })}
       />
@@ -121,8 +121,8 @@ function Home() {
       label="Calendar"
       component={MyCalendar}
       options={({route}) => ({
-        tabBarIcon: ({color, size}) => (
-          <CalendarDaysIcon size={size} style={{color:'#034732'}}/>
+        tabBarIcon: ({focused, color, size}) => (
+          <CalendarDaysIcon size={size} style={focused ? {color:'#034732'} : {color:'#C9E4CA'}}/>
         ),
       })}
       />
