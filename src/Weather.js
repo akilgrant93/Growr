@@ -68,8 +68,6 @@ const Weather = () => {
       fetchWeatherData(res[0].city)
       setLocation(res[0])
       userRef.update({location:res[0]})
-
-      // console.log()
     })()
   }, [])
 
@@ -95,11 +93,6 @@ const Weather = () => {
         <View style={{paddingVertical:10, paddingTop:30}}>
           <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
           <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
-            {/* <Image style={{
-                width: 100,
-                height: 100,
-              }}
-              source={require(`../assets/broken_clouds.gif`)}/> */}
         </View>
       </View>
     </View>

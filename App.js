@@ -8,13 +8,12 @@ import { TouchableOpacity, Alert, View, StatusBar } from "react-native";
 import { firebase } from './config'
 import { FontAwesome } from '@expo/vector-icons'
 import Svg, { Path } from 'react-native-svg'
-import { CalendarDaysIcon, PlusCircleIcon, HomeIcon } from 'react-native-heroicons/solid';
+import { CalendarDaysIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
 import * as Location from 'expo-location';
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
 import Dashboard from "./src/Dashboard";
-import Header from "./src/Header";
 import MyCalendar from "./src/Calendar";
 import SearchPlant from "./src/SearchPlant";
 import PostModal from "./src/PostModal";

@@ -105,8 +105,6 @@ const DashboardListItem = (props) => {
                         </View>
 
                         {/* tag icons will follow the hydroponic/potted/outdoor/indoor icons */}
-
-                        {/* needs to be fed the actual nextWateringDate */}
                         </View>
                       </View>
 

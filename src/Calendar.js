@@ -243,7 +243,7 @@ const changeDate = (date) => {
 
             index === dateInfo.length-1
             ? null
-            : {borderBottomColor:'rgba(255,255,255,.5)', borderBottomWidth: 1}
+            : {borderBottomColor:'rgba(255,255,255,.25)', borderBottomWidth: 1}
             ]}>
                 <View style={{paddingHorizontal:15}}>
                   <View style={[{flexDirection:'row', justifyContent:'space-between', marginBottom: 15, backgroundColor:'#FBD9D2', paddingRight: '5%', borderRadius: 50, marginTop: 15}, styles.shadow]}>
