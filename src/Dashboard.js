@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity, Animated } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity, Animated, ImageBackground, Alert } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
 import * as Device from 'expo-device';
@@ -8,7 +8,10 @@ import DashboardListItem from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import Blink from './Blink'
+import * as Location from 'expo-location';
+import moment from 'moment';
 import Weather from './Weather'
+import LottieView from 'lottie-react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -43,7 +46,66 @@ const Dashboard = () => {
     }, [])
   )
 
+  const api_key = 'a3999e97ddb681be056baca3b261d939'
+  let url = `https://api.openweathermap.org/data/2.5/onecall?&units=imperial&exclude=minutely&appid=${api_key}`;
+  const [latitude, setLatitude] = useState(0)
+  const [longitude, setLongitude] = useState(0)
+  const [weatherData, setWeatherData] = useState(null)
+  const [weeklyForecast, setWeeklyForeCast] = useState({})
+  const [loaded, setLoaded] = useState(false)
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+
+  const fetchWeatherData = async(cityName) => {
+    try {
+      setLoaded(false)
+      const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${api_key}&units=imperial`)
+      if(response.status === 200){
+        const data = await response.json()
+        setWeatherData(data)
+      }
+      else {
+        setWeatherData(null)
+      }
+
+      const forecastResponse = await fetch( `${url}&lat=${latitude}&lon=${longitude}`);
+      if(forecastResponse.status === 200){
+        const data = await forecastResponse.json()
+        setWeeklyForeCast(data.daily)
+      } else {
+        setWeeklyForeCast(null)
+      }
+
+      setLoaded(true)
+    } catch (error) {
+      Alert.alert('Error',error.message)
+    }
+  }
+
   useEffect(()=> {
+    (async () => {
+      const userRef = await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
+      const userData = (await userRef.get()).data()
+      if(userData.location){
+        setLocation(userData.location)
+        fetchWeatherData(userData.location.city,)
+      }
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      //i might refactor this
+      if (status !== 'granted') {
+        Alert.alert('Permission to access location is required to check local weather conditions');
+        return;
+      }
+      let locationData = await Location.getCurrentPositionAsync({});
+
+      setLatitude(locationData.coords.latitude)
+      setLongitude(locationData.coords.longitude)
+      const res = await Location.reverseGeocodeAsync(locationData.coords)
+      fetchWeatherData(res[0].city)
+      setLocation(res[0])
+      userRef.update({location:res[0]})
+    })()
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).get()
     .then((snapshot) => {
       if(snapshot.exists){
@@ -107,6 +169,7 @@ const Dashboard = () => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, [])
+
 
   //delete a plant from users list of plant entries
   const deletePlant = (plant) => {
@@ -288,6 +351,7 @@ const Dashboard = () => {
                       </TouchableOpacity>
                   </View>
                 </View>
+
       <FlatList
         style={{backgroundColor:'rgba(3,71,50,.25)'}}
         showsVerticalScrollIndicator={false}
@@ -325,8 +389,115 @@ const Dashboard = () => {
       : null}
 </View>
 
-      <View style={{flex: 1, width: '100%', flexDirection:'row', shadowColor: '#000'}}>
-          <Weather />
+      <View
+      style={{flex: 1, width: '100%', shadowColor: '#000'}}>
+        {/* conditional load moon */}
+
+        {/*
+              sun and moon will go here conditionally based upon sunrise and sunset in weatherData
+
+              - backgroundColor will load conditionally based upon sunrise and sunset - maybe slow transition animation
+
+              there will be a general visibility toggle here as well - turns OFF during mist and rain (not shower rain)
+              */}
+          <ImageBackground style={{height: '85%',
+
+          backgroundColor:'rgba(249,112,104,.5)',
+           width: '90%', marginHorizontal: '5%', marginTop: '5%', overflow:'hidden', borderRadius: 25}} source={require(`../assets/weather/sun.png`)}>
+
+          {/* rain ternary */}
+          <LottieView
+          autoPlay
+          loop
+          height={'100%'}
+          width={'100%'}
+          style={[{position:'absolute',
+          top: 25},
+        styles.shadow
+      ]}
+          source={require(`../assets/16477-rain-background-animation.json`)}
+          colorFilters={[
+            {
+              keypath: 'Rain 3',
+              color: '#545B98',
+            },
+            {
+              keypath: 'rain1',
+              color: '#545B98',
+            },
+            {
+              keypath: 'rain4',
+              color: '#545B98',
+            },
+          ]}
+          />
+
+          {/* cloud ternary - conditionally change the opacity */}
+          <LottieView
+          autoPlay
+          loop
+          height={'100%'}
+          width={'100%'}
+          colorFilters={[
+            {
+              keypath: 'Layer 1 Outlines 2',
+              color: 'rgba(255,255,255,.75)',
+            },
+            {
+              keypath: 'clouds1',
+              color: 'rgba(255,255,255,.75)',
+            },
+          ]}
+          style={{position:'absolute', top: -20}}
+          source={require(`../assets/102873-clouds-loop.json`)}
+          />
+
+          {/* snow ternary */}
+          <LottieView
+          autoPlay
+          loop
+          height={'165%'}
+          width={'165%'}
+          style={{position:'absolute', top: -15}}
+          source={require(`../assets/88806-snow-flakes-christmas.json`)}
+          />
+
+          {/* mist ternary */}
+
+           </ImageBackground>
+          {!loaded
+          ? <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginLeft: '5%', marginTop: '5%'}}>
+          <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
+            <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#034732'}}>Weather</Text>
+          </View>
+          </View>
+          : <View style={{height: '85%',
+           width: '90%', marginHorizontal: '5%', marginTop: '5%', position:'absolute', borderRadius:25, overflow:'hidden'}}>
+
+            {/* thunder ternary */}
+              <ImageBackground  imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}} source={require(`../assets/thunderstorm.gif`)}>
+
+                {/* stars ternary */}
+                <ImageBackground imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}}>
+
+            <View style={[{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}]}>
+
+
+              <View style={{paddingVertical:10, paddingTop:30}}>
+                  <View style={{flexDirection:'row', alignItems:'center', paddingBottom: 80}}>
+                <Text style={{fontSize: 25, fontWeight: '900', color: '#034732'}}>{location.city}</Text>
+              </View>
+                  <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732', marginVertical:.5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+                  <Text style={{fontSize: 18, fontWeight: 'bold', color: '#034732'}}>{Math.round(weatherData.main.temp)}º F</Text>
+              </View>
+              <View style={{paddingVertical:10, paddingTop:140}}>
+                <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
+                <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+              </View>
+            </View>
+                </ImageBackground>
+                </ImageBackground>
+          </View>}
       </View>
     </SafeAreaView>
   )
