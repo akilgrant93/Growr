@@ -1,10 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, ImageBackground } from 'react-native'
+import React, {useEffect} from 'react'
 import Blink from './Blink'
 
 const WeatherLoading = () => {
+  useEffect(() => {
+    console.log('???')
+  }, [])
+
   return (
     <View style={styles.heading}>
+      <ImageBackground source={require(`../assets/mts_neutral.png`)} imageStyle={{marginTop: 20, height: 350, marginTop: -130}}>
+        <ImageBackground imageStyle={{opacity:.75}} source={require(`../assets/birds.gif`)}>
             <View style={[{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}]}>
 
                 <View style={{paddingTop:10, paddingTop:30, justifyContent:'space-between', }}>
@@ -33,7 +39,9 @@ const WeatherLoading = () => {
 
                 </View>
             </View>
-    </View>
+        </ImageBackground>
+      </ImageBackground>
+      </View>
 
   )
 }
