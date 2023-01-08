@@ -11,6 +11,8 @@ import Blink from './Blink'
 import * as Location from 'expo-location';
 import moment from 'moment';
 import Weather from './Weather'
+import LottieView from 'lottie-react-native';
+import WeatherLoading from './WeatherLoading';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -431,10 +433,11 @@ const Dashboard = () => {
         {/* conditional load moon */}
 
 
-           {/* weatherLoading component goes here */}
+           {/* weatherLoading component goes here - background color will conditionall change based on an assumed sunrise and sunset of 5 am and 5 pm*/}
           {!loaded
-          ? null
+          ?  <WeatherLoading />
           :
+          //  this component should fade in on load
           <View style={{height: '85%',
           width: '90%', marginHorizontal: '5%', marginTop: '5%', position:'absolute', borderRadius:25, overflow:'hidden'}}>
           {/*
@@ -470,7 +473,7 @@ const Dashboard = () => {
 
 
               <View style={{paddingTop:10, paddingTop:30, justifyContent:'space-between'}}>
-                <View >
+                <View>
                   <View style={{flexDirection:'row', alignItems:'center'}}>
                     <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Weather</Text>
                   </View>

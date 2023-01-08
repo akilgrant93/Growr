@@ -8,24 +8,33 @@ export default class Blink extends Component {
         this.fadeAnimation = new Animated.Value(0);
     }
 
+
     componentDidMount() {
-        Animated.loop(
-            Animated.sequence([
-                Animated.timing(this.fadeAnimation, {
-                    toValue: 1,
-                    duration: this.props.duration,
-                    useNativeDriver: true,
-                }),
-                Animated.timing(this.fadeAnimation, {
-                    toValue: 0,
-                    duration: this.props.duration,
-                    useNativeDriver: true,
-                }),
-            ]),
-            {
-                iterations: this.props.repeat_count
-            }
-        ).start();
+        let delay = this.props.delay
+        if(delay === undefined){
+            delay = 0
+        }
+        Animated.sequence([
+            Animated.delay(delay),
+            Animated.loop(
+                Animated.sequence([
+                    Animated.timing(this.fadeAnimation, {
+                        toValue: 1,
+                        duration: this.props.duration,
+                        useNativeDriver: true,
+                    }),
+                    Animated.timing(this.fadeAnimation, {
+                        toValue: 0,
+                        duration: this.props.duration,
+                        useNativeDriver: true,
+                    }),
+                ]),
+                {
+                    iterations: this.props.repeat_count
+                }
+            )
+        ]).start();
+
     }
 
     render() {
