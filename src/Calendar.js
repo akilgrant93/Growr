@@ -231,8 +231,6 @@ const changeDate = (date) => {
              })}
           renderItem={({item, index}) => {
             let total = 0
-            console.log('index',index)
-            console.log((dateInfo.length-2))
             return (
             <View key={index} style={[
             {paddingBottom: 20},

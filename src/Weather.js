@@ -3,20 +3,22 @@ import React, { useState, useEffect } from 'react'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
 import moment from 'moment';
-import LottieView from 'lottie-react-native';
+import WeatherLoading from './WeatherLoading';
+import WeatherLoaded from './WeatherLoaded';
 
-const api_key = 'a3999e97ddb681be056baca3b261d939'
 
 const Weather = () => {
-  let url = `https://api.openweathermap.org/data/2.5/onecall?&units=imperial&exclude=minutely&appid=${api_key}`;
 
-  const [latitude, setLatitude] = useState(0)
-  const [longitude, setLongitude] = useState(0)
-  const [weatherData, setWeatherData] = useState(null)
-  const [weeklyForecast, setWeeklyForeCast] = useState({})
-  const [loaded, setLoaded] = useState(false)
+  const api_key = 'a3999e97ddb681be056baca3b261d939'
+  const url = `https://api.openweathermap.org/data/2.5/onecall?&units=imperial&exclude=minutely&appid=${api_key}`;
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [weatherData, setWeatherData] = useState(null);
+  const [weeklyForecast, setWeeklyForeCast] = useState({});
+  const [loaded, setLoaded] = useState(false);
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [descriptionID, setDescriptionID] = useState([]);
 
 
   const fetchWeatherData = async(cityName) => {
@@ -26,6 +28,40 @@ const Weather = () => {
       if(response.status === 200){
         const data = await response.json()
         setWeatherData(data)
+        console.log('weather data',data.sys)
+        if(data.weather[0].id.toString()[0] === '2'){
+          setDescriptionID(['thunderstorm',data.weather[0].id])
+        }
+        else if(data.weather[0].id.toString()[0] === '3'){
+          setDescriptionID(['drizzle', data.weather[0].id])
+        }
+        else if(data.weather[0].id >= 500 && data.weather[0].id <= 504){
+          setDescriptionID(['heavy rain', data.weather[0].id])
+        }
+        else if(data.weather[0].id >= 520 && data.weather[0].id <= 531){
+          setDescriptionID(['light rain', data.weather[0].id])
+        }
+        else if(data.weather[0].id.toString()[0] === '6' || data.weather[0].id === 511){
+          setDescriptionID(['snow', data.weather[0].id])
+        }
+        else if(data.weather[0].id.toString()[0] === '7'){
+          setDescriptionID(['atmosphere', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 800){
+          setDescriptionID(['clear', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 801){
+          setDescriptionID(['few clouds', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 802){
+          setDescriptionID(['scattered clouds', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 803){
+          setDescriptionID(['broken clouds', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 804){
+          setDescriptionID(['overcast clouds', data.weather[0].id])
+        }
       }
       else {
         setWeatherData(null)
@@ -73,61 +109,12 @@ const Weather = () => {
 
   if(!loaded){
     return (
-      <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginLeft: '5%', marginTop: '5%'}}>
-        <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
-          <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#034732'}}>Weather</Text>
-        </View>
-      </View>
+      <WeatherLoading />
     )
   }
 
-
   return (
-    <View style={{height: '85%',
-    // backgroundColor:'rgba(249,112,104,.5)',
-     width: '90%', marginHorizontal: '5%', marginTop: '5%'}}>
-
-        {/* sun and moon will go here conditionally based upon sunrise and sunset in weatherData - backgroundColor will load conditionally based upon sunrise and sunset - maybe slow transition animation*/}
-
-
-      <ImageBackground style={{backgroundColor:'rgba(249,112,104,.5)', borderRadius:25, overflow:'hidden'}} source={require(`../assets/sun.png`)}
-      >
-
-      {/* cloud conditions depicted here */}
-        <ImageBackground source={require(`../assets/weather/few_clouds.png`)} imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}}>
-
-        {/* <ImageBackground source={require(`../assets/weather/scattered_clouds.gif`)} imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}}> */}
-
-
-
-        <ImageBackground source={require(`../assets/weather/broken_clouds.png`)} imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}}>
-
-
-          <ImageBackground source={require(`../assets/weather/snow.gif`)} imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}}>
-
-      <View style={[{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}, styles.shadow]}>
-
-
-        <View style={{paddingVertical:10, paddingTop:30}}>
-            {/* <Text style={{fontSize: 22, fontWeight: 'bold', color: '#034732', paddingBottom: 50}}>Weather</Text> */}
-            <View style={{flexDirection:'row', alignItems:'center', paddingBottom: 80}}>
-          <Text style={{fontSize: 25, fontWeight: '900', color: '#034732'}}>{location.city}</Text>
-        </View>
-            <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732', marginVertical:.5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
-            <Text style={{fontSize: 18, fontWeight: 'bold', color: '#034732'}}>{Math.round(weatherData.main.temp)}º F</Text>
-        </View>
-        <View style={{paddingVertical:10, paddingTop:140}}>
-          <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
-          <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
-        </View>
-      </View>
-          </ImageBackground>
-          </ImageBackground>
-          {/* </ImageBackground> */}
-
-        </ImageBackground>
-      </ImageBackground>
-    </View>
+    <WeatherLoaded weatherData={weatherData} descriptionID={descriptionID} location={location}/>
   )
 }
 

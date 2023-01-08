@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     position:'absolute',
     borderRadius:25,
     overflow:'hidden',
-    backgroundColor:'rgba(249,112,104,.5)'
+    backgroundColor: 'rgba(3, 71, 50, .5)'
   },
   subtitle: {
     borderRadius: 25,
