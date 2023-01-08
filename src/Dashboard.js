@@ -177,8 +177,6 @@ const Dashboard = () => {
       }
     )
 
-    console.log('description', descriptionID[0])
-
     //need to pull tags data to feed into plants Arr for more visual appeal
     // plants.forEach(plant => console.log(plant))
 

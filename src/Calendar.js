@@ -266,18 +266,22 @@ const changeDate = (date) => {
                   {item.nextPlantsToWater ? item.nextPlantsToWater.map((plant, index) => {
                     total += 1
                     return (
-                      <View key={index} style={{flexDirection:'row', marginBottom:7.5}}>
+                      <TouchableOpacity key={index} onPress={() => navigation.navigate('UpdateModal',plant)}>
+                      <View style={{flexDirection:'row', marginBottom:7.5}}>
                         <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>TODO</Text><Text style={{color:'#fff'}}>Water {plant.name}</Text>
                       </View>
+                      </TouchableOpacity>
                     )
                   }) : null}
 
                   {item.previouslyWateredPlants ? item.previouslyWateredPlants.map((plant, idx) => {
                     total +=1
                     return (
-                      <View key={idx} style={{flexDirection:'row', marginBottom:7.5}}>
+                      <TouchableOpacity key={idx} onPress={() => navigation.navigate('UpdateModal',plant)}>
+                      <View style={{flexDirection:'row', marginBottom:7.5}}>
                         <Text style={{fontWeight:'bold', color:'#034732', paddingRight: '5%'}}>DONE</Text><Text style={{color:'white'}}>Water {plant.name}</Text>
                       </View>
+                      </TouchableOpacity>
                     )
                   }) : null}
                   </ScrollView>
