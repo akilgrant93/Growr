@@ -11,7 +11,6 @@ import Blink from './Blink'
 import * as Location from 'expo-location';
 import moment from 'moment';
 import Weather from './Weather'
-import LottieView from 'lottie-react-native';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -445,7 +444,7 @@ const Dashboard = () => {
 
                 there will be a general visibility toggle here as well - turns OFF during mist and rain (not shower rain)
                 */}
-              <ImageBackground style={[{overflow:'hidden', borderRadius: 25}, moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? {backgroundColor:'rgba(249,112,104,.5)'}: {backgroundColor:'rgba(84,91,152,1.0)'}]} source={moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
+              <ImageBackground style={[{overflow:'hidden', borderRadius: 25}, moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? {backgroundColor:'rgba(249,112,104,.5)'}: {backgroundColor:'rgba(84,91,152,.75)'}]} source={moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
 
             {/* snow layer ternary complete */}
             <ImageBackground imageStyle={{opacity:.8}} source={descriptionID[0] === 'snow' ? require(`../assets/weather/snow.gif`) : ''}>
@@ -471,12 +470,14 @@ const Dashboard = () => {
 
 
               <View style={{paddingTop:10, paddingTop:30, justifyContent:'space-between'}}>
-                <View>
+                <View >
                   <View style={{flexDirection:'row', alignItems:'center'}}>
                     <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Weather</Text>
                   </View>
+                  <View style={styles.shadow}>
                   <View style={[{borderRadius: 25, overflow:'hidden', width: 225 ,paddingVertical: 5, paddingHorizontal: 10, marginTop:5}, moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? {backgroundColor:'#545B98'} : {backgroundColor:'#F7716B'}]}>
                   <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{location.city}</Text>
+                  </View>
                   </View>
                 </View>
 
