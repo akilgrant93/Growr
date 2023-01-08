@@ -98,7 +98,6 @@ const Dashboard = () => {
         else if(data.weather[0].id === 804){
           setDescriptionID(['overcast clouds', data.weather[0].id])
         }
-
       }
       else {
         setWeatherData(null)
@@ -471,12 +470,20 @@ const Dashboard = () => {
             <View style={[{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}]}>
 
 
-              <View style={{paddingVertical:10, paddingTop:30}}>
-                  <View style={{flexDirection:'row', alignItems:'center', paddingBottom: 80}}>
-                <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>{location.city}</Text>
-              </View>
-                  <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical:.5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
-                  <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
+              <View style={{paddingTop:10, paddingTop:30, justifyContent:'space-between'}}>
+                <View>
+                  <View style={{flexDirection:'row', alignItems:'center'}}>
+                    <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Weather</Text>
+                  </View>
+                  <View style={[{borderRadius: 25, overflow:'hidden', width: 225 ,paddingVertical: 5, paddingHorizontal: 10, marginTop:5}, moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? {backgroundColor:'#545B98'} : {backgroundColor:'#F7716B'}]}>
+                  <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{location.city}</Text>
+                  </View>
+                </View>
+
+                  <View>
+                      <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical:.5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+                      <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
+                  </View>
               </View>
               <View style={{paddingVertical:10, paddingTop:140}}>
                 <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
