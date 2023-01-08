@@ -165,7 +165,7 @@ const changeDate = (date) => {
       <View style={{width: '90%'}}>
         <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '53.5%', marginBottom: 15 }}>
             <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
-                <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Calendar</Text>
+                <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Calendar</Text>
                 <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
             </View>
       <View style={{paddingBottom: 15, width: '90%',marginLeft:'5%'}}>
@@ -208,7 +208,7 @@ const changeDate = (date) => {
       <View style={{height: '43%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, overflow:'hidden'}}>
 
           <View style={{flexDirection:'row', alignItems:'center', paddingTop:10, paddingTop:30, marginLeft: 15}}>
-              <Text style={{fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Reminders</Text>
+              <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Reminders</Text>
               <FontAwesome
                 style={{marginLeft: 5}}
                 name='bell'

@@ -55,6 +55,7 @@ const Dashboard = () => {
   const [loaded, setLoaded] = useState(false)
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [descriptionID, setDescriptionID] = useState([])
 
   const fetchWeatherData = async(cityName) => {
     try {
@@ -63,6 +64,41 @@ const Dashboard = () => {
       if(response.status === 200){
         const data = await response.json()
         setWeatherData(data)
+        console.log('weather data',data.sys)
+        if(data.weather[0].id.toString()[0] === '2'){
+          setDescriptionID(['thunderstorm',data.weather[0].id])
+        }
+        else if(data.weather[0].id.toString()[0] === '3'){
+          setDescriptionID(['drizzle', data.weather[0].id])
+        }
+        else if(data.weather[0].id >= 500 && data.weather[0].id <= 504){
+          setDescriptionID(['heavy rain', data.weather[0].id])
+        }
+        else if(data.weather[0].id >= 520 && data.weather[0].id <= 531){
+          setDescriptionID(['light rain', data.weather[0].id])
+        }
+        else if(data.weather[0].id.toString()[0] === '6' || data.weather[0].id === 511){
+          setDescriptionID(['snow', data.weather[0].id])
+        }
+        else if(data.weather[0].id.toString()[0] === '7'){
+          setDescriptionID(['atmosphere', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 800){
+          setDescriptionID(['clear', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 801){
+          setDescriptionID(['few clouds', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 802){
+          setDescriptionID(['scattered clouds', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 803){
+          setDescriptionID(['broken clouds', data.weather[0].id])
+        }
+        else if(data.weather[0].id === 804){
+          setDescriptionID(['overcast clouds', data.weather[0].id])
+        }
+
       }
       else {
         setWeatherData(null)
@@ -141,6 +177,8 @@ const Dashboard = () => {
       }
     )
 
+    console.log('description', descriptionID[0])
+
     //need to pull tags data to feed into plants Arr for more visual appeal
     // plants.forEach(plant => console.log(plant))
 
@@ -163,6 +201,7 @@ const Dashboard = () => {
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
       console.log(response);
     });
+
 
     return () => {
       Notifications.removeNotificationSubscription(notificationListener.current);
@@ -309,7 +348,7 @@ const Dashboard = () => {
 <View style={{height: '67.5%', backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, overflow:'hidden'}}>
       <View style={{width:'90%'}}>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
-                    <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#fff'}}>Garden</Text>
+                    <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Garden</Text>
                     <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#034732'
                  size={22}
               />
@@ -350,7 +389,7 @@ const Dashboard = () => {
                           </Text>
                       </TouchableOpacity>
                   </View>
-                </View>
+      </View>
 
       <FlatList
         style={{backgroundColor:'rgba(3,71,50,.25)'}}
@@ -393,111 +432,70 @@ const Dashboard = () => {
       style={{flex: 1, width: '100%', shadowColor: '#000'}}>
         {/* conditional load moon */}
 
-        {/*
-              sun and moon will go here conditionally based upon sunrise and sunset in weatherData
 
-              - backgroundColor will load conditionally based upon sunrise and sunset - maybe slow transition animation
-
-              there will be a general visibility toggle here as well - turns OFF during mist and rain (not shower rain)
-              */}
-          <ImageBackground style={{height: '85%',
-
-          backgroundColor:'rgba(249,112,104,.5)',
-           width: '90%', marginHorizontal: '5%', marginTop: '5%', overflow:'hidden', borderRadius: 25}} source={require(`../assets/weather/sun.png`)}>
-
-          {/* rain ternary */}
-          <LottieView
-          autoPlay
-          loop
-          height={'100%'}
-          width={'100%'}
-          style={[{position:'absolute',
-          top: 25},
-        styles.shadow
-      ]}
-          source={require(`../assets/16477-rain-background-animation.json`)}
-          colorFilters={[
-            {
-              keypath: 'Rain 3',
-              color: '#545B98',
-            },
-            {
-              keypath: 'rain1',
-              color: '#545B98',
-            },
-            {
-              keypath: 'rain4',
-              color: '#545B98',
-            },
-          ]}
-          />
-
-          {/* cloud ternary - conditionally change the opacity */}
-          <LottieView
-          autoPlay
-          loop
-          height={'100%'}
-          width={'100%'}
-          colorFilters={[
-            {
-              keypath: 'Layer 1 Outlines 2',
-              color: 'rgba(255,255,255,.75)',
-            },
-            {
-              keypath: 'clouds1',
-              color: 'rgba(255,255,255,.75)',
-            },
-          ]}
-          style={{position:'absolute', top: -20}}
-          source={require(`../assets/102873-clouds-loop.json`)}
-          />
-
-          {/* snow ternary */}
-          <LottieView
-          autoPlay
-          loop
-          height={'165%'}
-          width={'165%'}
-          style={{position:'absolute', top: -15}}
-          source={require(`../assets/88806-snow-flakes-christmas.json`)}
-          />
-
-          {/* mist ternary */}
-
-           </ImageBackground>
+           {/* weatherLoading component goes here */}
           {!loaded
-          ? <View style={{height: '85%',  backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, width: '90%', marginLeft: '5%', marginTop: '5%'}}>
-          <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
-            <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: 'bold', color: '#034732'}}>Weather</Text>
-          </View>
-          </View>
-          : <View style={{height: '85%',
-           width: '90%', marginHorizontal: '5%', marginTop: '5%', position:'absolute', borderRadius:25, overflow:'hidden'}}>
+          ? null
+          :
+          <View style={{height: '85%',
+          width: '90%', marginHorizontal: '5%', marginTop: '5%', position:'absolute', borderRadius:25, overflow:'hidden'}}>
+          {/*
+                sun and moon will go here conditionally based upon sunrise and sunset in weatherData - done
 
-            {/* thunder ternary */}
-              <ImageBackground  imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}} source={require(`../assets/thunderstorm.gif`)}>
+                - backgroundColor will load conditionally based upon sunrise and sunset - done
 
-                {/* stars ternary */}
-                <ImageBackground imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}}>
+                there will be a general visibility toggle here as well - turns OFF during mist and rain (not shower rain)
+                */}
+              <ImageBackground style={[{overflow:'hidden', borderRadius: 25}, moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? {backgroundColor:'rgba(249,112,104,.5)'}: {backgroundColor:'rgba(84,91,152,1.0)'}]} source={moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
 
+            {/* snow layer ternary complete */}
+            <ImageBackground imageStyle={{opacity:.8}} source={descriptionID[0] === 'snow' ? require(`../assets/weather/snow.gif`) : ''}>
+
+            {/* rain layer - ternary complete */}
+            <ImageBackground imageStyle={{height: '120%', overflow:'hidden', top:20}} style={{height:'100%'}} source={descriptionID[0] === 'light rain' || descriptionID[0] === 'heavy rain' || descriptionID[0] === 'drizzle' || descriptionID[0] === 'thunderstorm'? require(`../assets/rain.gif`) : ''}>
+
+            {/* thunder layer ternary complete */}
+              <ImageBackground  imageStyle={{height: '100%', overflow:'hidden', borderRadius:25, marginLeft:40}} style={{height:'100%'}} source={descriptionID[0] === 'thunderstorm' ? require(`../assets/thunderstorm.gif`) : ''}>
+
+                {/* stars layer - ternary complete */}
+                <ImageBackground imageStyle={{height: '100%', overflow:'hidden', borderRadius:25}} style={{height:'100%'}} source={moment().valueOf()/1000 >= weatherData.sys.sunrise && moment().valueOf()/1000 <= weatherData.sys.sunset ? '' : require(`../assets/stars.gif`)}>
+
+                  {/* moving cloud layer */}
+                  <ImageBackground imageStyle={{opacity:.75,top:-20}} source={descriptionID[1] === 800 ? '' : require(`../assets/clouds_1.gif`)}>
+
+                    {/* static cloud layer */}
+                    <ImageBackground imageStyle={descriptionID[1] === 802 ? {opacity:.5} : {opacity:.75}} source={descriptionID[1] < 800 || descriptionID[1] > 801 ? require(`../assets/clouds_2.png`) : ''}>
+
+                        {/* mist layer - ternary complete */}
+                        <ImageBackground imageStyle={{top:20}} style={{height:'100%'}} source={descriptionID[0] === 'atmosphere' ? require(`../assets/mist.png`) : ''}>
             <View style={[{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}]}>
 
 
               <View style={{paddingVertical:10, paddingTop:30}}>
                   <View style={{flexDirection:'row', alignItems:'center', paddingBottom: 80}}>
-                <Text style={{fontSize: 25, fontWeight: '900', color: '#034732'}}>{location.city}</Text>
+                <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>{location.city}</Text>
               </View>
-                  <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732', marginVertical:.5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
-                  <Text style={{fontSize: 18, fontWeight: 'bold', color: '#034732'}}>{Math.round(weatherData.main.temp)}º F</Text>
+                  <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff', marginVertical:.5}}>{moment().format('MMMM D')}, {moment().format('YYYY')}</Text>
+                  <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(weatherData.main.temp)}º F</Text>
               </View>
               <View style={{paddingVertical:10, paddingTop:140}}>
-                <Text style={{fontSize: 12, fontWeight: 'bold', color: '#034732'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
-                <Text style={{fontSize: 10, fontWeight: 'bold', color: '#034732'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
+                <Text style={{fontSize: 12, fontWeight: 'bold', color: '#fff'}}>{weatherData.weather[0].description.slice(0,1).toUpperCase()+weatherData.weather[0].description.slice(1)}</Text>
+                <Text style={{fontSize: 10, fontWeight: 'bold', color: '#fff'}}>H:{Math.round(weatherData.main.temp_max)}º | L:{Math.round(weatherData.main.temp_min)}º</Text>
               </View>
             </View>
-                </ImageBackground>
-                </ImageBackground>
-          </View>}
+                        </ImageBackground>
+
+                    </ImageBackground>
+                  </ImageBackground>
+              </ImageBackground>
+            </ImageBackground>
+              </ImageBackground>
+            </ImageBackground>
+
+            </ImageBackground>
+
+          </View>
+          }
       </View>
     </SafeAreaView>
   )

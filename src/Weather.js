@@ -90,7 +90,7 @@ const Weather = () => {
         {/* sun and moon will go here conditionally based upon sunrise and sunset in weatherData - backgroundColor will load conditionally based upon sunrise and sunset - maybe slow transition animation*/}
 
 
-      <ImageBackground style={{backgroundColor:'rgba(249,112,104,.5)', borderRadius:25, overflow:'hidden'}} source={require(`../assets/weather/sun.png`)}
+      <ImageBackground style={{backgroundColor:'rgba(249,112,104,.5)', borderRadius:25, overflow:'hidden'}} source={require(`../assets/sun.png`)}
       >
 
       {/* cloud conditions depicted here */}
