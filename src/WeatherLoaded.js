@@ -94,7 +94,7 @@ export default WeatherLoaded
 const styles = StyleSheet.create({
   heading: {
     height: '85%',
-    width: '90%',
+    width: '100%',
     marginHorizontal: '5%',
     marginTop: '5%',
     borderRadius:25,

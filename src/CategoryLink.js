@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TouchableOpacity, ImageBackground } from 'react-native'
-import React, {useEffect} from 'react'
+import { Text, View, TouchableOpacity, ImageBackground } from 'react-native'
+import React from 'react'
 
 const CategoryLink = (props) => {
+  // console.log(props.navigation)
   return (
     <View style={{flex: .9}}>
-      <TouchableOpacity onPress={() => props.navigation.navigate('PlantsByCategory', props.type)}>
+      <TouchableOpacity onPress={() => props.navigation.navigate('PlantsByCategory', {name:props.type, navigation:props.navigation})}>
           <ImageBackground
           source={
             props.type === 'edible'
@@ -34,4 +35,3 @@ const CategoryLink = (props) => {
 
 export default CategoryLink
 
-const styles = StyleSheet.create({})

@@ -585,7 +585,7 @@ export default PostModal
 const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
-    marginTop: '25%',
+    height: '100%',
     alignItems:'center'
   },
   diseaseText: {

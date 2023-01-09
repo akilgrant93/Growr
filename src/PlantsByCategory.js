@@ -7,7 +7,7 @@ const Reminders = ({route, navigation}) => {
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
-  const snapshot = firebase.firestore().collection('plants').where('tags','array-contains', `${route.params[0].toUpperCase()+route.params.slice(1)}`).orderBy('scientificName')
+  const snapshot = firebase.firestore().collection('plants').where('tags','array-contains', `${route.params.name[0].toUpperCase()+route.params.name.slice(1)}`).orderBy('scientificName')
 
   const getNextPlants = () => {
     snapshot
@@ -44,27 +44,31 @@ const Reminders = ({route, navigation}) => {
 
   }, [])
   return (
-    <SafeAreaView>
+    <View>
+      <View style={{height:'11%', marginBottom: '2.5%'}}>
+
       <ImageBackground
+        style={{height: '100%'}}
           source={
-            route.params === 'edible'
-            ? require(`../assets/edible.jpg`)
-            : route.params === 'medicinal'
-            ? require(`../assets/medicinal.jpg`)
-            : route.params === 'fruit'
-            ? require(`../assets/fruit.jpg`)
-            : route.params === 'tropical'
-            ? require(`../assets/tropical.jpg`)
-            : route.params === 'succulent'
-            ? require(`../assets/succulent.jpg`)
-            : require(`../assets/hydroponic.jpg`)} resizeMode="cover">
-              <View style={{backgroundColor: "rgba(0, 0, 0, 0.25)"}}>
-                <Text style={{fontSize: 40, marginLeft: 45, fontWeight: 'bold', color: 'white', marginVertical: 10, }}>{`${route.params[0].toUpperCase()+route.params.slice(1)}s`}</Text>
+            route.params.name === 'edible'
+            ? require(`../assets/header_bgs/edible-01.png`)
+            : route.params.name === 'medicinal'
+            ? require(`../assets/header_bgs/medicinal-01.png`)
+            : route.params.name === 'fruit'
+            ? require(`../assets/header_bgs/fruit-01.png`)
+            : route.params.name === 'tropical'
+            ? require(`../assets/header_bgs/tropical-01.png`)
+            : route.params.name === 'succulent'
+            ? require(`../assets/header_bgs/succulent-01.png`)
+            : require(`../assets/header_bgs/hydroponic-01.png`)} resizeMode="cover">
+              <View style={{backgroundColor: "rgba(0, 0, 0, 0.25)", justifyContent:'flex-end', height:'100%'}}>
+                <Text style={[{fontSize: 25, marginLeft: 125, fontWeight: '900', color: 'white', marginVertical: 10, }]}>{`${route.params.name[0].toUpperCase()+route.params.name.slice(1)}s`}</Text>
               </View>
-            </ImageBackground>
+      </ImageBackground>
+      </View>
       {!plants
            ? <View></View>
-           :<FlatList style={{flexDirection:'column', width:'100%'}}
+           :<FlatList style={{flexDirection:'column', height:'87.5%', width:'100%'}}
           data={plants}
           showsVerticalScrollIndicator={false}
           onEndReached={getNextPlants}
@@ -126,7 +130,7 @@ const Reminders = ({route, navigation}) => {
             )
           }} />}
           {refreshing ? <ActivityIndicator style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
-    </SafeAreaView>
+    </View>
   )
 }
 

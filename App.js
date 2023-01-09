@@ -4,7 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import 'react-native-gesture-handler'
 import React, { useState, useEffect } from "react";
-import { TouchableOpacity, Alert, View, StatusBar } from "react-native";
+import { TouchableOpacity, Alert, View, StatusBar, Image, Text, StyleSheet } from "react-native";
 import { firebase } from './config'
 import { FontAwesome } from '@expo/vector-icons'
 import Svg, { Path } from 'react-native-svg'
@@ -13,11 +13,13 @@ import * as Location from 'expo-location';
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
+import Settings from "./src/Settings";
 import Dashboard from "./src/Dashboard";
 import MyCalendar from "./src/Calendar";
 import SearchPlant from "./src/SearchPlant";
 import PostModal from "./src/PostModal";
 import UpdateModal from './src/UpdateModal';
+import CategoryHeader from "./src/CategoryHeader";
 import PlantsByCategory from './src/PlantsByCategory';
 
 const Stack = createStackNavigator()
@@ -107,10 +109,10 @@ function Home() {
       />
       <Tab.Screen
       name="Plants"
-      label="Planst"
+      label="Plants"
       component={SearchPlant}
       options={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => (
+        tabBarIcon: ({focused, size}) => (
           <PlusCircleIcon size={size} style={focused ? {color:'#034732'} : {color:'#C9E4CA'}}/>
         ),
       })}
@@ -120,8 +122,18 @@ function Home() {
       label="Calendar"
       component={MyCalendar}
       options={({route}) => ({
-        tabBarIcon: ({focused, color, size}) => (
+        tabBarIcon: ({focused, size}) => (
           <CalendarDaysIcon size={size} style={focused ? {color:'#034732'} : {color:'#C9E4CA'}}/>
+        ),
+      })}
+      />
+      <Tab.Screen
+      name="Settings"
+      label="Settings"
+      component={Settings}
+      options={({route}) => ({
+        tabBarIcon: ({focused, size}) => (
+          <FontAwesome name='gear' color={focused ? '#034732' : '#C9E4CA'} size={size}/>
         ),
       })}
       />
@@ -163,7 +175,7 @@ function App(){
   }
 
   return (
-    <Stack.Navigator screenOptions={{headerShown:false}}>
+    <Stack.Navigator screenOptions={{ headerShown:false,headerTransparent:true}}>
       <Stack.Group>
       <Stack.Screen
         name="Home"
@@ -171,8 +183,8 @@ function App(){
         />
         </Stack.Group>
         <Stack.Group screenOptions={{
-          presentation: 'modal',
-          headerShown:false  }}>
+          // presentation: 'modal',
+          headerShown:true  }}>
         <Stack.Screen
         name="UpdateModal"
         component={UpdateModal}
@@ -180,10 +192,25 @@ function App(){
         <Stack.Screen
         name="PostModal"
         component={PostModal}
+        options={({route}) => ({
+          title: route.params.item.commonName || route.params.item.scientificName
+        })}
         />
         <Stack.Screen
         name="PlantsByCategory"
-        options={{ title: 'My profile' }}
+        options={({route}) => ({
+          headerTitle: () => <CategoryHeader title={route.params.name}/>,
+          headerLeft: () =>
+            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => route.params.navigation.navigate('Plants')}>
+            <FontAwesome
+            color={'white'}
+            size={24}
+            name={'chevron-left'}
+            />
+            <Text style={{fontWeight:'900', fontSize: 20, color:'#FFF', marginLeft: 5}}>Discover</Text>
+            </TouchableOpacity>
+        })}
+
         component={PlantsByCategory}
         />
         </Stack.Group>
