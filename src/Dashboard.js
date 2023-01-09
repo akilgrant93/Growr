@@ -395,10 +395,10 @@ const Dashboard = () => {
         ListEmptyComponent={
           <View style={{flexDirection:'row'}}>
             <View style={{width:'100%',}}>
-                <Text style={{textAlign:'center', color:'white', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
+                <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
                 <Svg
                 style={{alignSelf:'center', marginTop: 5}}
-                fill={'rgba(255,255,255,.25)'}
+                fill={'#82A398'}
                 width={200}
                 height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
             </View>
