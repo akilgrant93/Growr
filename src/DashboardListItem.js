@@ -20,12 +20,12 @@ const DashboardListItem = (props) => {
                       <View style={styles.textView}>
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
-                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={{ width:'40%', height: 147.5}} />
-                        <View style={{height: '100%',width:'65%',justifyContent:'space-between', backgroundColor:'#FFF'}}>
+                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={[{ width:'40%', height: 147.5}]} />
+                        <View style={{height: '100%',width:'60.5%',justifyContent:'space-between', backgroundColor:'#FFF'}}>
                           <View>
 
                           <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between'}}>
-                            <View style={[{marginLeft: 5, marginTop: 7.5, width: '87.5%', flexDirection:'row', alignItems:'center', paddingLeft: '5%', paddingVertical: 7.5, borderRadius:25}, styles.shadow2, wateringDateDifference < 0 ? {backgroundColor: '#F97068'} : {backgroundColor:'#82A398'}]}>
+                            <View style={[{marginLeft: 5, marginTop: 7.5, width: '95%', flexDirection:'row', alignItems:'center', paddingLeft: '5%', paddingVertical: 7.5, borderRadius:25}, styles.shadow2, wateringDateDifference < 0 ? {backgroundColor: '#F97068'} : {backgroundColor:'#82A398'}]}>
                               <Text style={{fontSize: 14, fontWeight: '800',color:'#FFF'}}>
                                 {props.item.name}
                               </Text>
