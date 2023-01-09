@@ -159,7 +159,7 @@ const SearchPlant = ({route, navigation}) => {
         style={styles.input}
         placeholder="Add A New Plant"
         placeholderTextColor='#aaaaaa'
-        onChangeText={(heading) => setValue(heading)}
+        onChangeText={(heading) => setValue(heading ? heading[0].toUpperCase()+heading.slice(1): '')}
         value={value}
         underlineColorAndroid='transparent'
         autoCapitalize='none'
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 5,
     overflow: 'hidden',
     backgroundColor: 'white',
-    paddingLeft: 16,
+    paddingLeft: 35,
     width: '65%',
     marginTop: '1%',
   },
