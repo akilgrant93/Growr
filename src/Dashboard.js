@@ -394,7 +394,7 @@ const Dashboard = () => {
         numColumns={1}
         ListEmptyComponent={
           <View style={{flexDirection:'row'}}>
-            <View style={{width:'100%',}}>
+            <View style={{width:'101%',}}>
                 <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
                 <Svg
                 style={{alignSelf:'center', marginTop: 5}}
