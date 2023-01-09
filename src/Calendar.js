@@ -163,7 +163,8 @@ const changeDate = (date) => {
 }
 
   return (
-    <SafeAreaView style={[{alignItems:'center', paddingTop: '3%', height: '100%'}, styles.shadow]}>
+    <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>
+    <SafeAreaView style={[{alignItems:'center', paddingTop: '3%', height: '100%', backgroundColor: "rgba(240,240,240,.25)",}, styles.shadow]}>
       <View style={{width: '90%'}}>
         <View style={{ backgroundColor: '#82A398', borderRadius: 25, height: '53.5%', marginBottom: 15 }}>
             <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
@@ -310,34 +311,13 @@ const changeDate = (date) => {
       </View>
       </View>
     </SafeAreaView>
+    </View>
   )
 }
 
 export default MyCalendar
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-  },
-  dateText: {
-    margin: 16,
-  },
-  textView: {
-    paddingTop: '3%',
-    marginTop: '3%',
-    backgroundColor: '#034732',
-    width: '100%',
-    height: '100%',
-    overflow: 'scroll',
-  },
   shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,

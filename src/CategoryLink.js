@@ -21,7 +21,7 @@ const CategoryLink = (props) => {
           <Text style={{
             color: "white",
             fontSize: 30,
-            lineHeight: 164,
+            lineHeight: 164.5,
             fontWeight: "bold",
             textAlign: "center",
             backgroundColor: "rgba(0, 0, 0, 0.25)"}}>{props.type[0].toUpperCase()+props.type.slice(1)}

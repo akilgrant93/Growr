@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View, ImageBackground } from 'react-native'
 import React from 'react'
 import moment from 'moment';
-import Animated, { FadeInUp } from 'react-native-reanimated';
+import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const WeatherLoaded = (props) => {
   return (
-    <Animated.View style={[styles.heading]} entering={FadeInUp}>
+    <Animated.View style={[styles.heading]} entering={FadeInLeft}>
           {/*
                 sun and moon will go here conditionally based upon sunrise and sunset in props.weatherData - done
 
@@ -14,9 +14,12 @@ const WeatherLoaded = (props) => {
                 there will be a general visibility toggle here as well - turns OFF during mist and rain (not shower rain)
               */}
               <ImageBackground
-              source={moment().valueOf()/1000 <= props.weatherData.sys.sunrise && moment().valueOf()/1000 >= props.weatherData.sys.sunset ? require(`../assets/mts_day.png`) : require(`../assets/mts_night.png`)} imageStyle={{height: 350,top:-130}}>
+              source={
+                moment().valueOf()/1000 >=
+                props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/mts_day.png`) : require(`../assets/mts_night.png`)} imageStyle={{height: 350,top:-130}}>
 
-              <ImageBackground style={[{overflow:'hidden', borderRadius: 25}, moment().valueOf()/1000 <= props.weatherData.sys.sunrise && moment().valueOf()/1000 >= props.weatherData.sys.sunset ? {backgroundColor:'rgba(249,112,104,.5)'}: {backgroundColor:'rgba(84,91,152,.5)'}]} source={moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
+              <ImageBackground style={[{overflow:'hidden', borderRadius: 25},
+              moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? '' : {backgroundColor:'rgba(84,91,152,.5)'}]} source={moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
 
                 {/* bg layer */}
 
@@ -63,7 +66,7 @@ const WeatherLoaded = (props) => {
                       <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(props.weatherData.main.temp)}º F</Text>
                   </View>
               </View>
-              <View style={{paddingVertical:10, paddingTop:140}}>
+              <View style={{paddingVertical:10, paddingTop:140, marginLeft: -25}}>
                 <Text style={[styles.fontstyle, {fontSize: 12}]}>{props.weatherData.weather[0].description.slice(0,1).toUpperCase()+props.weatherData.weather[0].description.slice(1)}</Text>
                 <Text style={[styles.fontstyle, {fontSize: 10}]}>H:{Math.round(props.weatherData.main.temp_max)}º | L:{Math.round(props.weatherData.main.temp_min)}º</Text>
               </View>
@@ -94,7 +97,6 @@ const styles = StyleSheet.create({
     width: '90%',
     marginHorizontal: '5%',
     marginTop: '5%',
-    position:'absolute',
     borderRadius:25,
     overflow:'hidden',
   },
@@ -106,14 +108,6 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     backgroundColor:'white'
-  },
-  ellipse: {
-    borderRadius: 50,
-    height: 5,
-    width:5,
-    backgroundColor:'#545B98',
-    marginRight:2.5,
-    marginBottom: 5
   },
   shadow: {
     shadowColor: '#000',

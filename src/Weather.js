@@ -21,7 +21,6 @@ const Weather = () => {
       if(response.status === 200){
         const data = await response.json()
         setWeatherData(data)
-        console.log('weather data',data.sys)
         if(data.weather[0].id.toString()[0] === '2'){
           setDescriptionID(['thunderstorm',data.weather[0].id])
         }

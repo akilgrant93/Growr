@@ -49,7 +49,7 @@ function Home() {
 
   return (
     <>
-    <StatusBar barStyle="dark-content"/>
+    <StatusBar translucent={true} backgroundColor={'transparent'}/>
     <Tab.Navigator
     screenOptions={({route}) => ({
       headerShown: false,

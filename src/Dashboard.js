@@ -35,6 +35,7 @@ const Dashboard = () => {
   const [expoPushToken, setExpoPushToken] = useState('')
   const [notification, setNotification] = useState(false)
   const [nextWateringDays, setNextWateringDays] = useState([])
+  const [loadedFirebase, setLoadedFirebase] = useState(false)
   const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
   const notificationListener = useRef()
   const responseListener = useRef()
@@ -172,6 +173,7 @@ const Dashboard = () => {
         setPlants(plants)
         setPlantsList(plants)
         setNextWateringDays(wateringDays)
+        setLoadedFirebase(true)
       }
     )
 
@@ -339,10 +341,10 @@ const Dashboard = () => {
   }
 
   return (
-
-    <SafeAreaView style={[styles.formContainer, styles.shadow]}>
-<View style={{height: '67.5%', backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, overflow:'hidden'}}>
-      <View style={{width:'90%'}}>
+    <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>
+        <SafeAreaView style={[styles.formContainer, styles.shadow]}>
+<View style={{height: '67.5%', width:'90%', backgroundColor: '#82A398', borderRadius: 25, overflow:'hidden'}}>
+      <View>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
                     <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Garden</Text>
                     <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#034732'
@@ -388,20 +390,20 @@ const Dashboard = () => {
       </View>
 
       <FlatList
-        style={{backgroundColor:'white', width: '90%'}}
+        style={{backgroundColor:'white'}}
         showsVerticalScrollIndicator={false}
         data={plantsList}
         numColumns={1}
         ListEmptyComponent={
           <View style={{flexDirection:'row'}}>
-            <View style={{width:'101%',}}>
+            {!loadedFirebase ? <View style={{width:'101%',}}>
                 <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
                 <Svg
                 style={{alignSelf:'center', marginTop: 5}}
                 fill={'#82A398'}
                 width={200}
                 height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
-            </View>
+            </View> : null}
           </View>
         }
         onEndReached={() => setBottomReached(true)}
@@ -425,10 +427,11 @@ const Dashboard = () => {
 </View>
 
       <View
-      style={{flex: 1, width: '100%', shadowColor: '#000'}}>
+      style={{flex: 1}}>
         <Weather />
       </View>
     </SafeAreaView>
+    </View>
   )
 }
 
@@ -468,6 +471,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   formContainer: {
+    backgroundColor: "rgba(240,240,240,.25)",
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
@@ -493,6 +497,12 @@ const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  shadow2: {
+    shadowColor: '#fff',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.5,
     shadowRadius: 2,
     elevation: 5,
   }

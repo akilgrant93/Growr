@@ -1,12 +1,8 @@
 import { StyleSheet, Text, View, ImageBackground } from 'react-native'
-import React, {useEffect} from 'react'
+import React from 'react'
 import Blink from './Blink'
 
 const WeatherLoading = () => {
-  useEffect(() => {
-    console.log('???')
-  }, [])
-
   return (
     <View style={styles.heading}>
       <ImageBackground source={require(`../assets/mts_neutral.png`)} imageStyle={{marginTop: 20, height: 350, marginTop: -130}}>
@@ -51,10 +47,9 @@ export default WeatherLoading
 const styles = StyleSheet.create({
   heading: {
     height: '85%',
-    width: '90%',
+    width: '300%',
     marginHorizontal: '5%',
     marginTop: '5%',
-    position:'absolute',
     borderRadius:25,
     overflow:'hidden',
     backgroundColor: 'rgba(3, 71, 50, .5)'

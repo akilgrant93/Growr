@@ -141,6 +141,7 @@ const SearchPlant = ({route, navigation}) => {
     }
 
   return (
+    <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>
     <SafeAreaView style={[styles.container, styles.shadow]}>
       <View style={{backgroundColor: '#82A398', width:'90%', marginLeft: '5%', borderRadius: 25, height:'97.5%',overflow:'hidden'}}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
@@ -312,6 +313,7 @@ const SearchPlant = ({route, navigation}) => {
       </View>
 
     </SafeAreaView>
+    </View>
   )
 }
 
@@ -320,6 +322,7 @@ export default SearchPlant
 const styles = StyleSheet.create({
   container: {
     height: '100%',
+    backgroundColor: "rgba(240,240,240,.25)"
   },
   input: {
     height: 40,
