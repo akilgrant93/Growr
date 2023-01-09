@@ -21,7 +21,7 @@ const DashboardListItem = (props) => {
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
                       <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={[{ width:'40%', height: 147.5}]} />
-                        <View style={{height: '100%',width:'60.5%',justifyContent:'space-between', backgroundColor:'#FFF'}}>
+                        <View style={{height: '100%',width:'60.5%',justifyContent:'space-between', backgroundColor:'rgba(255,255,255,.5)'}}>
                           <View>
 
                           <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between'}}>

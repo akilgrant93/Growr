@@ -84,7 +84,9 @@ const MyCalendar = () => {
     )
   }, [])
 
-
+const customDayHeaderStyles = () => {
+  return {style: {}, textStyle: {color: '#034732',fontWeight:'900'}}
+}
 
 const customDatesStylesCallback = date => {
   switch(date) {
@@ -135,7 +137,7 @@ const customDatesStylesCallback = date => {
         else {
           return {
             textStyle: {
-              color: 'black',
+              color: 'white',
               fontWeight: 'bold',
             }
           }
@@ -183,8 +185,10 @@ const changeDate = (date) => {
         </View>
       }
       monthTitleStyle={{fontWeight:'900', color:'#034732', fontSize:16}}
+      selectedDayStyle={{backgroundColor:'#F97068'}}
       yearTitleStyle={{fontWeight:'900', color:'rgba(255,255,255,.75)', fontSize:16}}
       headerWrapperStyle={[{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}, styles.shadow]}
+      customDayHeaderStyles={customDayHeaderStyles}
       customDatesStyles={customDatesStylesCallback}/>
 
 
