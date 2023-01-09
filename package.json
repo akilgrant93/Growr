@@ -23,6 +23,7 @@
     "expo-calendar": "~11.0.1",
     "expo-constants": "~14.0.2",
     "expo-device": "~5.0.0",
+    "expo-image-picker": "~14.0.2",
     "expo-location": "~15.0.1",
     "expo-notifications": "~0.17.0",
     "expo-status-bar": "~1.4.2",
@@ -44,8 +45,7 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-svg": "13.4.0",
     "react-native-walkthrough-tooltip": "^1.4.0",
-    "react-native-web": "~0.18.9",
-    "expo-image-picker": "~14.0.2"
+    "react-native-web": "~0.18.9"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

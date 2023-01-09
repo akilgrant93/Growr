@@ -11,25 +11,22 @@ const DashboardListItem = (props) => {
   const navigation = useNavigation()
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
   return (
-    <View key={props.index} style={[props.index === props.lastIdx ? {paddingBottom: 25} : {borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,.25)'}, wateringDateDifference < 0 ? {backgroundColor: 'rgba(3,71,50,.5)'} : null]}>
-              <View style={[{
-              flexDirection: 'column',
-              marginVertical: 5,
-              flex:1,
-              }, styles.shadow]}>
+    <View key={props.index} style={[{width:'100%', borderBottomColor: 'rgba(3,71,50,.25)'}, props.index=== props.lastIdx ? {borderBottomWidth: 0} : {borderBottomWidth: 1}]}>
+              <View>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
                   onPress={() => navigation.navigate('UpdateModal',props.item)}>
-                    <View style={[{ flexDirection: 'row',overflow:'hidden', borderRadius: 25}]}>
-
+                    <View style={[{ flexDirection: 'row'}]}>
                       <View style={styles.textView}>
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
-                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={{ width:125, height: 125, borderRadius: 100 }} />
-                        <View style={{width: 150, paddingVertical: 10, paddingLeft: 5, height: '100%', justifyContent:'center'}}>
-                          <View style={{flexDirection:'row', width: '125%', justifyContent:'space-between'}}>
-                            <View style={[{padding: 7.5, borderRadius: 5, width: '95%', flexDirection:'row', alignItems:'center', backgroundColor:'#034732'} ]}>
-                              <Text style={{fontSize: 14, fontWeight: 'bold',color:'white'}}>
+                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={{ width:'40%', height: 147.5}} />
+                        <View style={{height: '100%',width:'65%',justifyContent:'space-between', backgroundColor:'#FFF'}}>
+                          <View>
+
+                          <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between'}}>
+                            <View style={[{marginLeft: 5, marginTop: 7.5, width: '87.5%', flexDirection:'row', alignItems:'center', paddingLeft: '5%', paddingVertical: 7.5, borderRadius:25}, styles.shadow2, wateringDateDifference < 0 ? {backgroundColor: '#F97068'} : {backgroundColor:'#82A398'}]}>
+                              <Text style={{fontSize: 14, fontWeight: '800',color:'#FFF'}}>
                                 {props.item.name}
                               </Text>
                               {wateringDateDifference < 0 ?
@@ -37,7 +34,7 @@ const DashboardListItem = (props) => {
                                 <FontAwesome
                                 style={{marginLeft: 5}}
                                 name='tint'
-                                color={'#F97068'}
+                                color={'#fff'}
                                 size={10}
                                 />
                               </Blink>
@@ -46,24 +43,24 @@ const DashboardListItem = (props) => {
 
                           </View>
 
-                          <View style={[{height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row', width: '117.5%', marginTop: 5}, wateringDateDifference < 0 ? {backgroundColor:'#F97068'}: {backgroundColor:'white'}]}>
+                          <View style={[{paddingTop:2.5, paddingLeft: '5%',flexDirection:'row', marginTop: 2}, wateringDateDifference < 0 ? {color:'#F97068'}: {color:'black'}]}>
                         { wateringDateDifference < 0
-                        ? <Text style={{marginLeft:5, fontSize: 12, color:'white'}}>
+                        ? <Text style={[{marginLeft:5, fontSize: 12, fontWeight: '500'},  wateringDateDifference < 0 ? {color:'red'}: {color:'black'} ]}>
                           {wateringDateDifference === 0 ? 'Needs' :'Needed'} water {wateringDateDifference === 0
                           ? 'today'
                           : wateringDateDifference === -1
                           ? 'yesterday'
                           : `${Math.abs(wateringDateDifference)} days ago`}</Text> : null }
                         { wateringDateDifference >= 0
-                        ? <Text style={{marginLeft:5, fontSize: 12}}>
-                          Water { wateringDateDifference === 0
-                          ? 'today'
-                          : wateringDateDifference === 1
+                        ? <Text style={{marginLeft:5, fontSize: 12, fontWeight:'500'}}>
+                          Needs water {  wateringDateDifference === 1
                           ? 'tomorrow'
                           : `in ${wateringDateDifference} days`}</Text> : null }
                         </View>
+                          </View>
 
-                          <View style={{flexDirection:'row', marginTop: 5, width: '117.5%'}}>
+                        {/* marginTop will be calculated by a formula that detects tag count */}
+                          <View style={{flexDirection:'row', marginLeft: '5%', marginBottom: 5,width: '100%'}}>
                         {props.item.isIndoors
                         ?
                         <View style={{backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
@@ -120,13 +117,19 @@ export default DashboardListItem
 const styles = StyleSheet.create({
   textView: {
     flexDirection: 'row',
-    width: '90%',
     alignItems:'center',
     justifyContent:'center',
+    height: 147.5
   },
   shadow: {
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  },
+  shadow2: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.4,
     shadowRadius: 2,
     elevation: 5,
   }

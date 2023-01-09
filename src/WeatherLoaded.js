@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View, ImageBackground } from 'react-native'
 import React from 'react'
 import moment from 'moment';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 
 const WeatherLoaded = (props) => {
   return (
-    <View style={styles.heading}>
+    <Animated.View style={[styles.heading]} entering={FadeInUp}>
           {/*
                 sun and moon will go here conditionally based upon sunrise and sunset in props.weatherData - done
 
@@ -81,7 +82,7 @@ const WeatherLoaded = (props) => {
 
             </ImageBackground>
 
-          </View>
+    </Animated.View>
   )
 }
 

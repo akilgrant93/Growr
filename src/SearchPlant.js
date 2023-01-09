@@ -141,8 +141,8 @@ const SearchPlant = ({route, navigation}) => {
     }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{backgroundColor: 'rgba(3, 71, 50, .5)', width:'90%', marginLeft: '5%', borderRadius: 25, height:'97.5%',overflow:'hidden'}}>
+    <SafeAreaView style={[styles.container, styles.shadow]}>
+      <View style={{backgroundColor: '#82A398', width:'90%', marginLeft: '5%', borderRadius: 25, height:'97.5%',overflow:'hidden'}}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Discover</Text>
                 <FontAwesome

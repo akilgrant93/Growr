@@ -340,7 +340,7 @@ const Dashboard = () => {
 
   return (
 
-    <SafeAreaView style={styles.formContainer}>
+    <SafeAreaView style={[styles.formContainer, styles.shadow]}>
 <View style={{height: '67.5%', backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, overflow:'hidden'}}>
       <View style={{width:'90%'}}>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
@@ -388,17 +388,17 @@ const Dashboard = () => {
       </View>
 
       <FlatList
-        style={{backgroundColor:'rgba(3,71,50,.25)'}}
+        style={{backgroundColor:'white', width: '90%'}}
         showsVerticalScrollIndicator={false}
         data={plantsList}
         numColumns={1}
         ListEmptyComponent={
           <View style={{flexDirection:'row'}}>
-            <View style={{width:'90%',}}>
-                <Text style={{textAlign:'center', color:'white', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
+            <View style={{width:'101%',}}>
+                <Text style={{textAlign:'center', color:'rgba(3,71,50,.5)', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
                 <Svg
                 style={{alignSelf:'center', marginTop: 5}}
-                fill={'rgba(255,255,255,.25)'}
+                fill={'rgba(3,71,50,.5)'}
                 width={200}
                 height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
             </View>
@@ -413,7 +413,7 @@ const Dashboard = () => {
       />
 
       {plantsList.length > 2 && bottomReached === false ?
-      <Blink duration={1000}>
+      <Blink delay={500} duration={1000}>
         <FontAwesome
         style={{position:'absolute', bottom:20, right:15}}
         color='rgba(249,112,104,.75)'
@@ -425,7 +425,7 @@ const Dashboard = () => {
 </View>
 
       <View
-      style={{flex: 1, width: '100%', shadowColor: '#000'}}>
+      style={[{flex: 1, width: '100%'}, styles.shadow]}>
         <Weather />
       </View>
     </SafeAreaView>

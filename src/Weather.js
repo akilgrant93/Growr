@@ -1,23 +1,16 @@
-import { StyleSheet, Text, View, Alert, ActivityIndicator,SafeAreaView, Image, ImageBackground, } from 'react-native'
+import { StyleSheet, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import {firebase} from '../config'
 import * as Location from 'expo-location';
-import moment from 'moment';
 import WeatherLoading from './WeatherLoading';
 import WeatherLoaded from './WeatherLoaded';
 
 
 const Weather = () => {
-
   const api_key = 'a3999e97ddb681be056baca3b261d939'
-  const url = `https://api.openweathermap.org/data/2.5/onecall?&units=imperial&exclude=minutely&appid=${api_key}`;
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
   const [weatherData, setWeatherData] = useState(null);
-  const [weeklyForecast, setWeeklyForeCast] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
   const [descriptionID, setDescriptionID] = useState([]);
 
 
@@ -67,14 +60,6 @@ const Weather = () => {
         setWeatherData(null)
       }
 
-      const forecastResponse = await fetch( `${url}&lat=${latitude}&lon=${longitude}`);
-      if(forecastResponse.status === 200){
-        const data = await forecastResponse.json()
-        setWeeklyForeCast(data.daily)
-      } else {
-        setWeeklyForeCast(null)
-      }
-
       setLoaded(true)
     } catch (error) {
       Alert.alert('Error',error.message)
@@ -97,9 +82,6 @@ const Weather = () => {
         return;
       }
       let locationData = await Location.getCurrentPositionAsync({});
-
-      setLatitude(locationData.coords.latitude)
-      setLongitude(locationData.coords.longitude)
       const res = await Location.reverseGeocodeAsync(locationData.coords)
       fetchWeatherData(res[0].city)
       setLocation(res[0])

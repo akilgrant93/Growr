@@ -161,9 +161,9 @@ const changeDate = (date) => {
 }
 
   return (
-    <SafeAreaView style={{alignItems:'center', paddingTop: '3%', height: '100%'}}>
+    <SafeAreaView style={[{alignItems:'center', paddingTop: '3%', height: '100%'}, styles.shadow]}>
       <View style={{width: '90%'}}>
-        <View style={{ backgroundColor: 'rgba(3, 71, 50, .5)', borderRadius: 25, height: '53.5%', marginBottom: 15 }}>
+        <View style={{ backgroundColor: '#82A398', borderRadius: 25, height: '53.5%', marginBottom: 15 }}>
             <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%'}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Calendar</Text>
                 <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
@@ -205,7 +205,7 @@ const changeDate = (date) => {
       </View>
         </View>
 
-      <View style={{height: '43%', backgroundColor:'rgba(249,112,104,.5)', borderRadius: 25, overflow:'hidden'}}>
+      <View style={{height: '43%', backgroundColor:'#FBB7B4', borderRadius: 25, overflow:'hidden'}}>
 
           <View style={{flexDirection:'row', alignItems:'center', paddingTop:10, paddingTop:30, marginLeft: 15}}>
               <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Reminders</Text>
