@@ -16,7 +16,7 @@ const Settings = () => {
   return (
     <View style={{height:'100%', backgroundColor:'#034732'}}>
       <SafeAreaView style={{ height: '100%', backgroundColor:'rgba(255,255,255,.25)' }}>
-      <View style={{width: '90%', height: '97.5%', marginLeft:'5%',backgroundColor:'rgba(255,255,255,.25)', borderRadius: 25}}>
+      <View style={[{width: '90%', height: '97.5%', marginLeft:'5%',backgroundColor:'#82A398', borderRadius: 25}, styles.shadow]}>
       <View style={{flexDirection:'row', alignItems:'flex-end'}}>
       <Text style={{paddingLeft: 20, paddingTop: 30,fontSize: 25, fontWeight: '900', color: '#fff'}}>Settings</Text>
       <FontAwesome
@@ -184,5 +184,11 @@ const styles = StyleSheet.create({
     paddingVertical:10,
     borderBottomWidth: 1,
     borderColor: 'rgba(255,255,255,.25)'
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   }
 })
