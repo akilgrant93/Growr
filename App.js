@@ -219,8 +219,14 @@ function App(){
 }
 
 export default () => {
+  const navTheme = {
+    colors: {
+      background: "#487565"
+    }
+  }
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navTheme}>
       <App/>
     </NavigationContainer>
   )

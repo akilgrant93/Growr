@@ -7,6 +7,7 @@ import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import { CalendarDaysIcon } from 'react-native-heroicons/solid';
 import Blink from './Blink'
+import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const MyCalendar = () => {
   const navigation = useNavigation()
@@ -210,7 +211,7 @@ const changeDate = (date) => {
       </View>
         </View>
 
-      <View style={{height: '43%', backgroundColor:'#FBB7B4', borderRadius: 25, overflow:'hidden'}}>
+      <Animated.View entering={FadeInLeft} style={{height: '43%', backgroundColor:'#FBB7B4', borderRadius: 25, overflow:'hidden'}}>
 
           <View style={{flexDirection:'row', alignItems:'center', paddingTop:10, paddingTop:30, marginLeft: 15}}>
               <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Reminders</Text>
@@ -308,7 +309,7 @@ const changeDate = (date) => {
 
         {wateringDays && nextWateringDays ? null : <Text style={{textAlign:'center', fontSize: 18,fontWeight:'bold', color:'white', paddingTop: 100}}>No Reminders</Text>}
 
-      </View>
+      </Animated.View>
       </View>
     </SafeAreaView>
     </View>

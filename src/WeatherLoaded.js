@@ -16,7 +16,7 @@ const WeatherLoaded = (props) => {
               <ImageBackground
               source={
                 moment().valueOf()/1000 >=
-                props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/mts_day.png`) : require(`../assets/mts_night.png`)} imageStyle={{height: 350,top:-130}}>
+                props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/mts_day.png`) : require(`../assets/mts_night.png`)} imageStyle={{height: 350,top:-130,}}>
 
               <ImageBackground style={[{overflow:'hidden', borderRadius: 25},
               moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? '' : {backgroundColor:'rgba(84,91,152,.5)'}]} source={moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
@@ -94,7 +94,7 @@ export default WeatherLoaded
 const styles = StyleSheet.create({
   heading: {
     height: '85%',
-    width: '100%',
+    width: '200%',
     marginHorizontal: '5%',
     marginTop: '5%',
     borderRadius:25,
