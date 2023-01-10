@@ -15,7 +15,7 @@ const Settings = () => {
 
   return (
     <View style={{height:'100%', backgroundColor:'#034732'}}>
-      <SafeAreaView style={{ height: '100%', backgroundColor:'rgba(255,255,255,.25)' }}>
+      <SafeAreaView style={[{ height: '100%', backgroundColor:'rgba(240,240,240,.25)' }, styles.shadow]}>
       <View style={[{width: '90%', height: '97.5%', marginLeft:'5%',backgroundColor:'#82A398', borderRadius: 25}, styles.shadow]}>
       <View style={{flexDirection:'row', alignItems:'flex-end'}}>
       <Text style={{paddingLeft: 20, paddingTop: 30,fontSize: 25, fontWeight: '900', color: '#fff'}}>Settings</Text>
