@@ -1,7 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from "@react-navigation/drawer";
 import 'react-native-gesture-handler'
 import React, { useState, useEffect } from "react";
 import { TouchableOpacity, Alert, View, StatusBar, Image, Text, StyleSheet } from "react-native";
@@ -10,6 +9,9 @@ import { FontAwesome } from '@expo/vector-icons'
 import Svg, { Path } from 'react-native-svg'
 import { CalendarDaysIcon, PlusCircleIcon } from 'react-native-heroicons/solid';
 import * as Location from 'expo-location';
+import {
+  SafeAreaProvider,
+} from 'react-native-safe-area-context';
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
@@ -55,9 +57,25 @@ function Home() {
     <Tab.Navigator
     screenOptions={({route}) => ({
       headerShown: false,
+      tabBarInactiveBackgroundColor:'#527466',
+      tabBarActiveBackgroundColor:'#527466',
       tabBarInactiveTintColor: '#C9E4CA',
+      tabBarLabelStyle: {
+        marginBottom: '10%',
+        paddingBottom: '5%'
+      },
       tabBarStyle: {
-      borderTopWidth: 0,},
+      height: '14%',
+      borderTopWidth: 0,
+      marginBottom: '-7.75%',
+      shadowOffset: {
+        width: 0,
+        height: -2,
+    },
+    shadowOpacity: 0.58,
+    shadowRadius: 16.0,
+    elevation: 4,
+    },
       tabBarActiveTintColor: '#034732',
     })}
     >
@@ -66,43 +84,11 @@ function Home() {
       label="My Garden"
       component={Dashboard}
       options={({route}) => ({
-        headerRight: () => (
-          <View style={{flexDirection:'row', marginRight: 10}}>
-          <TouchableOpacity onPress={() => Alert.alert(
-            "Settings",
-            '',
-            [
-              {
-                text: "Change Password",
-                onPress: () => changePassword()
-              },
-              {
-                text: "Change Location",
-                onPress: () => changeLocation(),
-              },
-              {
-                text: "Cancel",
-                style: "cancel"
-              }
-            ]
-          )}>
-            <FontAwesome
-                  name='gear'
-                   color='#034732'
-                   size={20}
-                   style={{marginRight: 10}}
-                />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => {firebase.auth().signOut()}}>
-          <Svg xmlns="http://www.w3.org/2000/svg" height={20} fill={'#034732'} width={20} viewBox="0 0 512 512"><Path d="M160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96C43 32 0 75 0 128V384c0 53 43 96 96 96h64c17.7 0 32-14.3 32-32s-14.3-32-32-32H96c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32h64zM504.5 273.4c4.8-4.5 7.5-10.8 7.5-17.4s-2.7-12.9-7.5-17.4l-144-136c-7-6.6-17.2-8.4-26-4.6s-14.5 12.5-14.5 22v72H192c-17.7 0-32 14.3-32 32l0 64c0 17.7 14.3 32 32 32H320v72c0 9.6 5.7 18.2 14.5 22s19 2 26-4.6l144-136z"/></Svg>
-            </TouchableOpacity>
-          </View>
-        ),
         tabBarIcon: ({focused, color, size}) => (
           <FontAwesome
                 name='leaf'
-                 color={focused ? '#034732' : '#C9E4CA' }
-                 size={size}
+                color={focused ? '#034732' : '#C9E4CA' }
+                size={size}
               />
         ),
       })}
@@ -226,8 +212,10 @@ export default () => {
   }
 
   return (
+    <SafeAreaProvider>
     <NavigationContainer theme={navTheme}>
       <App/>
     </NavigationContainer>
+    </SafeAreaProvider>
   )
 }
