@@ -96,7 +96,6 @@ const Weather = () => {
 
   return (
     <WeatherLoaded weatherData={weatherData} descriptionID={descriptionID} location={location}/>
-    // <View/>
   )
 }
 

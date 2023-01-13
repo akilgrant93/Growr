@@ -12,9 +12,9 @@ import Animated, { FadeInLeft } from 'react-native-reanimated';
 const DashboardListItem = (props) => {
   const navigation = useNavigation()
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
-  const delay = props.index * 1000
+
   return (
-    <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'100%', borderBottomColor: 'rgba(3,71,50,.25)'}, props.index=== props.lastIdx ? {borderBottomWidth: 0} : {borderBottomWidth: 1}]}>
+    <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'100%', backgroundColor:'white',borderRadius:25,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index === 0 ? {} : {marginTop: 7.5}]}>
               <View>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
@@ -23,47 +23,45 @@ const DashboardListItem = (props) => {
                       <View style={styles.textView}>
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
-                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={[{ width:'40%', height: 132.5, padding: 15, borderRadius: 15, marginLeft: '5%'}]} />
-                        <View style={{height: '100%',width:'60.5%',justifyContent:'space-between', backgroundColor:'rgba(255,255,255,.5)'}}>
+                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={[{ width:75, height: 75}]} />
+                        <View style={{width:'60.5%', justifyContent:'space-between', backgroundColor:'rgba(255,255,255,.5)'}}>
                           <View>
 
                           <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between'}}>
-                            <View style={[{marginLeft: 5, marginTop: 9.5, width: '85%', flexDirection:'row', alignItems:'center', paddingHorizontal: '5%', paddingVertical: 7.5, borderRadius:10}, styles.shadow2, wateringDateDifference < 0 ? {backgroundColor: '#F97068'} : {backgroundColor:'#82A398'}]}>
-                              <Text style={{fontSize: 14, fontWeight: '800',color:'#FFF'}}>
+                            <View style={[{width: '152.5%', flexDirection:'row', alignItems:'center', justifyContent:'space-between',paddingHorizontal: '5%', paddingVertical: 5},
+                            // styles.shadow2,
+                            // wateringDateDifference < 0 ? {backgroundColor: '#F97068'} : {backgroundColor:'#82A398'}
+                            ]}>
+                              <Text style={[{fontSize: 14, fontWeight: '800',color:'#000'}, wateringDateDifference >= 0 ? {maxWidth: '60%'} : {maxWidth: '80%'}]}>
                                 {props.item.name}
                               </Text>
                               {wateringDateDifference < 0 ?
-                              <Blink duration={1000}>
+                              <Blink duration={2000}>
+                               <View style={{backgroundColor:'#F97068', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}}>
+
                                 <FontAwesome
-                                style={{marginLeft: 5}}
+                                style={{paddingRight: 5}}
                                 name='tint'
                                 color={'#fff'}
                                 size={10}
                                 />
-                              </Blink>
-                               : null}
+                               <Text style={{fontSize: 14,color:'#fff'}}>
+                                Needs water
+                              </Text>
+                               </View>
+                               </Blink>
+                               :
+                               <View style={{backgroundColor:'#545B98', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}}>
+                                { wateringDateDifference >= 0 ? <Text style={{fontSize: 14, fontWeight:'500', color:'white'}}>Water {  wateringDateDifference === 1 ? 'tomorrow' : `in ${wateringDateDifference} days`}</Text> : null }
+                                </View>
+                               }
                             </View>
 
                           </View>
-
-                          <View style={[{paddingTop:2.5, paddingLeft: '5%',flexDirection:'row', marginTop: 2}, wateringDateDifference < 0 ? {color:'#F97068'}: {color:'black'}]}>
-                        { wateringDateDifference < 0
-                        ? <Text style={[{marginLeft:5, fontSize: 12, fontWeight: '500'},  wateringDateDifference < 0 ? {color:'red'}: {color:'black'} ]}>
-                          {wateringDateDifference === 0 ? 'Needs' :'Needed'} water {wateringDateDifference === 0
-                          ? 'today'
-                          : wateringDateDifference === -1
-                          ? 'yesterday'
-                          : `${Math.abs(wateringDateDifference)} days ago`}</Text> : null }
-                        { wateringDateDifference >= 0
-                        ? <Text style={{marginLeft:5, fontSize: 12, fontWeight:'500'}}>
-                          Needs water {  wateringDateDifference === 1
-                          ? 'tomorrow'
-                          : `in ${wateringDateDifference} days`}</Text> : null }
-                        </View>
                           </View>
 
                         {/* marginTop will be calculated by a formula that detects tag count */}
-                          <View style={{flexDirection:'row', marginLeft: '5%', marginBottom: 5,width: '100%'}}>
+                          <View style={{flexDirection:'row', marginLeft: '2.5%', marginBottom: 5,width: '100%'}}>
                         {props.item.isIndoors
                         ?
                         <View style={{backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
@@ -120,9 +118,6 @@ export default DashboardListItem
 const styles = StyleSheet.create({
   textView: {
     flexDirection: 'row',
-    alignItems:'center',
-    justifyContent:'center',
-    height: 147.5,
   },
   shadow: {
     shadowColor: '#000',

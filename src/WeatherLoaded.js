@@ -5,7 +5,7 @@ import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const WeatherLoaded = (props) => {
   return (
-    <Animated.View style={[styles.heading]} entering={FadeInLeft}>
+    <Animated.View style={[styles.heading, moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? {width:'100%'} : {width:'200%'}]} entering={FadeInLeft}>
           {/*
                 sun and moon will go here conditionally based upon sunrise and sunset in props.weatherData - done
 
@@ -15,8 +15,8 @@ const WeatherLoaded = (props) => {
               */}
               <ImageBackground
               source={
-                moment().valueOf()/1000 >=
-                props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/mts_day.png`) : require(`../assets/mts_night.png`)} imageStyle={{height: 350,top:-130,}}>
+              moment().valueOf()/1000 >=
+              props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/mts_day.png`) : require(`../assets/mts_night.png`)} imageStyle={{height: 350,top:-150,}}>
 
               <ImageBackground style={[{overflow:'hidden', borderRadius: 25},
               moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? '' : {backgroundColor:'rgba(84,91,152,.5)'}]} source={moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? require(`../assets/sun.png`) : require(`../assets/moon.png`)}>
@@ -26,7 +26,7 @@ const WeatherLoaded = (props) => {
             {/* bird layer */}
             <ImageBackground source={require(`../assets/birds.gif`)} imageStyle={{opacity:.75}}>
             {/* snow layer ternary complete */}
-            <ImageBackground imageStyle={{opacity:.8}} source={props.descriptionID[0] === 'snow' ? require(`../assets/snow.gif`) : ''}>
+            <ImageBackground imageStyle={{opacity:.5}} source={props.descriptionID[0] === 'snow' ? require(`../assets/snow.gif`) : ''}>
 
             {/* rain layer - ternary complete */}
             <ImageBackground imageStyle={{height: '120%', overflow:'hidden', top:20}} style={{height:'100%'}} source={props.descriptionID[0] === 'light rain' || props.descriptionID[0] === 'heavy rain' || props.descriptionID[0] === 'drizzle' || props.descriptionID[0] === 'thunderstorm'? require(`../assets/rain.gif`) : ''}>
@@ -66,7 +66,7 @@ const WeatherLoaded = (props) => {
                       <Text style={{fontSize: 18, fontWeight: 'bold', color: '#fff'}}>{Math.round(props.weatherData.main.temp)}º F</Text>
                   </View>
               </View>
-              <View style={{paddingVertical:10, paddingTop:140, marginLeft: -25}}>
+              <View style={{paddingVertical:10, paddingTop:100, marginLeft: -25}}>
                 <Text style={[styles.fontstyle, {fontSize: 12}]}>{props.weatherData.weather[0].description.slice(0,1).toUpperCase()+props.weatherData.weather[0].description.slice(1)}</Text>
                 <Text style={[styles.fontstyle, {fontSize: 10}]}>H:{Math.round(props.weatherData.main.temp_max)}º | L:{Math.round(props.weatherData.main.temp_min)}º</Text>
               </View>
@@ -94,9 +94,9 @@ export default WeatherLoaded
 const styles = StyleSheet.create({
   heading: {
     height: '85%',
-    width: '200%',
+    // width: '200%',
     marginHorizontal: '5%',
-    marginTop: '5%',
+    marginTop: '2.5%',
     borderRadius:25,
     overflow:'hidden',
   },

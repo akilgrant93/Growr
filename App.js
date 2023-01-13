@@ -73,8 +73,8 @@ function Home() {
         height: -2,
     },
     shadowOpacity: 0.58,
-    shadowRadius: 16.0,
-    elevation: 4,
+    shadowRadius: 4.0,
+    elevation: 2,
     },
       tabBarActiveTintColor: '#034732',
     })}

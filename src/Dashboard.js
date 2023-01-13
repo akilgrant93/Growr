@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity, Animated, ImageBackground, Alert } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, FlatList, View, Platform, TouchableOpacity } from 'react-native'
 import React, {useState,useEffect,useRef} from 'react'
 import {firebase} from '../config'
 import * as Device from 'expo-device';
@@ -8,8 +8,6 @@ import DashboardListItem from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import Blink from './Blink'
-import * as Location from 'expo-location';
-import moment from 'moment';
 import Weather from './Weather';
 
 Notifications.setNotificationHandler({
@@ -34,7 +32,6 @@ const Dashboard = () => {
   const [bottomReached, setBottomReached] = useState(false)
   const [expoPushToken, setExpoPushToken] = useState('')
   const [notification, setNotification] = useState(false)
-  const [nextWateringDays, setNextWateringDays] = useState([])
   const [loadedFirebase, setLoadedFirebase] = useState(false)
   const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
   const notificationListener = useRef()
@@ -77,7 +74,7 @@ const Dashboard = () => {
         })
         setPlants(plants)
         setPlantsList(plants)
-        setNextWateringDays(wateringDays)
+        // setNextWateringDays(wateringDays)
         setLoadedFirebase(true)
       }
     )
@@ -248,8 +245,8 @@ const Dashboard = () => {
   return (
     <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>
         <SafeAreaView style={[styles.formContainer, styles.shadow]}>
-<View style={{height: '67.5%', width:'90%', backgroundColor: '#82A398', borderRadius: 25, overflow:'hidden'}}>
-      <View>
+<View style={{height: '72.5%', width:'90%'}}>
+      <View style={{borderRadius: 25, overflow:'hidden', backgroundColor: '#82A398'}}>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
                     <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Garden</Text>
                     <FontAwesome style={{paddingLeft: 5}}name='leaf' color='#034732'
@@ -295,7 +292,7 @@ const Dashboard = () => {
       </View>
 
       <FlatList
-        style={{backgroundColor:'white'}}
+        style={{overflow:'hidden',borderRadius:25, marginTop: 10}}
         showsVerticalScrollIndicator={false}
         data={plantsList}
         numColumns={1}
@@ -314,7 +311,8 @@ const Dashboard = () => {
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (
-                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
+              //requires onswipe function - deleteplant function in reality
+                <DashboardListItem onSwipe={() => console.log('swiped')} swipeThreshold={-150} item={item} lastIdx={plants.length-1} index={index}/>
             )
         }}
       />
