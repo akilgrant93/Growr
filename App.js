@@ -19,8 +19,8 @@ import Settings from "./src/Settings";
 import Dashboard from "./src/Dashboard";
 import MyCalendar from "./src/Calendar";
 import SearchPlant from "./src/SearchPlant";
-import PostModal from "./src/PostModal";
-import UpdateModal from './src/UpdateModal';
+import PostPlant from "./src/PostPlant";
+import UpdatePlant from './src/UpdatePlant';
 import CategoryHeader from "./src/CategoryHeader";
 import PlantsByCategory from './src/PlantsByCategory';
 
@@ -28,29 +28,6 @@ const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator();
 
 function Home() {
-  const changeLocation = async() => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert('Permission to access location is required to check local weather conditions');
-      return;
-    }
-    const userRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
-    let locationData = await Location.getCurrentPositionAsync({});
-    const res = await Location.reverseGeocodeAsync(locationData.coords)
-    userRef.update({location:res[0]})
-  }
-
-  const changePassword = async() => {
-    const userRef = await firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid)
-    const userData = (await userRef.get()).data()
-    firebase.auth().sendPasswordResetEmail(userData.email)
-    .then(() => {
-      alert('Password reset email sent')
-    }).catch((error) => {
-      alert(error)
-    })
-  }
-
   return (
     <>
     <StatusBar translucent={true} backgroundColor={'transparent'}/>
@@ -72,7 +49,7 @@ function Home() {
         width: 0,
         height: -2,
     },
-    shadowOpacity: 0.58,
+    shadowOpacity: 0.25,
     shadowRadius: 4.0,
     elevation: 2,
     },
@@ -173,11 +150,11 @@ function App(){
           headerShown:true  }}>
         <Stack.Screen
         name="UpdateModal"
-        component={UpdateModal}
+        component={UpdatePlant}
         />
         <Stack.Screen
         name="PostModal"
-        component={PostModal}
+        component={PostPlant}
         options={({route}) => ({
           title: route.params.item.commonName || route.params.item.scientificName
         })}

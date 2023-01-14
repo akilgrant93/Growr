@@ -5,7 +5,7 @@ import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const WeatherLoaded = (props) => {
   return (
-    <Animated.View style={[styles.heading, moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? {width:'100%'} : {width:'200%'}]} entering={FadeInLeft}>
+    <Animated.View style={[styles.heading, moment().valueOf()/1000 >= props.weatherData.sys.sunrise && moment().valueOf()/1000 <= props.weatherData.sys.sunset ? {width:'100%'} : {width:'100%'}]} entering={FadeInLeft}>
           {/*
                 sun and moon will go here conditionally based upon sunrise and sunset in props.weatherData - done
 

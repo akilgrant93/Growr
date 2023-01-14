@@ -7,7 +7,7 @@ const Reminders = ({route, navigation}) => {
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
-  const snapshot = firebase.firestore().collection('plants').where('tags','array-contains', `${route.params.name[0].toUpperCase()+route.params.name.slice(1)}`).orderBy('scientificName')
+  const snapshot = firebase.firestore().collection('plant').where('tags','array-contains', `${route.params.name[0].toUpperCase()+route.params.name.slice(1)}`).orderBy('commonName')
 
   const getNextPlants = () => {
     snapshot
@@ -71,9 +71,8 @@ const Reminders = ({route, navigation}) => {
            :<FlatList style={{flexDirection:'column', height:'87.5%', width:'100%'}}
           data={plants}
           showsVerticalScrollIndicator={false}
-          onEndReached={getNextPlants}
           onEndReachedThreshold={0.01}
-          scrollEventThrottle={150}
+          scrollEventThrottle={100}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
              return (

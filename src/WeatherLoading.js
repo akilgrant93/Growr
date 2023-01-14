@@ -5,7 +5,7 @@ import Blink from './Blink'
 const WeatherLoading = () => {
   return (
     <View style={styles.heading}>
-      <ImageBackground source={require(`../assets/mts_neutral.png`)} imageStyle={{marginTop: 20, height: 350, marginTop: -130}}>
+      <ImageBackground source={require(`../assets/mts_neutral.png`)} imageStyle={{marginTop: 20, height: 350, marginTop: -150}}>
         <ImageBackground imageStyle={{opacity:.75}} source={require(`../assets/birds.gif`)}>
             <View style={[{flexDirection: 'row', justifyContent:'space-between', paddingHorizontal:'5%'}]}>
 

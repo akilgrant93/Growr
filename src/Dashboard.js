@@ -9,6 +9,7 @@ import Svg, { Path } from 'react-native-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import Blink from './Blink'
 import Weather from './Weather';
+import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -241,11 +242,12 @@ const Dashboard = () => {
       }
     }
   }
+  console.log(loadedFirebase)
 
   return (
     <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>
         <SafeAreaView style={[styles.formContainer, styles.shadow]}>
-<View style={{height: '72.5%', width:'90%'}}>
+<View style={[{height: '73.5%', width:'90%'}, plantsList.length > 0 ? {height: '73.5%'} : {height: '24.5%'}]}>
       <View style={{borderRadius: 25, overflow:'hidden', backgroundColor: '#82A398'}}>
                   <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30}}>
                     <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Garden</Text>
@@ -292,27 +294,26 @@ const Dashboard = () => {
       </View>
 
       <FlatList
-        style={{overflow:'hidden',borderRadius:25, marginTop: 10}}
+        style={[{overflow:'hidden', marginTop: 10, borderRadius:10}, styles.shadow]}
         showsVerticalScrollIndicator={false}
         data={plantsList}
         numColumns={1}
-        ListEmptyComponent={
-          <View style={{flexDirection:'row'}}>
-            {!loadedFirebase ? <View style={{width:'101%',}}>
-                <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
-                <Svg
-                style={{alignSelf:'center', marginTop: 5}}
-                fill={'#82A398'}
-                width={200}
-                height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
-            </View> : null}
-          </View>
-        }
+        // ListEmptyComponent={
+        //   <View style={{flexDirection:'row'}}>
+        //     {!loadedFirebase ? <View style={{width:'101%'}}>
+        //         <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
+        //         <Svg
+        //         style={{alignSelf:'center', marginTop: 5}}
+        //         fill={'#82A398'}
+        //         width={200}
+        //         height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
+        //     </View> : null}
+        //   </View>
+        // }
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (
-              //requires onswipe function - deleteplant function in reality
-                <DashboardListItem onSwipe={() => console.log('swiped')} swipeThreshold={-150} item={item} lastIdx={plants.length-1} index={index}/>
+                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
             )
         }}
       />
@@ -328,6 +329,18 @@ const Dashboard = () => {
       </Blink>
       : null}
 </View>
+
+
+          {plantsList.length > 0 ? null : <Animated.View entering={FadeInLeft} duration={500} style={[{flexDirection:'row', backgroundColor:'#fff', borderRadius: 25, overflow:'hidden', paddingVertical: '10.5%', marginTop: 10}, styles.shadow]}>
+            <View style={{width:'90%'}}>
+                <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
+                <Svg
+                style={{alignSelf:'center', marginTop: 5}}
+                fill={'#82A398'}
+                width={200}
+                height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
+            </View>
+          </Animated.View>}
 
       <View
       style={{flex: 1}}>

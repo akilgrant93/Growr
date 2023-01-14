@@ -14,7 +14,7 @@ const DashboardListItem = (props) => {
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
 
   return (
-    <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'100%', backgroundColor:'white',borderRadius:25,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index === 0 ? {} : {marginTop: 7.5}]}>
+    <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'100%', backgroundColor:'white',borderRadius:5,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index === 0 ? {} : {marginTop: 7.5}, styles.shadow]}>
               <View>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
