@@ -321,7 +321,7 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
-console.log('item',route.params)
+// console.log('item',route.params)
 }, []);
 
 useFocusEffect(
@@ -463,7 +463,6 @@ useFocusEffect(
           minimumValue={0}
           value={0}
           onSlidingStart={value => setHoverValue(parseInt(value))}
-          // onSlidingComplete={value => console.log(sliderValue)}
           step={1}
                 />
                 {/* needs to say "last resevior change" if hydroponic */}

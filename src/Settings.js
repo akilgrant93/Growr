@@ -216,16 +216,6 @@ const Settings = () => {
 export default Settings
 
 const styles = StyleSheet.create({
-  button: {
-    // marginTop: 50,
-    // height: 70,
-    // width: 250,
-    // backgroundColor: '#026efd',
-    // alignItems: 'center',
-    // justifyContent: 'center',
-    // alignSelf: 'center',
-    // borderRadius: 50,
-  },
   text: {
     color:'white',
     fontSize:16,

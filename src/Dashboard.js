@@ -75,13 +75,9 @@ const Dashboard = () => {
         })
         setPlants(plants)
         setPlantsList(plants)
-        // setNextWateringDays(wateringDays)
         setLoadedFirebase(true)
       }
     )
-
-    //need to pull tags data to feed into plants Arr for more visual appeal
-    // plants.forEach(plant => console.log(plant))
 
     registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
 
@@ -242,7 +238,6 @@ const Dashboard = () => {
       }
     }
   }
-  console.log(loadedFirebase)
 
   return (
     <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>

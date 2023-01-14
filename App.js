@@ -12,6 +12,7 @@ import * as Location from 'expo-location';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
+import { useNavigation } from "@react-navigation/native";
 
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
@@ -141,7 +142,7 @@ function App(){
     <Stack.Navigator screenOptions={{ headerShown:false,headerTransparent:true}}>
       <Stack.Group>
       <Stack.Screen
-        name="Home"
+        name="Discover"
         component={Home}
         />
         </Stack.Group>
@@ -155,12 +156,25 @@ function App(){
         <Stack.Screen
         name="PostModal"
         component={PostPlant}
-        options={({route}) => ({
-          title: route.params.item.commonName || route.params.item.scientificName
-        })}
+        options={({route}) =>
+        ({
+          title: route.params.item.commonName,
+          headerTitle: () => <CategoryHeader title={route.params.item.commonName}/>,
+          headerLeft: () =>
+            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => route.params.navigation.navigate('Plants')}>
+            <FontAwesome
+            color={'white'}
+            size={24}
+            name={'chevron-left'}
+            />
+            <Text style={{fontWeight:'900', fontSize: 20, color:'#FFF', marginLeft: 5}}>Discover</Text>
+            </TouchableOpacity>
+        })
+      }
         />
         <Stack.Screen
         name="PlantsByCategory"
+        component={PlantsByCategory}
         options={({route}) => ({
           headerTitle: () => <CategoryHeader title={route.params.name}/>,
           headerLeft: () =>
@@ -174,7 +188,6 @@ function App(){
             </TouchableOpacity>
         })}
 
-        component={PlantsByCategory}
         />
         </Stack.Group>
     </Stack.Navigator>

@@ -1,10 +1,9 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Keyboard, Platform, Button, Image, SafeAreaView, TouchableOpacity, FlatList } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Pressable, Keyboard, Platform, Button, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
 import * as Notifications from 'expo-notifications';
-import { XCircleIcon } from 'react-native-heroicons/solid';
 import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
@@ -19,24 +18,24 @@ const PostModal = ({route, navigation}) => {
   const [isResistant, setIsResistant]= useState(false)
   const [isSusceptible, setIsSusceptible]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)
-  const [active, setActive]= useState(false)
+  // const [active, setActive]= useState(false)
   const [sliderValue, setSliderValue]= useState(0)
-  const [slidingState, setSlidingState]= useState('inactive')
+  // const [slidingState, setSlidingState]= useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
   const [calendars, setCalendars]= useState([])
 
-  const diseasesObj = {
-    rootRot:'Root Rot',
-    canker:'Canker',
-    verticilliumWilt:'Verticillium Wilt',
-    bacterialWilt:'Bacterial Wilt',
-    mosaicVirus:'Mosaic Virus',
-    leafBlight:'Leaf Blight',
-    blackSpot:'Black Spot',
-    powderyMildew:'Powdery Mildew',
-    blackDot:'Black Dot',
-    caneBlight:'Cane Blight'
-  }
+  // const diseasesObj = {
+  //   rootRot:'Root Rot',
+  //   canker:'Canker',
+  //   verticilliumWilt:'Verticillium Wilt',
+  //   bacterialWilt:'Bacterial Wilt',
+  //   mosaicVirus:'Mosaic Virus',
+  //   leafBlight:'Leaf Blight',
+  //   blackSpot:'Black Spot',
+  //   powderyMildew:'Powdery Mildew',
+  //   blackDot:'Black Dot',
+  //   caneBlight:'Cane Blight'
+  // }
 
   //notification function
 
@@ -322,14 +321,6 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
-  console.log(route.params.item.diseases);
-  route.params.item.diseases.forEach((disease) => {
-    if(disease.split(':')[1] === 'resistant'){
-      setIsResistant(true)
-    } else if(disease.split(':')[1] === 'susceptible'){
-      setIsSusceptible(true)
-    }
-  });
   (async () => {
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
@@ -358,193 +349,78 @@ const pickImage = async () => {
 };
 
   return (
-    <SafeAreaView style={[styles.container, {paddingBottom: 10}]}>
-      <View style={{flexDirection:'row', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom: 5,}}>
-      <View style={{alignItems:'center', marginVertical: 10 }}>
-      {image ?
-      <View>
-        <XCircleIcon onPress={() => setImage(null)}size={35} style={{color:'#F97068', marginBottom: -17.5, marginLeft: -17.5, zIndex:10, shadowOffset: {width: 2, height: 4}, shadowOpacity: 0.2,shadowRadius: 3,}}/>
-        <TouchableOpacity onPress={pickImage}>
-          <Image  source={{ uri: image }} style={{ width: 110, height: 110, borderRadius: 10, borderWidth: 1, borderColor: 'rgba(3, 71, 50, .25)' }} />
-        </TouchableOpacity>
-      </View>
-       :
-       //replace the following URI with a dummy img
-       <TouchableOpacity onPress={pickImage}>
-     <View>
-     <XCircleIcon size={35} style={{color:'rgba(255, 255, 255, 0)', marginBottom: -17.5, marginLeft: -17.5, zIndex:10, shadowOffset: {width: 2, height: 4}, shadowOpacity: 0.2,shadowRadius: 3,}}/>
-      <View style={{width: 110, height: 110, justifyContent:'center', borderColor: 'rgba(3, 71, 50, .25)', borderWidth: 2, borderRadius: 10}}>
-       <FontAwesome
-        style={{alignSelf:'center'}}
-        name='cloud-upload'
-        color='#034732'
-        size={75}
-       />
-        </View>
-     </View>
-     </TouchableOpacity>
-     }
-      </View>
+    <View style={[styles.container, {backgroundColor: '#034732'}]}>
+      <SafeAreaView style={{backgroundColor:'rgba(240,240,240,.25)', width:'100%', height: '100%'}}>
+        <View style={[styles.shadow, {height: '92.5%'}]}>
+        <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#fff'}}>
+        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .5)'}}>
+      <Image source={{ uri: route.params.item.imgSrc }} style={route.params.item.commonName.split(' ').length === 2 && route.params.item.commonName.length > 25 ? {width: 156, height: 156} : {width: 140, height: 140}} />
+      <View style={{flex:1}}>
 
-      <View style={{alignSelf:'center', paddingLeft:10, width: '60%', paddingTop: 20}}>
-      {/* if commonName exists, commonName else scientificName */}
-      <TextInput editable={false} value={route.params.item.commonName ? route.params.item.commonName : route.params.item.scientificName} style={{backgroundColor:'green', borderColor:'green', borderWidth: 1, paddingVertical: 5, borderTopLeftRadius:5, borderTopRightRadius: 5,  paddingLeft: 5, color: 'white', fontWeight: '600'}}>
-      </TextInput>
-
-      {/* if commonName exists, scientificName else nothing */}
-      {!route.params.item.commonName ? <View/> :
-      <TextInput editable={false} value={route.params.item.scientificName} style={{borderColor:'green', borderWidth: 1, paddingVertical: 5,  paddingLeft: 5, color: 'green', fontWeight:'600'}}/>
-      }
-
-      {/* if familyName exists, familyName else nothing */}
-      {!route.params.item.family ?
-      <TextInput editable={false} placeholder={'Family' || route.params.item.familyName}value={route.params.item.familyName} style={{borderColor:'green', borderWidth: 1, paddingVertical: 5,  paddingLeft: 5, color: 'green', fontWeight:'600'}}/>
-      : <View/>}
-
-      <TextInput placeholder='Cultivar' style={{borderColor:'green', borderWidth: 1, paddingVertical: 5, borderBottomLeftRadius: 5, borderBottomRightRadius: 5, paddingLeft: 5, color: 'green'}}>
-      </TextInput>
-      </View>
-
-      </View>
-
-      {/* icon ternaries - will be combined with tags*/}
-      {/* poison icon ternary */}
-      {/* edible icon ternary */}
-      {/* carnivorous icon ternary */}
-      {/* aquatic icon ternary */}
-      {/* succulent icon ternary */}
-      {/* tropical icon ternary */}
-      {/* medicinalUse icon ternary */}
-      <View  style={{width: '90%', paddingVertical:10, borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2}}>
-      <Text style={{fontWeight:'bold', paddingBottom:5}}>Description: </Text>
-      <Text>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+      <View style={[{backgroundColor:'#034732', marginTop: 5,borderRadius:25,width:'95%', marginLeft: '2.5%',paddingVertical: 10, paddingHorizontal: 5}, styles.shadow]}>
+      <Text style={{color:'white', paddingLeft: 5,fontWeight:'bold', fontSize: 14}}>
+        {route.params.item.commonName}
       </Text>
       </View>
-      {/* tag map ternary needs flexwrap*/}
-      {route.params.item.tags.length > 0
-      ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:10, width: '90%'}]}>
-       {route.params.item.tags.map((tag, idx) => {
-       return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
-      })}
-      </View>
-      : <View/>}
 
-      {route.params.item.medicinalUse ? <View style={{ borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:20, width: '90%'}}>
-        <Text style={{textAlign:'center'}}>{route.params.item.medicinalUse}</Text>
-      </View> : null}
-
-
-      {route.params.item.diseases.length ? <View style={{alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:10, width: '90%', flexDirection:'row'}}>
-      {/* disease map ternary needs restyle and formatting to be text based*/}
-      {isResistant
-      ?
-      <View style={{width: '100%'}}>
-        <Text style={{fontWeight:'bold', color:'white', paddingVertical: 3.5,backgroundColor:'green', paddingLeft: 5}}>Resistant to:</Text>
-      <View style={styles.diseaseText}>
-        <FlatList
-          data={route.params.item.diseases}
-          numColumns={2}
-          renderItem={({item, idx}) => {
-        const currDisease = item.split(':')[0]
-        const currDiseaseStatus = item.split(':')[1][0].toUpperCase()+item.split(':')[1].slice(1)
-        const formattedDiseaseName = diseasesObj[currDisease]
-
-        if (currDiseaseStatus === 'resistant'){
-          return <Text key={idx} style={{paddingTop:1, }}>{formattedDiseaseName}</Text>
-        }
-          }}
-        />
-      </View>
-      </View>
-      : <View/>}
-           {isSusceptible
-      ?
-      <View style={{width: '100%'}}>
-        <Text style={{fontWeight:'bold', color:'white', paddingVertical: 3.5,backgroundColor:'red', paddingLeft: 5}}>Susceptible to:</Text>
-      <View style={[styles.diseaseText, {width: '100%'}]}>
-      <FlatList
-          data={route.params.item.diseases}
-          numColumns={2}
-          renderItem={({item, index}) => {
-            // console.log(index)
-        const currDisease = item.split(':')[0]
-        const currDiseaseStatus = item.split(':')[1][0].toUpperCase()+item.split(':')[1].slice(1)
-        const formattedDiseaseName = diseasesObj[currDisease]
-        if (currDiseaseStatus === 'Susceptible'){
-          console.log(index % 2 == false)
-          return <Text style={[{paddingTop:1, width: '50%', paddingLeft:5, borderRightColor: 'black', borderRightWidth: 2}] }>{formattedDiseaseName}</Text>
-        }
-          }}
-        />
-      </View>
-      </View>
-      : <View/>}
-      </View> : null}
-
-
-      {/* icons needed */}
-      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15, borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '90%'}}>
-        <BouncyCheckbox
-        style={{marginRight: 15}}
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Potted"
-        bounceEffectIn={isHydroponic ? 1 : 0.8}
-        bounceEffectOut={1}
-        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic ? '' :togglePotted}
-        isChecked = {isPotted}/>
-        <BouncyCheckbox
-        style={{marginRight: 15}}
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Hydroponic"
-        bounceEffectIn={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? 1: 0.8}
-        iconStyle={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? '' :toggleHydroponic}
-        isChecked = {isHydroponic}/>
-        <BouncyCheckbox
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Indoors"
-        bounceEffectIn={isHydroponic ? 1: 0.8}
-        bounceEffectOut={1}
-        bounceEffect={0}
-        iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic?'':toggleIndoors}
-        isChecked = {isIndoors}/>
+      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
+        Family
+      </Text>
+      <Text style={{color:'white'}}>
+        {route.params.item.family}
+      </Text>
       </View>
 
-            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-            <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '90%'}}>
+      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
+        Genus
+      </Text>
+      <Text style={{color:'white'}}>
+        {route.params.item.genus}
+      </Text>
+      </View>
+
+      <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
+        Species
+      </Text>
+      <Text style={{color:'white'}}>
+        {route.params.item.species}
+      </Text>
+      </View>
+
+      </View>
+
+        </View>
+
+        <ScrollView style={{width:'100%'}}>
+        <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
+          <View style={styles.shadow}>
+          <View style={{backgroundColor:'#F97068', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '60%'}}>
+            <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
+          </View>
+          </View>
+      <ScrollView style={{height:120, paddingHorizontal:5}}>
+      <Text>
+      {route.params.item.description}
+      </Text>
+      </ScrollView>
+        </View>
+
+           {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
+      <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}}>
             <Slider
           // value={value}
               style={{marginTop: 15,width:'100%', alignSelf:'center'}}
-          onValueChange={value => setSliderValue(parseInt(value))}
-          minimumTrackTintColor={'#004d00'}
-          maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
-          minimumValue={0}
-          value={0}
-          onSlidingStart={value => setHoverValue(parseInt(value))}
+              onValueChange={value => setSliderValue(parseInt(value))}
+              minimumTrackTintColor={'#004d00'}
+              maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+              minimumValue={0}
+              value={0}
+              onSlidingStart={value => setHoverValue(parseInt(value))}
               step={1}
                 />
-                {/* needs to say "last resevior change" if hydroponic */}
             <Text style={{textAlign:'center'}}>Last watered {
           sliderValue === 0
           ? 'today'
@@ -560,23 +436,86 @@ const pickImage = async () => {
           ? 'two weeks ago'
           : 'over two weeks ago'
           }</Text>
-            </View>
+      </View>
 
-          {/* notes textInput */}
-          <View>
-            <TextInput placeholder='Write some notes about your plant' style={{backgroundColor:'white', marginTop: 5,padding: 5,width: 340}}/>
-          </View>
+        {/* icons needed */}
+        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:15, width: '100%'}}>
+        <BouncyCheckbox
+        style={{marginRight: 15}}
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Potted"
+        bounceEffectIn={isHydroponic ? 1 : 0.8}
+        bounceEffectOut={1}
+        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {isHydroponic ? '' :togglePotted}
+        isChecked = {isPotted}/>
+        <BouncyCheckbox
+        style={{marginRight: 15}}
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+        fillColor={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Hydroponic"
+        bounceEffectIn={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? 1: 0.8}
+        iconStyle={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? '' :toggleHydroponic}
+        isChecked = {isHydroponic}/>
+        <BouncyCheckbox
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Indoors"
+        bounceEffectIn={isHydroponic ? 1: 0.8}
+        bounceEffectOut={1}
+        bounceEffect={0}
+        iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {isHydroponic?'':toggleIndoors}
+        isChecked = {isIndoors}/>
+      </View>
 
-      <View style={{width: '100%', alignItems:'flex-end', marginRight: 40, marginTop: 20}}>
+
+
+              {/* tag map ternary needs flexwrap*/}
+              {route.params.item.tags.length > 0
+        ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, padding:10, paddingHorizontal:15, width: '100%'}]}>
+       {route.params.item.tags.map((tag, idx) => {
+       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{tag[0].toUpperCase()+tag.slice(1)}</Text></View>
+        })}
+        </View>
+        : <View/>}
+
+        {/* notes textInput */}
+        {/* <View style={{width: '90%'}}>
+            <TextInput placeholder='Write some notes about your plant' style={{marginTop: 5,padding: 5,width: 340}}/>
+        </View> */}
+
+        </ScrollView>
+      <View style={{width: '100%', alignItems:'flex-end', paddingBottom: 10, paddingRight: 10}}>
         <TouchableOpacity
-          // style={styles.postButton}
-          style={{flexDirection:'row'}}
           onPress={() => {postPlant(route.params.item, isIndoors, isPotted, isHydroponic)}}
         >
-          <PlusCircleIcon color={'green'} size={50}/>
+          <PlusCircleIcon style={styles.shadow} color={'#034732'} size={50}/>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+
+
+        </View>
+        </View>
+      </SafeAreaView>
+    </View>
   )
 }
 
@@ -595,26 +534,22 @@ const styles = StyleSheet.create({
     marginTop: 5,
     width: '70%'
   },
-  postButton: {
-    marginTop: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 10,
-    backgroundColor: '#0de065'
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   },
   tagBox: {
     flexDirection:'row',
     justifyContent:'flex-start',
     alignItems:'center',
-    marginTop: 10,
+    flexWrap: 'wrap'
   },
   tag: {
     padding: 8,
     marginRight:5,
-    backgroundColor:'green',
+    backgroundColor:'#F97068',
     color:'white',
     borderRadius: '5%'
   }

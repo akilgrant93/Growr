@@ -27,7 +27,9 @@ const SearchPlant = ({route, navigation}) => {
         querySnapshot => {
           const plantsArr = []
           querySnapshot.forEach((plant) => {
-            plantsArr.push(plant.data())
+            const plantData = plant.data()
+            plantData.id = plant.id
+            plantsArr.push(plantData)
           })
           setRefreshing(false);
           setEndCursor(querySnapshot.docs[querySnapshot.docs.length-1])
@@ -140,13 +142,15 @@ const SearchPlant = ({route, navigation}) => {
           keyExtractor={(item) => item.key}
           onEndReached={submitMoreSearches}
           onEndReachedThreshold={0.01}
+          showsVerticalScrollIndicator={false}
           scrollEventThrottle={150}
           ListFooterComponent={() =>
             plants[plants.length] !== undefined && plants.length == true &&
-          <ActivityIndicator color={'#F97068'}/>}
-          renderItem={(item) => {
+          <ActivityIndicator key={'asd'} color={'#F97068'}/>}
+          renderItem={(item, idx) => {
+
              return (
-              <SearchListItem navigation={navigation} item={item}/>
+              <SearchListItem key={item.item.id} navigation={navigation} item={item}/>
             )
           }} />}
 
