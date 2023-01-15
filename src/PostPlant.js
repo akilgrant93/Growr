@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Keyboard, Platform, Button, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Keyboard, Platform, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
@@ -8,8 +8,6 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
 import { PlusCircleIcon } from 'react-native-heroicons/solid'
-import CustomSVG from './CustomSVG'
-import { FontAwesome } from '@expo/vector-icons';
 
 const PostModal = ({route, navigation}) => {
   const [image, setImage] = useState(null);
@@ -93,7 +91,7 @@ const PostModal = ({route, navigation}) => {
         isIndoors,
         isHydroponic,
         succulent, '', base, sliderValue,
-        plant.tags
+        plant.tags, plant.id
         )
       }
 
@@ -104,7 +102,7 @@ const PostModal = ({route, navigation}) => {
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, sliderValue, plant.tags
+        succulent, '', base, sliderValue, plant.tags, plant.id
       )
     //otherwise refer to the scientific name
     } else if(!plant.commonName && typeof plant !== 'string') {
@@ -113,7 +111,7 @@ const PostModal = ({route, navigation}) => {
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, sliderValue,plant.tags)
+        succulent, '', base, sliderValue,plant.tags, plant.id)
     }
     setIsPotted(false)
     setIsIndoors(false)
@@ -128,7 +126,7 @@ const PostModal = ({route, navigation}) => {
     isPotted,
     isIndoors,
     isHydroponic,
-    isSucculent, notes, notificationInterval, lastWatered,tags) => {
+    isSucculent, notes, notificationInterval, lastWatered,tags, firebaseID) => {
     const one_day=1000*60*60*24;
     const now = moment()
     const today = now.startOf('day')
@@ -209,6 +207,7 @@ const PostModal = ({route, navigation}) => {
         isThirsty,
         tags,
         wateringDates: [lastWateringDate.valueOf()],
+        firebaseID
       }
       newUserPlant
       .set(plantData)
@@ -322,6 +321,7 @@ const addNewEvent = async (eventData) => {
 
 useEffect(() => {
   (async () => {
+
     const { status } = await Calendar.requestCalendarPermissionsAsync();
     if (status === 'granted') {
       const userCalendars = await Calendar.getCalendarsAsync(

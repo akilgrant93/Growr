@@ -334,7 +334,7 @@ useFocusEffect(
       );
       setCalendars(userCalendars)
     }
-    const plantRef = firebase.firestore().collection('plants').doc(route.params.item.firestoreID)
+    const plantRef = firebase.firestore().collection('plant').doc(route.params.item.id)
 
     plantRef.get().then((doc) => {
       if (doc.exists) {

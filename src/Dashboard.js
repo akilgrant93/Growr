@@ -58,8 +58,9 @@ const Dashboard = () => {
         const plants = []
         const wateringDays = []
         querySnapshot.forEach((doc) => {
+          console.log(doc.data().firebaseID)
           plants.push({
-            id: doc.id,
+            id: doc.data().firebaseID,
             name: doc.data().name,
             isPotted: doc.data().isPotted,
             isIndoors: doc.data().isIndoors,
@@ -70,6 +71,9 @@ const Dashboard = () => {
             notificationInterval: doc.data().notificationInterval,
             notificationID: doc.data().notificationID,
             nextWateringDate: doc.data().nextWateringDate,
+            tags: doc.data().tags
+
+
           })
           wateringDays.push(doc.data().nextWateringDate)
         })
@@ -293,18 +297,6 @@ const Dashboard = () => {
         showsVerticalScrollIndicator={false}
         data={plantsList}
         numColumns={1}
-        // ListEmptyComponent={
-        //   <View style={{flexDirection:'row'}}>
-        //     {!loadedFirebase ? <View style={{width:'101%'}}>
-        //         <Text style={{textAlign:'center', color:'#82A398', fontSize: 20, fontWeight:'bold', marginTop: '5%'}}>No {selectedCategory} plants.</Text>
-        //         <Svg
-        //         style={{alignSelf:'center', marginTop: 5}}
-        //         fill={'#82A398'}
-        //         width={200}
-        //         height={200}xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><Path d="M512 64c0 113.6-84.6 207.5-194.2 222c-7.1-53.4-30.6-101.6-65.3-139.3C290.8 78.3 364 32 448 32h32c17.7 0 32 14.3 32 32zM0 128c0-17.7 14.3-32 32-32H64c123.7 0 224 100.3 224 224v32 96c0 17.7-14.3 32-32 32s-32-14.3-32-32V352C100.3 352 0 251.7 0 128z"/></Svg>
-        //     </View> : null}
-        //   </View>
-        // }
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (

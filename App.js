@@ -152,6 +152,21 @@ function App(){
         <Stack.Screen
         name="UpdateModal"
         component={UpdatePlant}
+        options={({route}) =>
+        ({
+          title: route.params.item.name,
+          headerTitle: () => <CategoryHeader title={route.params.item.name}/>,
+          headerLeft: () =>
+            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => route.params.navigation.navigate('Discover')}>
+            <FontAwesome
+            color={'white'}
+            size={24}
+            name={'chevron-left'}
+            />
+            <Text style={{fontWeight:'900', fontSize: 20, color:'#FFF', marginLeft: 5}}>Discover</Text>
+            </TouchableOpacity>
+        })
+      }
         />
         <Stack.Screen
         name="PostModal"
