@@ -58,9 +58,10 @@ const Dashboard = () => {
         const plants = []
         const wateringDays = []
         querySnapshot.forEach((doc) => {
-          console.log(doc.data().firebaseID)
+          // console.log(`${doc.data().name}`,doc.data())
           plants.push({
             id: doc.data().firebaseID,
+            plant:doc.data().plant,
             name: doc.data().name,
             isPotted: doc.data().isPotted,
             isIndoors: doc.data().isIndoors,
@@ -71,9 +72,6 @@ const Dashboard = () => {
             notificationInterval: doc.data().notificationInterval,
             notificationID: doc.data().notificationID,
             nextWateringDate: doc.data().nextWateringDate,
-            tags: doc.data().tags
-
-
           })
           wateringDays.push(doc.data().nextWateringDate)
         })

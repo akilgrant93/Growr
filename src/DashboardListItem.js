@@ -12,7 +12,7 @@ import Animated, { FadeInLeft } from 'react-native-reanimated';
 const DashboardListItem = (props) => {
   const navigation = useNavigation()
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
-
+  console.log(props)
   return (
     <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'100%', backgroundColor:'white',borderRadius:5,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index === 0 ? {} : {marginTop: 7.5}, styles.shadow]}>
               <View>
@@ -23,15 +23,12 @@ const DashboardListItem = (props) => {
                       <View style={styles.textView}>
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
-                      <Image  source={{ uri: 'https://images.squarespace-cdn.com/content/v1/5363e3d1e4b0b6dbd37bcdd6/6eb5b105-3580-45fa-8463-018a21dc43d1/IMG_4914.jpg?format=2500w' }} style={[{ width:75, height: 75}]} />
+                        <Image  source={{ uri: props.item.plant.imgSrc }} style={[{ width:75, height: 101}]} />
                         <View style={{width:'60.5%', justifyContent:'space-between', backgroundColor:'rgba(255,255,255,.5)'}}>
                           <View>
 
                           <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between'}}>
-                            <View style={[{width: '152.5%', flexDirection:'row', alignItems:'center', justifyContent:'space-between',paddingHorizontal: '5%', paddingVertical: 5},
-                            // styles.shadow2,
-                            // wateringDateDifference < 0 ? {backgroundColor: '#F97068'} : {backgroundColor:'#82A398'}
-                            ]}>
+                            <View style={[{width: '153.25%', flexDirection:'row', alignItems:'center', justifyContent:'space-between',paddingLeft: '5%', paddingTop: 2.5}]}>
                               <Text style={[{fontSize: 14, fontWeight: '800',color:'#000'}, wateringDateDifference >= 0 ? {maxWidth: '60%'} : {maxWidth: '80%'}]}>
                                 {props.item.name}
                               </Text>
@@ -58,6 +55,7 @@ const DashboardListItem = (props) => {
                             </View>
 
                           </View>
+                          <Text style={{fontSize:12, paddingLeft: '5%', color:'rgba(0,0,0,.5)'}}>{props.item.plant.family}</Text>
                           </View>
 
                         {/* marginTop will be calculated by a formula that detects tag count */}
@@ -77,7 +75,7 @@ const DashboardListItem = (props) => {
 
                         {props.item.isHydroponic
                         ?
-                        <View style={{backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
+                        <View style={{marginLeft:5,backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
                         <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Hydroponic</Text>
                         <Svg style={{marginRight: 5}} width={20}height={20} fill={'#034732'} viewBox="0 0 792 612">
                           <G>

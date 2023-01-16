@@ -1,36 +1,36 @@
-import { StyleSheet, Text, View, TextInput, Pressable, Keyboard,  } from 'react-native'
+import { StyleSheet, Text, View, Keyboard, Platform, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../config'
 import * as Notifications from 'expo-notifications';
+import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
 import { useFocusEffect } from '@react-navigation/native';
 import { doc, getDoc } from "firebase/firestore";
+import { PlusCircleIcon } from 'react-native-heroicons/solid'
 
 const UpdateModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)
   const [plant, setPlant] = useState({})
-  const [active, setActive]= useState(false)
   const [sliderValue, setSliderValue]= useState(0)
-  const [slidingState, setSlidingState]= useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
   const [calendars, setCalendars]= useState([])
 
-  const diseasesObj = {
-    rootRot:'Root Rot',
-    canker:'Canker',
-    verticilliumWilt:'Verticillium Wilt',
-    mosaicVirus:'Mosaic Virus',
-    leafBlight:'Leaf Blight',
-    blackSpot:'Black Spot',
-    powderyMildew:'Powdery Mildew',
-    blackDot:'Black Dot',
-    caneBlight:'Cane Blight'
-  }
+  // const diseasesObj = {
+  //   rootRot:'Root Rot',
+  //   canker:'Canker',
+  //   verticilliumWilt:'Verticillium Wilt',
+  //   mosaicVirus:'Mosaic Virus',
+  //   leafBlight:'Leaf Blight',
+  //   blackSpot:'Black Spot',
+  //   powderyMildew:'Powdery Mildew',
+  //   blackDot:'Black Dot',
+  //   caneBlight:'Cane Blight'
+  // }
 
   //notification function
 
@@ -321,7 +321,7 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
-// console.log('item',route.params)
+console.log('item',route.params.item.isIndoors)
 }, []);
 
 useFocusEffect(
@@ -334,11 +334,14 @@ useFocusEffect(
       );
       setCalendars(userCalendars)
     }
-    const plantRef = firebase.firestore().collection('plant').doc(route.params.item.id)
+    const plantRef = firebase.firestore().collection('plant').doc(route.params.item.plant.id)
 
     plantRef.get().then((doc) => {
       if (doc.exists) {
           setPlant(doc.data())
+          setIsHydroponic(route.params.item.isHydroponic)
+          setIsIndoors(route.params.item.isIndoors)
+          setIsPotted(route.params.item.isPotted)
       } else {
           // doc.data() will be undefined in this case
           console.log("No such document!");
@@ -351,122 +354,79 @@ useFocusEffect(
 );
 
   return (
-    <View style={styles.container}>
-      {/* if commonName exists, commonName else scientificName */}
-      <Text style={{textAlign:'center'}}>{plant.commonName ? plant.commonName : plant.scientificName}</Text>
+    <View style={[styles.container, {backgroundColor: '#034732'}]}>
+      <SafeAreaView style={{backgroundColor:'rgba(240,240,240,.25)', width:'100%', height: '100%'}}>
+        <View style={[styles.shadow, {height: '92.5%'}]}>
+        <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#fff'}}>
+        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .5)'}}>
+      <Image source={{ uri: route.params.item.plant.imgSrc }} style={route.params.item.plant.commonName.split(' ').length === 2 && route.params.item.plant.commonName.length > 25 ? {width: 156, height: 156} : {width: 140, height: 140}} />
+      <View style={{flex:1}}>
 
-      {/* if commonName exists, scientificName else nothing */}
-      {plant.commonName ? <View/> : <Text style={{textAlign:'center'}}>{plant.scientificName}</Text>}
-
-      {/* if familyName exists, familyName else nothing */}
-      {plant.family ?
-      <Text style={{textAlign:'center'}}>{plant.familyName}</Text> : <View/>}
-
-      {/* icon ternaries - will be combined with tags*/}
-      {/* poison icon ternary */}
-      {/* edible icon ternary */}
-      {/* carnivorous icon ternary */}
-      {/* aquatic icon ternary */}
-      {/* succulent icon ternary */}
-      {/* tropical icon ternary */}
-      {/* medicinalUse icon ternary */}
-
-      {/* tag map ternary needs flexwrap*/}
-      {plant.tags
-      ?<View style={styles.tagBox}>
-       {plant.tags.map((tag, idx) => {
-       return  <View key={idx} style={styles.tag}><Text style={{color:'white'}}>{tag}</Text></View>
-      })}
-      </View>
-      : <View/>}
-
-      {/* disease map ternary needs restyle and formatting to be text based*/}
-      {plant.diseases
-      ?
-      <View style={{alignItems:'center'}}>
-      <View style={styles.diseaseText}>
-       {plant.diseases.map((disease, idx) => {
-
-        const currDisease = disease.split(':')[0]
-        const currDiseaseStatus = disease.split(':')[1][0].toUpperCase()+disease.split(':')[1].slice(1)
-        const formattedDiseaseName = diseasesObj[currDisease]
-
-        if(currDiseaseStatus === 'Resistant'){
-          return <Text key={idx} style={{paddingTop:1}}>•Resistant to {formattedDiseaseName}</Text>
-        } else if (currDiseaseStatus === 'Susceptible'){
-          return <Text key={idx} style={{paddingTop:1, color:'red'}}>•Susceptible to {formattedDiseaseName}</Text>
-        }
-
-      })}
-      </View>
-      </View>
-      : <View/>}
-
-
-      {/* icons needed */}
-      <View style={{flexDirection: 'row', justifyContent:'center', alignItems:'center', marginTop: 15}}>
-        <BouncyCheckbox
-        style={{marginRight: 15}}
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Potted"
-        bounceEffectIn={isHydroponic ? 1 : 0.8}
-        bounceEffectOut={1}
-        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic ? '' :togglePotted}
-        isChecked = {isPotted}/>
-        <BouncyCheckbox
-        style={{marginRight: 15}}
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent')?"#E0E0E0":"#004d00":"#E0E0E0"}
-        unfillColor="#FFFFFF"
-        text="Hydroponic"
-        bounceEffectIn={plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ? 1: 0.8: 1}
-        iconStyle={plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ?{ borderColor: "#E0E0E0"}:{ borderColor: "#004d00"}:{ borderColor: "#E0E0E0"}}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {plant.tags ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') ? '' :toggleHydroponic:''}
-        isChecked = {isHydroponic}/>
-        <BouncyCheckbox
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12}}
-        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Indoors"
-        bounceEffectIn={isHydroponic ? 1: 0.8}
-        bounceEffectOut={1}
-        bounceEffect={0}
-        iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic?'':toggleIndoors}
-        isChecked = {isIndoors}/>
+      <View style={[{backgroundColor:'#034732', marginTop: 5,borderRadius:25,width:'95%', marginLeft: '2.5%',paddingVertical: 10, paddingHorizontal: 5}, styles.shadow]}>
+      <Text style={{color:'white', paddingLeft: 5,fontWeight:'bold', fontSize: 14}}>
+        {route.params.item.plant.commonName}
+      </Text>
       </View>
 
-            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      <Slider
+      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
+        Family
+      </Text>
+      <Text style={{color:'white'}}>
+        {route.params.item.plant.family}
+      </Text>
+      </View>
+
+      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
+        Genus
+      </Text>
+      <Text style={{color:'white'}}>
+        {route.params.item.plant.genus}
+      </Text>
+      </View>
+
+      <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
+        Species
+      </Text>
+      <Text style={{color:'white'}}>
+        {route.params.item.plant.species}
+      </Text>
+      </View>
+
+      </View>
+
+        </View>
+
+        <ScrollView style={{width:'100%'}}>
+        <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
+          <View style={styles.shadow}>
+          <View style={{backgroundColor:'#F97068', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '60%'}}>
+            <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
+          </View>
+          </View>
+      <ScrollView style={{height:120, paddingHorizontal:5}}>
+      <Text>
+      {route.params.item.plant.description}
+      </Text>
+      </ScrollView>
+        </View>
+
+           {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
+      <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}}>
+            <Slider
           // value={value}
-          style={{marginTop: 15,width:'75%', alignSelf:'center'}}
-          onValueChange={value => setSliderValue(parseInt(value))}
-          minimumTrackTintColor={'#004d00'}
-          maximumValue={
-            plant.tags
-            ? plant.tags.includes('Cactus') || plant.tags.includes('Succulent') || isHydroponic ? 15 : 8 : 8}
-          minimumValue={0}
-          value={0}
-          onSlidingStart={value => setHoverValue(parseInt(value))}
-          step={1}
+              style={{marginTop: 15,width:'100%', alignSelf:'center'}}
+              onValueChange={value => setSliderValue(parseInt(value))}
+              minimumTrackTintColor={'#004d00'}
+              maximumValue={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+              minimumValue={0}
+              value={0}
+              onSlidingStart={value => setHoverValue(parseInt(value))}
+              step={1}
                 />
-                {/* needs to say "last resevior change" if hydroponic */}
-        <Text style={{textAlign:'center'}}>Last watered {
+            <Text style={{textAlign:'center'}}>Last watered {
           sliderValue === 0
           ? 'today'
           : sliderValue === 1
@@ -481,15 +441,85 @@ useFocusEffect(
           ? 'two weeks ago'
           : 'over two weeks ago'
           }</Text>
+      </View>
 
-          {/* notes textInput */}
+        {/* icons needed */}
+        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:15, width: '100%'}}>
+        <BouncyCheckbox
+        style={{marginRight: 15}}
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Potted"
+        bounceEffectIn={isHydroponic ? 1 : 0.8}
+        bounceEffectOut={1}
+        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {isHydroponic ? '' :togglePotted}
+        isChecked = {isPotted}/>
+        <BouncyCheckbox
+        style={{marginRight: 15}}
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+        fillColor={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Hydroponic"
+        bounceEffectIn={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') ? 1: 0.8}
+        iconStyle={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') ? '' :toggleHydroponic}
+        isChecked = {isHydroponic}/>
+        <BouncyCheckbox
+        size={20}
+        textContainerStyle={{marginLeft: 5}}
+        disableBuiltInState
+        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+        unfillColor="#FFFFFF"
+        text="Indoors"
+        bounceEffectIn={isHydroponic ? 1: 0.8}
+        bounceEffectOut={1}
+        bounceEffect={0}
+        iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+        innerIconStyle={{ borderWidth: 2 }}
+        onPress = {isHydroponic?'':toggleIndoors}
+        isChecked = {isIndoors}/>
+      </View>
 
-        <Pressable
-          style={styles.postButton}
-          onPress={() => {updatePlant('plant', isIndoors, isPotted, isHydroponic)}}
+
+
+              {/* tag map ternary needs flexwrap*/}
+              {route.params.item.plant.tags.length > 0
+        ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, padding:10, paddingHorizontal:15, width: '100%'}]}>
+       {route.params.item.plant.tags.map((tag, idx) => {
+       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{tag[0].toUpperCase()+tag.slice(1)}</Text></View>
+        })}
+        </View>
+        : <View/>}
+
+        {/* notes textInput */}
+        {/* <View style={{width: '90%'}}>
+            <TextInput placeholder='Write some notes about your plant' style={{marginTop: 5,padding: 5,width: 340}}/>
+        </View> */}
+
+        </ScrollView>
+      <View style={{width: '100%', alignItems:'flex-end', paddingBottom: 10, paddingRight: 10}}>
+        <TouchableOpacity
+          onPress={() => {postPlant(route.params.item.plant, isIndoors, isPotted, isHydroponic)}}
         >
-        <Text>UPDATE PLANT</Text>
-      </Pressable>
+          <PlusCircleIcon style={styles.shadow} color={'#034732'} size={50}/>
+        </TouchableOpacity>
+      </View>
+
+
+        </View>
+        </View>
+      </SafeAreaView>
     </View>
   )
 }
@@ -498,37 +528,33 @@ export default UpdateModal
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: '50%',
-    marginHorizontal: 15,
+    backgroundColor: 'white',
+    height: '100%',
     alignItems:'center'
   },
   diseaseText: {
     flexDirection:'column',
     justifyContent:'center',
     alignItems:'left',
-    marginTop: 10,
+    marginTop: 5,
     width: '70%'
   },
-  postButton: {
-    marginTop: 25,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 4,
-    elevation: 10,
-    backgroundColor: '#0de065'
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   },
   tagBox: {
     flexDirection:'row',
-    justifyContent:'center',
+    justifyContent:'flex-start',
     alignItems:'center',
-    marginTop: 10,
+    flexWrap: 'wrap'
   },
   tag: {
     padding: 8,
     marginRight:5,
-    backgroundColor:'green',
+    backgroundColor:'#F97068',
     color:'white',
     borderRadius: '5%'
   }

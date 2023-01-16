@@ -13,12 +13,8 @@ const PostModal = ({route, navigation}) => {
   const [image, setImage] = useState(null);
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
-  const [isResistant, setIsResistant]= useState(false)
-  const [isSusceptible, setIsSusceptible]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)
-  // const [active, setActive]= useState(false)
   const [sliderValue, setSliderValue]= useState(0)
-  // const [slidingState, setSlidingState]= useState('inactive')
   const [hoverValue, setHoverValue]= useState(0)
   const [calendars, setCalendars]= useState([])
 
@@ -83,36 +79,36 @@ const PostModal = ({route, navigation}) => {
       }
       }
 
-    //if the common name is bugged
-    if(typeof plant === 'string'){
-      postUserPlant(
-        plant,
-        isPotted,
-        isIndoors,
-        isHydroponic,
-        succulent, '', base, sliderValue,
-        plant.tags, plant.id
-        )
-      }
+    // //if the common name is bugged
+    // if(typeof plant === 'string'){
+    //   postUserPlant(
+    //     plant,
+    //     isPotted,
+    //     isIndoors,
+    //     isHydroponic,
+    //     succulent, '', base, sliderValue,
+    //     plant.tags, plant.id
+    //     )
+    //   }
 
     //if theres a common name
-    if(plant.commonName){
       postUserPlant(
         plant.commonName,
+        plant,
         isPotted,
         isIndoors,
         isHydroponic,
         succulent, '', base, sliderValue, plant.tags, plant.id
       )
     //otherwise refer to the scientific name
-    } else if(!plant.commonName && typeof plant !== 'string') {
-      postUserPlant(
-        plant.scientificName,
-        isPotted,
-        isIndoors,
-        isHydroponic,
-        succulent, '', base, sliderValue,plant.tags, plant.id)
-    }
+    // else if(!plant.commonName && typeof plant !== 'string') {
+    //   postUserPlant(
+    //     plant.scientificName,
+    //     isPotted,
+    //     isIndoors,
+    //     isHydroponic,
+    //     succulent, '', base, sliderValue,plant.tags, plant.id)
+    // }
     setIsPotted(false)
     setIsIndoors(false)
     setIsHydroponic(false)
@@ -123,10 +119,11 @@ const PostModal = ({route, navigation}) => {
 
    const postUserPlant = async(
     name,
+    plant,
     isPotted,
     isIndoors,
     isHydroponic,
-    isSucculent, notes, notificationInterval, lastWatered,tags, firebaseID) => {
+    isSucculent, notes, notificationInterval, lastWatered) => {
     const one_day=1000*60*60*24;
     const now = moment()
     const today = now.startOf('day')
@@ -195,6 +192,7 @@ const PostModal = ({route, navigation}) => {
 
       const plantData = {
         name,
+        plant,
         isPotted,
         isIndoors,
         isHydroponic,
@@ -205,9 +203,7 @@ const PostModal = ({route, navigation}) => {
         nextWateringDate:nextWateringDate.valueOf(),
         lastWateringDate:lastWateringDate.valueOf(),
         isThirsty,
-        tags,
         wateringDates: [lastWateringDate.valueOf()],
-        firebaseID
       }
       newUserPlant
       .set(plantData)

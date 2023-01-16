@@ -163,7 +163,7 @@ function App(){
             size={24}
             name={'chevron-left'}
             />
-            <Text style={{fontWeight:'900', fontSize: 20, color:'#FFF', marginLeft: 5}}>Discover</Text>
+            <Text style={{fontWeight:'900', fontSize: 20, color:'#FFF', marginLeft: 5}}>My Garden</Text>
             </TouchableOpacity>
         })
       }

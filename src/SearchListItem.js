@@ -4,6 +4,7 @@ import CustomSVG from './CustomSVG'
 import { ScrollView } from 'react-native-gesture-handler'
 
 const SearchListItem = (props) => {
+  console.log('search list item props', props.item.item)
   return (
     <View>
                 <View style={{
