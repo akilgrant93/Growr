@@ -12,19 +12,18 @@ import Animated, { FadeInLeft } from 'react-native-reanimated';
 const DashboardListItem = (props) => {
   const navigation = useNavigation()
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
-  console.log(props)
   return (
     <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'100%', backgroundColor:'white',borderRadius:5,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index === 0 ? {} : {marginTop: 7.5}, styles.shadow]}>
               <View>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
                   onPress={() => navigation.navigate('UpdateModal',{item:props.item, navigation})}>
-                    <View style={[{ flexDirection: 'row'}]}>
+                    <View style={[{ flexDirection: 'row',}]}>
                       <View style={styles.textView}>
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
                         <Image  source={{ uri: props.item.plant.imgSrc }} style={[{ width:75, height: 101}]} />
-                        <View style={{width:'60.5%', justifyContent:'space-between', backgroundColor:'rgba(255,255,255,.5)'}}>
+                        <View style={{width:'60.5%', justifyContent:'space-between'}}>
                           <View>
 
                           <View style={{flexDirection:'row', width: '100%', justifyContent:'space-between'}}>
@@ -59,7 +58,7 @@ const DashboardListItem = (props) => {
                           </View>
 
                         {/* marginTop will be calculated by a formula that detects tag count */}
-                          <View style={{flexDirection:'row', marginLeft: '2.5%', marginBottom: 5,width: '100%'}}>
+                          <View style={{flexDirection:'row', marginLeft: '2.5%', marginBottom: 5,width: '150.5%', justifyContent:'flex-end'}}>
                         {props.item.isIndoors
                         ?
                         <View style={{backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>

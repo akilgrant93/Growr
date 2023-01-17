@@ -6,7 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 const SearchListItem = (props) => {
   console.log('search list item props', props.item.item)
   return (
-    <View>
+    <View style={styles.shadow}>
                 <View style={{
                 marginBottom: 1,
                 }}>
@@ -68,4 +68,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
   },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  }
 })

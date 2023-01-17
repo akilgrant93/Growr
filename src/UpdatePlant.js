@@ -8,8 +8,9 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
 import { useFocusEffect } from '@react-navigation/native';
-import { doc, getDoc } from "firebase/firestore";
-import { PlusCircleIcon } from 'react-native-heroicons/solid'
+import Blink from './Blink'
+import { FontAwesome } from '@expo/vector-icons'
+import { ArrowUpOnSquareIcon, TrashIcon } from 'react-native-heroicons/outline'
 
 const UpdateModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
@@ -19,6 +20,7 @@ const UpdateModal = ({route, navigation}) => {
   const [sliderValue, setSliderValue]= useState(0)
   const [hoverValue, setHoverValue]= useState(0)
   const [calendars, setCalendars]= useState([])
+  const [bottomReached, setBottomReached] = useState(false)
 
   // const diseasesObj = {
   //   rootRot:'Root Rot',
@@ -31,6 +33,12 @@ const UpdateModal = ({route, navigation}) => {
   //   blackDot:'Black Dot',
   //   caneBlight:'Cane Blight'
   // }
+
+  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
 
   //notification function
 
@@ -321,7 +329,7 @@ const addNewEvent = async (eventData) => {
 
 
 useEffect(() => {
-console.log('item',route.params.item.isIndoors)
+setBottomReached(false)
 }, []);
 
 useFocusEffect(
@@ -353,9 +361,25 @@ useFocusEffect(
   }, [])
 );
 
+  //delete a plant from users list of plant entries
+  const deletePlant = (plant) => {
+    const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
+
+    userPlantsRef
+    .doc(plant.id)
+    .delete()
+    .then(() => {
+      alert('Deleted Successfully')
+    })
+    .catch( error =>{
+      alert('Error deleting the plant')
+    })
+  }
+
   return (
     <View style={[styles.container, {backgroundColor: '#034732'}]}>
       <SafeAreaView style={{backgroundColor:'rgba(240,240,240,.25)', width:'100%', height: '100%'}}>
+      <Text style={{marginTop: 50,fontSize: 25, fontWeight:'900', color:'white', position:'absolute', marginLeft: 150}}>My {route.params.item.plant.commonName.split(' ')[0] === route.params.item.plant.genus ? route.params.item.plant.commonName.split(' ')[0] : route.params.item.plant.commonName }</Text>
         <View style={[styles.shadow, {height: '92.5%'}]}>
         <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#fff'}}>
         <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .5)'}}>
@@ -399,18 +423,31 @@ useFocusEffect(
 
         </View>
 
-        <ScrollView style={{width:'100%'}}>
+        <View style={{width:'100%', flex:1}}>
         <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
           <View style={styles.shadow}>
-          <View style={{backgroundColor:'#F97068', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '60%'}}>
+          <View style={{backgroundColor:'#545B98', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}}>
             <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
           </View>
           </View>
-      <ScrollView style={{height:120, paddingHorizontal:5}}>
+      <ScrollView style={{height:120, paddingHorizontal:5, marginBottom: 15}} onScroll={({nativeEvent}) => {
+        if (isCloseToBottom(nativeEvent)) {
+        setBottomReached(true)
+        }
+        }}
+      scrollEventThrottle={400}>
       <Text>
       {route.params.item.plant.description}
       </Text>
       </ScrollView>
+       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 165, right: 15}}>
+        <FontAwesome
+        style={{}}
+        color='rgba(249,112,104,.75)'
+        name='sort-desc'
+        size={30}
+        />
+      </Blink>}
         </View>
 
            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
@@ -507,12 +544,22 @@ useFocusEffect(
             <TextInput placeholder='Write some notes about your plant' style={{marginTop: 5,padding: 5,width: 340}}/>
         </View> */}
 
-        </ScrollView>
-      <View style={{width: '100%', alignItems:'flex-end', paddingBottom: 10, paddingRight: 10}}>
+        </View>
+
+      <View style={{width: '101%', flexDirection:'row',justifyContent:'space-between'}}>
+        <TouchableOpacity
+          onPress={() => {console.log('delete attempt')}}
+          style={{backgroundColor:'#F97068', padding: 15, borderTopRightRadius: 100, flexDirection:'row', alignItems:'center'}}
+        >
+          <TrashIcon style={styles.shadow} color={'#fff'} size={25}/>
+          <Text style={{color:'#fff', paddingHorizontal: 5, paddingRight: 10}}>Delete</Text>
+        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {postPlant(route.params.item.plant, isIndoors, isPotted, isHydroponic)}}
+          style={{backgroundColor:'#545B98', padding: 15, borderTopLeftRadius: 100, flexDirection:'row', alignItems:'center'}}
         >
-          <PlusCircleIcon style={styles.shadow} color={'#034732'} size={50}/>
+          <Text style={{color:'#fff', paddingHorizontal: 5, paddingLeft: 10}}>Update</Text>
+          <ArrowUpOnSquareIcon style={styles.shadow} color={'#fff'} size={25}/>
         </TouchableOpacity>
       </View>
 

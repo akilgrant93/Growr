@@ -7,7 +7,7 @@ import * as Notifications from 'expo-notifications';
 import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
-import { PlusCircleIcon } from 'react-native-heroicons/solid'
+import { PlusCircleIcon } from 'react-native-heroicons/outline'
 
 const PostModal = ({route, navigation}) => {
   const [image, setImage] = useState(null);
@@ -393,7 +393,7 @@ const pickImage = async () => {
         <ScrollView style={{width:'100%'}}>
         <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
           <View style={styles.shadow}>
-          <View style={{backgroundColor:'#F97068', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '60%'}}>
+          <View style={{backgroundColor:'#545B98', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}}>
             <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
           </View>
           </View>
@@ -499,13 +499,17 @@ const pickImage = async () => {
         </View> */}
 
         </ScrollView>
-      <View style={{width: '100%', alignItems:'flex-end', paddingBottom: 10, paddingRight: 10}}>
-        <TouchableOpacity
+      <View style={{width: '101%', alignItems:'flex-end'}}>
+      <TouchableOpacity
           onPress={() => {postPlant(route.params.item, isIndoors, isPotted, isHydroponic)}}
+          style={{backgroundColor:'#545B98', padding: 15, borderTopLeftRadius: 100, flexDirection:'row', alignItems:'center'}}
         >
-          <PlusCircleIcon style={styles.shadow} color={'#034732'} size={50}/>
+          <Text style={{color:'#fff', paddingHorizontal: 5, paddingLeft: 10}}>Track</Text>
+          <PlusCircleIcon style={styles.shadow} color={'white'} size={25}/>
+
         </TouchableOpacity>
       </View>
+
 
 
         </View>

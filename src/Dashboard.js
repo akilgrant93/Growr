@@ -109,20 +109,6 @@ const Dashboard = () => {
   }, [])
 
 
-  //delete a plant from users list of plant entries
-  const deletePlant = (plant) => {
-    const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
-
-    userPlantsRef
-    .doc(plant.id)
-    .delete()
-    .then(() => {
-      alert('Deleted Successfully')
-    })
-    .catch( error =>{
-      alert('Error deleting the plant')
-    })
-  }
 
   //this function will change plants array fed to flatlist as well
   const toggleEvent = (name) => {
@@ -306,10 +292,10 @@ const Dashboard = () => {
       {plantsList.length > 2 && bottomReached === false ?
       <Blink delay={500} duration={1000}>
         <FontAwesome
-        style={{position:'absolute', bottom:20, right:15}}
+        style={{position:'absolute', bottom:0, right:-15.5}}
         color='rgba(249,112,104,.75)'
         name='sort-desc'
-        size={30}
+        size={20}
         />
       </Blink>
       : null}
@@ -381,10 +367,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 20,
-  },
-  deleteIcon: {
-    fontSize: 14,
-    alignSelf:'center'
   },
   notification: {
     width: 20,

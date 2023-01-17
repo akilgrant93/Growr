@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, SafeAreaView, Dimensions, ScrollView } from 'react-native'
 import React, {useState, useEffect, useRef} from 'react'
 import { useNavigation } from '@react-navigation/native'
-// import CalendarPicker from 'react-native-calendar-picker';
+import CalendarPicker from 'react-native-calendar-picker';
 import moment from 'moment';
 import {firebase} from '../config'
 import { FontAwesome } from '@expo/vector-icons'
@@ -173,7 +173,7 @@ const changeDate = (date) => {
                 <CalendarDaysIcon size={25} style={{color:'#034732', marginLeft: 5}}/>
             </View>
       <View style={{paddingBottom: 15, width: '90%',marginLeft:'5%'}}>
-      {/* <CalendarPicker
+      <CalendarPicker
       onDateChange={changeDate}
       width={Dimensions.get('window').width*.8}
       previousComponent={
@@ -191,7 +191,7 @@ const changeDate = (date) => {
       yearTitleStyle={{fontWeight:'900', color:'rgba(255,255,255,.75)', fontSize:16}}
       headerWrapperStyle={[{backgroundColor:'#F97068', paddingTop: 5, borderRadius: 25, paddingBottom:5}, styles.shadow]}
       customDayHeaderStyles={customDayHeaderStyles}
-      customDatesStyles={customDatesStylesCallback}/> */}
+      customDatesStyles={customDatesStylesCallback}/>
 
 
       <View style={{flexDirection:'row', justifyContent:'space-evenly', position:'absolute', top: 268, alignSelf:'center', width: '90%'}}>
