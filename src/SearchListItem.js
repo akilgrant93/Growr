@@ -16,10 +16,11 @@ const SearchListItem = (props) => {
                        overflow:'hidden', shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, backgroundColor: '#fff'}}>
                         <View style={styles.textView}>
 
-                          <Image source={{uri: props.item.item.imgSrc}} style={{height:110, width: 110}}/>
+                          <Image source={{uri: props.item.item.imgSrc}} style={{height:112, width: 112}}/>
 
-                        <View style={{alignSelf:'center', width: '62.5%', marginLeft: '2.5%', paddingTop: '1.5%'}}>
-                        <Text style={{fontSize: 14, fontWeight: 'bold'}}>
+                        <View style={{alignSelf:'center', width: '62.5%', marginLeft: '1.5%', paddingTop: '1.5%'}}>
+                          <View style={[{borderRadius: 25, backgroundColor:'#F97068', padding: 7}, styles.shadow]}>
+                        <Text style={{fontSize: 14, fontWeight: 'bold', color:'#fff'}}>
                           {!props.item.item.commonName
                             ? props.item.item.scientificName.split(' ').map((word) => {
                               return word[0].toUpperCase() + word.substr(1);
@@ -28,11 +29,12 @@ const SearchListItem = (props) => {
                               return word[0].toUpperCase() + word.substr(1);
                             }).join(' ')}
                         </Text>
+                          </View>
 
-                        <Text style={{fontSize: 10, color:'rgba(0,0,0,.5)'}}>{props.item.item.family}</Text>
+                        <Text style={{paddingLeft: 7, fontSize: 10, marginTop: 2.5,color:'rgba(0,0,0,.5)'}}>{props.item.item.family}</Text>
                         <ScrollView style={{height:60}}>
 
-                        <Text style={{fontSize: 10, color:'#000'}}>{props.item.item.commonName.length > 20 ? props.item.item.description.slice(0,125)+'...' : props.item.item.description.slice(0,150)+'...'}</Text>
+                        <Text style={{paddingLeft: 7, fontSize: 10, color:'#000'}}>{props.item.item.commonName.length > 20 ? props.item.item.description.slice(0,125)+'...' : props.item.item.description.slice(0,150)+'...'}</Text>
                         </ScrollView>
                         </View>
 
