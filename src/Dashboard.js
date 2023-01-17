@@ -277,10 +277,10 @@ const Dashboard = () => {
       </View>
 
       <FlatList
-        style={[{overflow:'hidden', marginTop: 10, borderRadius:10}, styles.shadow]}
+        style={[{overflow:'hidden', marginTop: 10, borderRadius:15}, styles.shadow]}
         showsVerticalScrollIndicator={false}
         data={plantsList}
-        numColumns={1}
+        numColumns={2}
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (
