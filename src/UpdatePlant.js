@@ -363,13 +363,15 @@ useFocusEffect(
 
   //delete a plant from users list of plant entries
   const deletePlant = (plant) => {
-    const userPlantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').orderBy('nextWateringDate', 'asc')
+    const currentPlantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(plant.id)
 
-    userPlantsRef
-    .doc(plant.id)
+    currentPlantRef
     .delete()
     .then(() => {
       alert('Deleted Successfully')
+    })
+    .then(() => {
+      navigation.navigate('My Garden')
     })
     .catch( error =>{
       alert('Error deleting the plant')
@@ -379,20 +381,16 @@ useFocusEffect(
   return (
     <View style={[styles.container, {backgroundColor: '#034732'}]}>
       <SafeAreaView style={{backgroundColor:'rgba(240,240,240,.25)', width:'100%', height: '100%'}}>
-      <Text style={{marginTop: 50,fontSize: 25, fontWeight:'900', color:'white', position:'absolute', marginLeft: 150}}>My {route.params.item.plant.commonName.split(' ')[0] === route.params.item.plant.genus ? route.params.item.plant.commonName.split(' ')[0] : route.params.item.plant.commonName }</Text>
+      <View style={[{backgroundColor: '#545B98', position:'absolute', marginLeft: 150, width: '60%', marginTop: 35, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, height: 51, justifyContent:'center'}, styles.shadow]}>
+      <Text style={{fontSize: 15, padding:7.5, paddingLeft: 15,fontWeight:'900', color:'white', }}>My {route.params.item.plant.commonName}</Text>
+      </View>
         <View style={[styles.shadow, {height: '92.5%'}]}>
         <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#fff'}}>
         <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .5)'}}>
-      <Image source={{ uri: route.params.item.plant.imgSrc }} style={route.params.item.plant.commonName.split(' ').length === 2 && route.params.item.plant.commonName.length > 25 ? {width: 156, height: 156} : {width: 140, height: 140}} />
+      <Image source={{ uri: route.params.item.plant.imgSrc }} style={{width: 115, height: 115}} />
       <View style={{flex:1}}>
 
-      <View style={[{backgroundColor:'#034732', marginTop: 5,borderRadius:25,width:'95%', marginLeft: '2.5%',paddingVertical: 10, paddingHorizontal: 5}, styles.shadow]}>
-      <Text style={{color:'white', paddingLeft: 5,fontWeight:'bold', fontSize: 14}}>
-        {route.params.item.plant.commonName}
-      </Text>
-      </View>
-
-      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
       <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
         Family
       </Text>
@@ -401,7 +399,7 @@ useFocusEffect(
       </Text>
       </View>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
       <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
         Genus
       </Text>
@@ -410,7 +408,7 @@ useFocusEffect(
       </Text>
       </View>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical: 7, paddingRight: 10, paddingLeft: 5}}>
+      <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
       <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
         Species
       </Text>
@@ -548,17 +546,17 @@ useFocusEffect(
 
       <View style={{width: '101%', flexDirection:'row',justifyContent:'space-between'}}>
         <TouchableOpacity
-          onPress={() => {console.log('delete attempt')}}
-          style={{backgroundColor:'#F97068', padding: 15, borderTopRightRadius: 100, flexDirection:'row', alignItems:'center'}}
+          onPress={() => {deletePlant(route.params.item)}}
+          style={{backgroundColor:'#F97068', padding: 15, borderTopRightRadius: 100, flexDirection:'row', alignItems:'flex-end'}}
         >
           <TrashIcon style={styles.shadow} color={'#fff'} size={25}/>
-          <Text style={{color:'#fff', paddingHorizontal: 5, paddingRight: 10}}>Delete</Text>
+          <Text style={{color:'#fff', paddingHorizontal: 5, paddingRight: 10, fontWeight:'bold'}}>Delete</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {postPlant(route.params.item.plant, isIndoors, isPotted, isHydroponic)}}
-          style={{backgroundColor:'#545B98', padding: 15, borderTopLeftRadius: 100, flexDirection:'row', alignItems:'center'}}
+          style={{backgroundColor:'#545B98', padding: 15, borderTopLeftRadius: 100, flexDirection:'row', alignItems:'flex-end'}}
         >
-          <Text style={{color:'#fff', paddingHorizontal: 5, paddingLeft: 10}}>Update</Text>
+          <Text style={{color:'#fff', paddingHorizontal: 5, paddingLeft: 10, fontWeight:'bold'}}>Update</Text>
           <ArrowUpOnSquareIcon style={styles.shadow} color={'#fff'} size={25}/>
         </TouchableOpacity>
       </View>
@@ -601,8 +599,7 @@ const styles = StyleSheet.create({
   tag: {
     padding: 8,
     marginRight:5,
-    backgroundColor:'#F97068',
-    color:'white',
+    backgroundColor:'#F5928D',
     borderRadius: '5%'
   }
 })

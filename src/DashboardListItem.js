@@ -89,7 +89,7 @@ const DashboardListItem = (props) => {
                         </View>
                           : null}
                         {props.item.isPotted ?
-                        <View style={{backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
+                        <View style={{marginLeft: 5,backgroundColor:'#C9E4CA', height: 25, borderRadius: '5%', alignItems:'center',padding:2.5, flexDirection:'row'}}>
                         <Text style={{marginLeft:5, fontSize: 12}}color={'#034732'}>Potted</Text>
                         <Svg style={{marginRight: 5}} xmlns="http://www.w3.org/2000/svg" width={20} height={20} fill={'#034732'}viewBox="0 0 792 612">
                           <Path d="M387.3,301.4c5.7-30.8,14.2-61.1,25.9-90.6c0.7-1.6,0.3-4.4-0.7-5.9c-20.1-27.6-19.3-57.2-6.8-87  c16.7-39.8,47-67.5,84.1-88.1C516.7,14.9,545.6,5.6,576,0.6c2-0.3,4-0.3,7.2-0.6c1,7.4,2.4,14.7,3,22c4.2,47.7-1.6,93.6-24.5,136.4  c-9,16.9-20.1,32.4-34.8,44.9c-28.1,24-59,34.1-95.6,18.2c-21,52.6-30.2,107.3-32.3,164.3c-3.8,0-7,0-10.3,0c-3.1,0-6.1,0-10.1,0  c0.7-22.9-2.1-44.9-8.6-66.4c-6.4-21.4-15.3-41.8-26.5-61.2c-41.4,21.3-79.3-3.1-100.6-30.9c-27.5-35.9-37.3-77.1-36.3-121.5  c0.3-12.1,1.8-24.1,2.9-38c14.3,3.4,27.3,5.8,39.8,9.7c40.5,12.6,75.4,33.8,100.3,69.1c14.9,21.2,24.2,44.4,19.3,71  c-1.4,7.7-5.4,14.8-8,22.3c-0.6,1.9-1.4,4.4-0.7,5.9C369.1,264.3,378.2,282.7,387.3,301.4z"/>
