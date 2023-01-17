@@ -47,7 +47,7 @@ const DashboardListItem = (props) => {
                                </View>
                                </Blink>
                                :
-                               <View style={{backgroundColor:'#545B98', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}}>
+                               <View style={[{backgroundColor:'#545B98', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}, styles.shadow]}>
                                 { wateringDateDifference >= 0 ? <Text style={{fontSize: 14, fontWeight:'500', color:'white'}}>Water {  wateringDateDifference === 1 ? 'tomorrow' : `in ${wateringDateDifference} days`}</Text> : null }
                                 </View>
                                }
