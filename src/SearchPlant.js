@@ -119,16 +119,16 @@ const SearchPlant = ({route, navigation}) => {
       {plants.length < 1 ?
       <View style={{marginTop: '6%'}}>
         <View style={{flexDirection:'row'}}>
-        <CategoryLink navigation={navigation} type='edible'/>
-        <CategoryLink navigation={navigation} type='medicinal'/>
-        </View>
-        <View style={{flexDirection:'row'}}>
         <CategoryLink navigation={navigation} type='fruit'/>
-        <CategoryLink navigation={navigation} type='tropical'/>
+        <CategoryLink navigation={navigation} type='vegetable'/>
         </View>
         <View style={{flexDirection:'row'}}>
-        <CategoryLink navigation={navigation} type='succulent'/>
+        <CategoryLink navigation={navigation} type='culinary herb'/>
         <CategoryLink navigation={navigation} type='hydroponic'/>
+        </View>
+        <View style={{flexDirection:'row'}}>
+        <CategoryLink navigation={navigation} type='carnivorous'/>
+        <CategoryLink navigation={navigation} type='houseplant'/>
         </View>
       </View>
       : <View/>}

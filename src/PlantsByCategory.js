@@ -2,12 +2,13 @@ import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground, Ac
 import React, {useState, useEffect} from 'react'
 import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
+import SearchListItem from './SearchListItem'
 
 const Reminders = ({route, navigation}) => {
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
-  const snapshot = firebase.firestore().collection('plant').where('tags','array-contains', `${route.params.name[0].toUpperCase()+route.params.name.slice(1)}`).orderBy('commonName')
+  const snapshot = firebase.firestore().collection('plant').where('tags','array-contains', route.params.name).orderBy('commonName')
 
   const getNextPlants = () => {
     snapshot
@@ -17,7 +18,7 @@ const Reminders = ({route, navigation}) => {
       querySnapshot => {
         const plantsArr = []
         querySnapshot.forEach((plant) => {
-          plantsArr.push(plant.data())
+          plantsArr.push({...plant.data(), id: plant.id})
         })
         setEndCursor(querySnapshot.docs[querySnapshot.docs.length-1])
         let newdata = plants.concat(plantsArr)
@@ -34,7 +35,7 @@ const Reminders = ({route, navigation}) => {
       querySnapshot => {
         const plantsArr = []
         querySnapshot.forEach((plant) => {
-          plantsArr.push(plant.data())
+          plantsArr.push({...plant.data(), id: plant.id})
         })
         setRefreshing(false);
         setEndCursor(querySnapshot.docs[querySnapshot.docs.length-1])
@@ -45,10 +46,10 @@ const Reminders = ({route, navigation}) => {
   }, [])
   return (
     <View>
-      <View style={{height:'11%', marginBottom: '2.5%'}}>
+      <View style={[{height:'11%'}, styles.shadow]}>
 
       <ImageBackground
-        style={{height: '100%'}}
+        style={[{height: '100%'}, styles.shadow]}
           source={
             route.params.name === 'edible'
             ? require(`../assets/header_bgs/edible-01.png`)
@@ -61,71 +62,23 @@ const Reminders = ({route, navigation}) => {
             : route.params.name === 'succulent'
             ? require(`../assets/header_bgs/succulent-01.png`)
             : require(`../assets/header_bgs/hydroponic-01.png`)} resizeMode="cover">
-              <View style={{backgroundColor: "rgba(0, 0, 0, 0.25)", justifyContent:'flex-end', height:'100%'}}>
-                <Text style={[{fontSize: 25, marginLeft: 125, fontWeight: '900', color: 'white', marginVertical: 10, }]}>{`${route.params.name[0].toUpperCase()+route.params.name.slice(1)}s`}</Text>
+              <View style={[{backgroundColor: "rgba(0, 0, 0, 0.25)", justifyContent:'flex-end', height:'100%'}, styles.shadow]}>
+                <Text style={[{fontSize: 25, marginLeft: 125, fontWeight: '900', color: 'white', marginVertical: 10, }]}>{`${route.params.name[0].toUpperCase()+route.params.name.slice(1)}${route.params.name[route.params.name.length-1] === 's' ? '' : 's'}`}</Text>
               </View>
       </ImageBackground>
       </View>
       {!plants
            ? <View></View>
-           :<FlatList style={{flexDirection:'column', height:'87.5%', width:'100%'}}
+           :<FlatList style={{flexDirection:'column', height:'89%', width:'100%'}}
           data={plants}
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.01}
           scrollEventThrottle={100}
+          onEndReached={getNextPlants}
           keyExtractor={(item) => item.key}
           renderItem={(item) => {
              return (
-              <View key={item.index}>
-                <View style={{
-                flexDirection: 'column',
-                width: '95%',
-                marginLeft: '2.5%',
-                marginBottom: 1,
-                }}>
-                    <TouchableOpacity
-                    onPress={() => navigation.navigate('PostModal',item)}>
-                      <View style={{ flexDirection: 'row',
-                       overflow:'hidden',justifyContent: 'space-between',
-                      shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, borderRadius: 5, backgroundColor: '#fff' }}>
-                        <View style={styles.textView}>
-
-                        <View style={{marginLeft: 35, alignSelf:'center'}}>
-                        <Text style={{fontSize: 14, fontWeight: 'bold'}}>
-                          {!item.item.commonName
-                            ?
-                            item.item.scientificName.split(' ').map((word) => {
-                              return word
-                            }).join(' ')
-                            : item.item.commonName.split(' ').map((word) => {
-                              return word
-                            }).join(' ')}
-                        </Text>
-
-                        <Text style={{fontSize: 10}}>{item.item.familyName}</Text>
-                        </View>
-
-                        <View style={{ flexDirection: 'row-reverse', width: '25%',
-                        paddingLeft: '5%',alignItems:'center', backgroundColor: '#E4F1E4', height: '100%', paddingVertical: 10}}>
-
-                        {item.item.tags.includes('Edible') ? <CustomSVG size={20} name='edible'/> : <View />}
-                        {item.item.tags.includes('Herbal') ? <CustomSVG   size={20} name='pagelines'/> : <View />}
-                        {item.item.tags.includes('Pine') ? <CustomSVG   size={20} name='tree'/> : <View />}
-                        {item.item.tags.includes('Carnivorous') ? <CustomSVG   size={20} name='bug'/> : <View />}
-                        {item.item.tags.includes('Rose') || item.item.tags.includes('Cannabaceae') || item.item.tags.includes('Cane Fruit') || item.item.tags.includes('Stone Fruit') || item.item.tags.includes('Buckthorn') ? <CustomSVG   size={20} name='rose'/> : <View />}
-                        {item.item.tags.includes('Tropical') ? <CustomSVG   size={22} name='palm'/> : <View />}
-                        {item.item.tags.includes('Cannabaceae') ? <CustomSVG   size={18} name='cannabis'/> : <View />}
-                        {item.item.tags.includes('Poisonous') ? <CustomSVG   size={18} name='poison'/> : <View />}
-                        {item.item.tags.includes('Aquatic - Freshwater') ? <CustomSVG   size={18} name='aquatic'/> : <View />}
-                        {item.item.tags.includes('Passion Fruit') || item.item.tags.includes('Gooseberry/Currant') || item.item.tags.includes('Cane Fruit') || item.item.tags.includes('Stone Fruit')  || item.item.tags.includes('Mulberry/Fig') || item.item.scientificName.split(' ')[0] === 'Citrus' ? <CustomSVG   size={18} name='fruit'/> : <View />}
-                        {item.item.tags.includes('Cactus') || item.item.tags.includes('Succulent')? <CustomSVG   size={20} name='succulent'/> : <View />}
-                        {item.item.tags.includes('Walnut') || item.item.tags.includes('Chestnut') || item.item.tags.includes('Hazelnut') || item.item.tags.includes('Pecan') ? <CustomSVG   size={20} name='nut'/> : <View />}
-                        </View>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                </View>
-              </View>
+              <SearchListItem key={item.item.id} navigation={navigation} item={item}/>
             )
           }} />}
           {refreshing ? <ActivityIndicator style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
@@ -200,6 +153,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-  }
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  },
 })
 

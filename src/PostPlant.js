@@ -30,7 +30,6 @@ const PostModal = ({route, navigation}) => {
   //   blackDot:'Black Dot',
   //   caneBlight:'Cane Blight'
   // }
-
   //notification function
 
   const postPlant = (plant, indoors, potted, hydroponic) => {

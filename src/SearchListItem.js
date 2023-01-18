@@ -2,11 +2,11 @@ import { StyleSheet, View, Text, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import CustomSVG from './CustomSVG'
 import { ScrollView } from 'react-native-gesture-handler'
+import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const SearchListItem = (props) => {
-  console.log('search list item props', props.item.item)
   return (
-    <View style={styles.shadow}>
+    <Animated.View entering={FadeInLeft.delay(200*props.item.index)} style={styles.shadow}>
                 <View style={{
                 marginBottom: 1,
                 }}>
@@ -19,7 +19,7 @@ const SearchListItem = (props) => {
                           <Image source={{uri: props.item.item.imgSrc}} style={{height:112, width: 112}}/>
 
                         <View style={{alignSelf:'center', width: '62.5%', marginLeft: '1.5%', paddingTop: '1.5%'}}>
-                          <View style={[{borderRadius: 25, backgroundColor:'#F97068', padding: 7}, styles.shadow]}>
+                          <View style={[{borderRadius: 25, padding: 7}, styles.shadow, props.item.index % 2 ? {backgroundColor:'#F97068'} : {backgroundColor:'#F5928D'}]}>
                         <Text style={{fontSize: 14, fontWeight: 'bold', color:'#fff'}}>
                           {!props.item.item.commonName
                             ? props.item.item.scientificName.split(' ').map((word) => {
@@ -58,7 +58,7 @@ const SearchListItem = (props) => {
                       </View>
                     </TouchableOpacity>
                 </View>
-              </View>
+    </Animated.View>
   )
 }
 

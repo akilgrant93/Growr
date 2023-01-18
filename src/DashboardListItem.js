@@ -13,7 +13,7 @@ const DashboardListItem2 = (props) => {
   const navigation = useNavigation()
   const wateringDateDifference =  moment(props.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days')
   return (
-    <Animated.View entering={FadeInLeft} duration={500} key={props.index} style={[{width:'48.5%',height: 156.5, backgroundColor:'white',borderRadius:15,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index <= 1 ? {} : {marginTop: 7.5}, props.index % 2 ? {marginLeft: '2.5%'} : {},styles.shadow]}>
+    <Animated.View entering={FadeInLeft.delay(200*props.index)} duration={500} key={props.index} style={[{width:'48.5%',height: 156.5, backgroundColor:'white',borderRadius:15,overflow:'hidden',borderBottomColor: 'rgba(3,71,50,.25)'}, props.index <= 1 ? {} : {marginTop: 7.5}, props.index % 2 ? {marginLeft: '2.5%'} : {},styles.shadow]}>
               <ImageBackground source={{ uri: props.item.plant.imgSrc }} style={{height:'100%'}}>
               <View style={[styles.textView, wateringDateDifference > 0 ?{backgroundColor:'rgba(84,91,152,.35)'} : {backgroundColor:'rgba(249,112,104,.25)'}]}>
                 {/* neeeds indoors and tags modularity */}
@@ -36,7 +36,7 @@ const DashboardListItem2 = (props) => {
                                : null }
 
                           <View style={{flexDirection:'row', width: '100%'}}>
-                            <View style={[{width: '100%',  alignItems:'center', paddingLeft: '5%', paddingTop: 2.5}, styles.shadow]}>
+                            <View style={[{width: '100%',  alignItems:'center'}, styles.shadow]}>
                               <Text style={[{fontSize: 18,textAlign:'center', fontWeight: '800',color:'#fff'}, styles.shadow]}>
                                 {props.item.name}
                               </Text>
