@@ -4,7 +4,8 @@ import {firebase} from '../config'
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import { FontAwesome } from '@expo/vector-icons'
-import DashboardListItem from './DashboardListItem'
+import DashboardListItem from './DashboardListItem2'
+import DashboardListItem2 from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
 import { useFocusEffect } from '@react-navigation/native';
 import Blink from './Blink'
@@ -286,7 +287,7 @@ const Dashboard = () => {
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (
-                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
+                <DashboardListItem2 item={item} lastIdx={plants.length-1} index={index}/>
             )
         }}
       />
