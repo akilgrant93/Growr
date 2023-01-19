@@ -3,12 +3,20 @@ import React, {useState, useEffect} from 'react'
 import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
 import SearchListItem from './SearchListItem'
+import SearchListItem2 from './SearchListItem2'
 
 const Reminders = ({route, navigation}) => {
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
-  const snapshot = firebase.firestore().collection('plant').where('tags','array-contains', route.params.name).orderBy('commonName')
+  const fbRoute = () => {
+    if(route.params.name === 'culinary'){
+      return 'culinary herb'
+    } else {
+      return route.params.name
+    }
+  }
+  const snapshot = firebase.firestore().collection('plant').where('tags','array-contains', fbRoute()).orderBy('commonName')
 
   const getNextPlants = () => {
     snapshot
@@ -46,8 +54,7 @@ const Reminders = ({route, navigation}) => {
   }, [])
   return (
     <View>
-      <View style={[{height:'11%'}, styles.shadow]}>
-
+      <View style={[{height:'11%', marginBottom: '2.5%'}, styles.shadow]}>
       <ImageBackground
         style={[{height: '100%'}, styles.shadow]}
           source={
@@ -62,11 +69,12 @@ const Reminders = ({route, navigation}) => {
             : route.params.name === 'succulent'
             ? require(`../assets/header_bgs/succulent-01.png`)
             : require(`../assets/header_bgs/hydroponic-01.png`)} resizeMode="cover">
-              <View style={[{backgroundColor: "rgba(0, 0, 0, 0.25)", justifyContent:'flex-end', height:'100%'}, styles.shadow]}>
-                <Text style={[{fontSize: 25, marginLeft: 125, fontWeight: '900', color: 'white', marginVertical: 10, }]}>{`${route.params.name[0].toUpperCase()+route.params.name.slice(1)}${route.params.name[route.params.name.length-1] === 's' ? '' : 's'}`}</Text>
+              <View style={[{backgroundColor: "rgba(0, 0, 0, 0.35)", justifyContent:'flex-end', height:'100%'}, styles.shadow]}>
+                <Text style={[{fontSize: 25, marginLeft: 125, fontWeight: '900', color: 'white', marginVertical: 10, }]}>{route.params.name === 'culinary' ? 'Culinary Herbs' : `${route.params.name[0].toUpperCase()+route.params.name.slice(1)}${route.params.name[route.params.name.length-1] === 's' ? '' : 's'}`}</Text>
               </View>
       </ImageBackground>
       </View>
+
       {!plants
            ? <View></View>
            :<FlatList style={{flexDirection:'column', height:'89%', width:'100%'}}
@@ -74,14 +82,14 @@ const Reminders = ({route, navigation}) => {
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.01}
           scrollEventThrottle={100}
+          numColumns={2}
           onEndReached={getNextPlants}
-          keyExtractor={(item) => item.key}
-          renderItem={(item) => {
+          renderItem={(item) => { console.log(item.index)
              return (
-              <SearchListItem key={item.item.id} navigation={navigation} item={item}/>
+              <SearchListItem2 key={item.item.id} navigation={navigation} item={item}/>
             )
           }} />}
-          {refreshing ? <ActivityIndicator style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
+          {refreshing ? <ActivityIndicator key={'asdasdasdas'} style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
     </View>
   )
 }

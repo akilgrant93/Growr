@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const SearchListItem = (props) => {
+  //might need to refactor the animation delay w/ regard to the lazy loading
   return (
     <Animated.View entering={FadeInLeft.delay(200*props.item.index)} style={styles.shadow}>
                 <View style={{

@@ -8,6 +8,9 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
 import { PlusCircleIcon } from 'react-native-heroicons/outline'
+import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
+import { FontAwesome } from '@expo/vector-icons'
+import Blink from './Blink'
 
 const PostModal = ({route, navigation}) => {
   const [image, setImage] = useState(null);
@@ -17,6 +20,7 @@ const PostModal = ({route, navigation}) => {
   const [sliderValue, setSliderValue]= useState(0)
   const [hoverValue, setHoverValue]= useState(0)
   const [calendars, setCalendars]= useState([])
+  const [bottomReached, setBottomReached] = useState(false)
 
   // const diseasesObj = {
   //   rootRot:'Root Rot',
@@ -31,11 +35,30 @@ const PostModal = ({route, navigation}) => {
   //   caneBlight:'Cane Blight'
   // }
   //notification function
+  const setMaxSliderValue = () => {
+    if(route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic){
+      return 15
+    } else {
+      return 8
+    }
+  }
+
+  const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+    const paddingToBottom = 20;
+    return layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom;
+  };
+
+  function titleCase(str) {
+    return str.toLowerCase().split(' ').map(function(word) {
+      return word.replace(word[0], word[0].toUpperCase());
+    }).join(' ');
+  }
 
   const postPlant = (plant, indoors, potted, hydroponic) => {
     let succulent
 
-    if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){
+    if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.family === 'Cactaceae'){
       succulent = true
     } else {
       succulent = false
@@ -78,19 +101,6 @@ const PostModal = ({route, navigation}) => {
       }
       }
 
-    // //if the common name is bugged
-    // if(typeof plant === 'string'){
-    //   postUserPlant(
-    //     plant,
-    //     isPotted,
-    //     isIndoors,
-    //     isHydroponic,
-    //     succulent, '', base, sliderValue,
-    //     plant.tags, plant.id
-    //     )
-    //   }
-
-    //if theres a common name
       postUserPlant(
         plant.commonName,
         plant,
@@ -99,20 +109,10 @@ const PostModal = ({route, navigation}) => {
         isHydroponic,
         succulent, '', base, sliderValue, plant.tags, plant.id
       )
-    //otherwise refer to the scientific name
-    // else if(!plant.commonName && typeof plant !== 'string') {
-    //   postUserPlant(
-    //     plant.scientificName,
-    //     isPotted,
-    //     isIndoors,
-    //     isHydroponic,
-    //     succulent, '', base, sliderValue,plant.tags, plant.id)
-    // }
+
     setIsPotted(false)
     setIsIndoors(false)
     setIsHydroponic(false)
-    // pass this from the postPlant component
-    // setTableData(false)
     navigation.navigate('My Garden')
   }
 
@@ -348,11 +348,11 @@ const pickImage = async () => {
     <View style={[styles.container, {backgroundColor: '#034732'}]}>
       <SafeAreaView style={{backgroundColor:'rgba(240,240,240,.25)', width:'100%', height: '100%'}}>
       <View style={[{backgroundColor: '#545B98', position:'absolute', marginLeft: 150, width: '60%', marginTop: 35, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, height: 51, justifyContent:'center'}, styles.shadow]}>
-      <Text style={{fontSize: 15, padding:7.5, paddingLeft: 15,fontWeight:'900', color:'white', }}>{route.params.item.commonName}</Text>
+      <Text style={{fontSize: 15, padding:7.5, paddingLeft: 15,fontWeight:'900', color:'white', }}>My {route.params.item.commonName}</Text>
       </View>
         <View style={[styles.shadow, {height: '92.5%'}]}>
-        <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#fff'}}>
-        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .5)'}}>
+        <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#82A398'}}>
+        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .7)'}}>
       <Image source={{ uri: route.params.item.imgSrc }} style={{width: 115, height: 115}} />
       <View style={{flex:1}}>
 
@@ -387,34 +387,51 @@ const pickImage = async () => {
 
         </View>
 
-        <ScrollView style={{width:'100%'}}>
+        <View style={{width:'100%', flex:1}}>
         <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
           <View style={styles.shadow}>
-          <View style={{backgroundColor:'#545B98', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}}>
+          <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}]}>
             <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
           </View>
           </View>
-      <ScrollView style={{height:120, paddingHorizontal:5}}>
-      <Text>
+      <ScrollView style={[{height:120, padding:15, marginBottom: 5, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
+        if (isCloseToBottom(nativeEvent)) {
+        setBottomReached(true)
+        }
+        }}
+      scrollEventThrottle={400}>
+      <Text style={{paddingBottom: 25}}>
       {route.params.item.description}
       </Text>
       </ScrollView>
+       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 165, right: 15}}>
+        <FontAwesome
+        style={{}}
+        color='rgba(249,112,104,.75)'
+        name='sort-desc'
+        size={30}
+        />
+      </Blink>}
         </View>
 
            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}}>
+      <View style={[{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
             <Slider
           // value={value}
-              style={{marginTop: 15,width:'100%', alignSelf:'center'}}
+              style={{marginTop: 5,width:'90%', alignSelf:'center'}}
               onValueChange={value => setSliderValue(parseInt(value))}
-              minimumTrackTintColor={'#004d00'}
-              maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+              minimumTrackTintColor={setMaxSliderValue() === sliderValue || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ? '#F97068' : '#545B98'}
+              //refactor for succulents when added to db
+              // maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+              maximumValue={setMaxSliderValue()}
               minimumValue={0}
               value={0}
               onSlidingStart={value => setHoverValue(parseInt(value))}
               step={1}
                 />
-            <Text style={{textAlign:'center'}}>Last watered {
+                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:25}}>
+
+            <Text style={{textAlign:'center', fontWeight:'bold',color:'#545B98'}}>{isHydroponic ? 'Resevior water changed' : 'Watered'} {
           sliderValue === 0
           ? 'today'
           : sliderValue === 1
@@ -423,12 +440,28 @@ const pickImage = async () => {
           ? `${sliderValue} days ago`
           : sliderValue === 7
           ? 'a week ago'
-          : sliderValue > 7 && sliderValue <= 13
+          : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 15
           ? `${sliderValue} days ago`
+          : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 8
+          ? `over a week ago`
           : sliderValue === 14
           ? 'two weeks ago'
           : 'over two weeks ago'
           }</Text>
+
+            {!isHydroponic && sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
+                  <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5,marginLeft: 5,}, styles.shadow]}>
+                    <Text style={{color:'white', textAlign:'center'}}>Needs water</Text>
+                  </Animated.View>
+                  : null}
+                </View>
+                {isHydroponic && <View style={{height:25, marginTop: 5}}>
+                  {sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
+                  <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5}, styles.shadow]}>
+                    <Text style={{color:'white', textAlign:'center'}}>Needs resevior change</Text>
+                  </Animated.View>
+                  : null}
+                </View>}
       </View>
 
         {/* icons needed */}
@@ -485,7 +518,7 @@ const pickImage = async () => {
               {route.params.item.tags.length > 0
         ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, padding:10, paddingHorizontal:15, width: '100%'}]}>
        {route.params.item.tags.map((tag, idx) => {
-       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{tag[0].toUpperCase()+tag.slice(1)}</Text></View>
+       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
         })}
         </View>
         : <View/>}
@@ -495,23 +528,23 @@ const pickImage = async () => {
             <TextInput placeholder='Write some notes about your plant' style={{marginTop: 5,padding: 5,width: 340}}/>
         </View> */}
 
-        </ScrollView>
-      <View style={{width: '101%', alignItems:'flex-end'}}>
+        </View>
+
+        <View style={{width: '101%', alignItems:'flex-end'}}>
       <TouchableOpacity
           onPress={() => {postPlant(route.params.item, isIndoors, isPotted, isHydroponic)}}
           style={{backgroundColor:'#545B98', padding: 15, borderTopLeftRadius: 100, flexDirection:'row', alignItems:'flex-end'}}
         >
           <Text style={{color:'#fff', paddingHorizontal: 5, paddingLeft: 10, fontWeight:'bold'}}>Track</Text>
           <PlusCircleIcon style={styles.shadow} color={'white'} size={25}/>
-
         </TouchableOpacity>
       </View>
-
 
 
         </View>
         </View>
       </SafeAreaView>
+
     </View>
   )
 }

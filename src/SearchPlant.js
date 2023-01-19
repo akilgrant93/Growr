@@ -5,6 +5,7 @@ import { firebase } from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import CategoryLink from './CategoryLink'
 import SearchListItem from './SearchListItem'
+import SearchListItem2 from './SearchListItem2'
 
 const SearchPlant = ({route, navigation}) => {
   const [endCursor, setEndCursor] = useState({})
@@ -29,6 +30,7 @@ const SearchPlant = ({route, navigation}) => {
           querySnapshot.forEach((plant) => {
             const plantData = plant.data()
             plantData.id = plant.id
+            plantData.tags = [...new Set(plantData.tags)]
             plantsArr.push(plantData)
           })
           setRefreshing(false);
@@ -85,7 +87,7 @@ const SearchPlant = ({route, navigation}) => {
   return (
     <View style={{width: '100%', height: '100%', backgroundColor:'#034732'}}>
     <SafeAreaView style={[styles.container, styles.shadow]}>
-      <View style={[{backgroundColor: '#82A398', width:'90%', marginLeft: '5%', borderRadius: 25,overflow:'hidden'}, plants.length > 0 ? {marginBottom:5, paddingBottom:10} : { height:'97.5%'}]}>
+      <View style={[{backgroundColor: '#82A398', width:'90%', marginLeft: '5%', borderRadius: 25,overflow:'hidden'}, plants.length > 0 ? {marginBottom:5, paddingBottom:10} : { height:'20%'}]}>
       <View style={{flexDirection:'row', alignItems:'center', paddingVertical:10, paddingTop:30, width: '90%',borderRadius: 25}}>
                 <Text style={{paddingLeft: 20, fontSize: 25, fontWeight: '900', color: '#fff'}}>Discover</Text>
                 <FontAwesome
@@ -116,41 +118,41 @@ const SearchPlant = ({route, navigation}) => {
       </View>
       </View>
 
+      </View>
+
       {plants.length < 1 ?
-      <View style={{marginTop: '6%'}}>
+      <View style={{marginTop: '3%',marginLeft: '2.5%', width: '92.5%'}}>
         <View style={{flexDirection:'row'}}>
         <CategoryLink navigation={navigation} type='fruit'/>
         <CategoryLink navigation={navigation} type='vegetable'/>
         </View>
-        <View style={{flexDirection:'row'}}>
-        <CategoryLink navigation={navigation} type='culinary herb'/>
+        <View style={{flexDirection:'row', paddingTop: '2.5%'}}>
+        <CategoryLink navigation={navigation} type='culinary'/>
         <CategoryLink navigation={navigation} type='hydroponic'/>
         </View>
-        <View style={{flexDirection:'row'}}>
+        <View style={{flexDirection:'row', paddingTop: '2.5%'}}>
         <CategoryLink navigation={navigation} type='carnivorous'/>
         <CategoryLink navigation={navigation} type='houseplant'/>
         </View>
       </View>
       : <View/>}
-      </View>
 
       {!plants
            ? <View></View>
            :
-       <FlatList style={{flexDirection:'column',marginTop: '1%', borderRadius: 5, overflow:'hidden'}}
+       <FlatList style={{marginTop: '1%', borderRadius: 5, overflow:'hidden'}}
           data={plants}
-          keyExtractor={(item) => item.key}
           onEndReached={submitMoreSearches}
           onEndReachedThreshold={0.01}
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={150}
+          numColumns={2}
           ListFooterComponent={() =>
             plants[plants.length] !== undefined && plants.length == true &&
           <ActivityIndicator key={'asd'} color={'#F97068'}/>}
-          renderItem={(item, idx) => {
-
+          renderItem={(item) => {
              return (
-              <SearchListItem key={item.item.id} navigation={navigation} item={item}/>
+              <SearchListItem2 key={item.item.id} navigation={navigation} item={item}/>
             )
           }} />}
 

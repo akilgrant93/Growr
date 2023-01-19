@@ -40,26 +40,7 @@ const DashboardListItem2 = (props) => {
                               <Text style={[{fontSize: 18,textAlign:'center', fontWeight: '800',color:'#fff'}, styles.shadow]}>
                                 {props.item.name}
                               </Text>
-                              {/* {wateringDateDifference < 0 ?
-                              <Blink duration={2000}>
-                               <View style={{backgroundColor:'#F97068', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}}>
 
-                                <FontAwesome
-                                style={{paddingRight: 5}}
-                                name='tint'
-                                color={'#fff'}
-                                size={10}
-                                />
-                               <Text style={{fontSize: 14,color:'#fff'}}>
-                                Needs water
-                              </Text>
-                               </View>
-                               </Blink>
-                               :
-                               <View style={[{backgroundColor:'#545B98', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}, styles.shadow]}>
-                                { wateringDateDifference >= 0 ? <Text style={{fontSize: 14, fontWeight:'500', color:'white'}}>Water {  wateringDateDifference === 1 ? 'tomorrow' : `in ${wateringDateDifference} days`}</Text> : null }
-                                </View>
-                               } */}
                             </View>
 
                           </View>

@@ -212,7 +212,6 @@ const changeDate = (date) => {
         </View>
 
       <Animated.View entering={FadeInLeft} style={{height: '43%', backgroundColor:'#FBB7B4', borderRadius: 25, overflow:'hidden'}}>
-
           <View style={{flexDirection:'row', alignItems:'center', paddingTop:10, paddingTop:30, marginLeft: 15}}>
               <Text style={{fontSize: 25, fontWeight: '900', color: '#fff'}}>Reminders</Text>
               <FontAwesome

@@ -12,8 +12,6 @@ import * as Location from 'expo-location';
 import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
-import { useNavigation } from "@react-navigation/native";
-
 import Signin from "./src/Signin";
 import Registration from "./src/Registration";
 import Settings from "./src/Settings";
@@ -27,6 +25,11 @@ import PlantsByCategory from './src/PlantsByCategory';
 
 const Stack = createStackNavigator()
 const Tab = createBottomTabNavigator();
+function titleCase(str) {
+  return str.toLowerCase().split(' ').map(function(word) {
+    return word.replace(word[0], word[0].toUpperCase());
+  }).join(' ');
+}
 
 function Home() {
   return (
@@ -172,6 +175,7 @@ function App(){
         name="PostModal"
         component={PostPlant}
         options={({route}) =>
+        // console.log(route)
         ({
           title: route.params.item.commonName,
           headerTitle: () => <CategoryHeader title={route.params.item.commonName}/>,

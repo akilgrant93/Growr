@@ -120,7 +120,6 @@ const Dashboard = () => {
         toggleIndoor(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
-            console.log('plant',plant)
             return plant.isIndoors === true
           })])
         setSelectedCategory(name)
@@ -140,7 +139,6 @@ const Dashboard = () => {
         toggleOutdoor(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
-          console.log('plant',plant)
           return plant.isIndoors === false
         })])
         setSelectedCategory(name)
@@ -160,7 +158,6 @@ const Dashboard = () => {
         togglePotted(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
-          console.log('plant',plant)
           return plant.isPotted === true
         })])
         setSelectedCategory(name)
@@ -180,7 +177,6 @@ const Dashboard = () => {
         togglehydroponic(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
-          console.log('plant',plant)
           return plant.isHydroponic === true
         })])
         setSelectedCategory(name)
@@ -200,7 +196,6 @@ const Dashboard = () => {
         toggleHungry(false)
       } else {
         setPlantsList([...plants.filter((plant) => {
-          console.log('plant',plant)
           return plant.isHungry === true
         })])
         setSelectedCategory(name)

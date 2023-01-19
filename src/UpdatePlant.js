@@ -11,6 +11,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import Blink from './Blink'
 import { FontAwesome } from '@expo/vector-icons'
 import { ArrowUpOnSquareIcon, TrashIcon } from 'react-native-heroicons/outline'
+import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
 const UpdateModal = ({route, navigation}) => {
   const [isPotted, setIsPotted]= useState(false)
@@ -33,6 +34,11 @@ const UpdateModal = ({route, navigation}) => {
   //   blackDot:'Black Dot',
   //   caneBlight:'Cane Blight'
   // }
+  const titleCase = (str) => {
+    return str.toLowerCase().split(' ').map(function(word) {
+      return word.replace(word[0], word[0].toUpperCase());
+    }).join(' ');
+  }
 
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     const paddingToBottom = 20;
@@ -45,7 +51,7 @@ const UpdateModal = ({route, navigation}) => {
   const updatePlant = (plant, indoors, potted, hydroponic) => {
     let succulent
 
-    if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.familyName === 'Cactaceae'){
+    if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.family === 'Cactaceae'){
       succulent = true
     } else {
       succulent = false
@@ -361,6 +367,14 @@ useFocusEffect(
   }, [])
 );
 
+  const setMaxSliderValue = () => {
+    if(route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') || isHydroponic){
+      return 15
+    } else {
+      return 8
+    }
+  }
+
   //delete a plant from users list of plant entries
   const deletePlant = (plant) => {
     const currentPlantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(plant.id)
@@ -385,8 +399,8 @@ useFocusEffect(
       <Text style={{fontSize: 15, padding:7.5, paddingLeft: 15,fontWeight:'900', color:'white', }}>My {route.params.item.plant.commonName}</Text>
       </View>
         <View style={[styles.shadow, {height: '92.5%'}]}>
-        <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#fff'}}>
-        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .5)'}}>
+        <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#82A398'}}>
+        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .7)'}}>
       <Image source={{ uri: route.params.item.plant.imgSrc }} style={{width: 115, height: 115}} />
       <View style={{flex:1}}>
 
@@ -424,17 +438,17 @@ useFocusEffect(
         <View style={{width:'100%', flex:1}}>
         <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
           <View style={styles.shadow}>
-          <View style={{backgroundColor:'#545B98', borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}}>
+          <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}]}>
             <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
           </View>
           </View>
-      <ScrollView style={{height:120, paddingHorizontal:5, marginBottom: 15}} onScroll={({nativeEvent}) => {
+      <ScrollView style={[{height:120, padding:15, marginBottom: 5, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
         if (isCloseToBottom(nativeEvent)) {
         setBottomReached(true)
         }
         }}
       scrollEventThrottle={400}>
-      <Text>
+      <Text style={{paddingBottom: 25}}>
       {route.params.item.plant.description}
       </Text>
       </ScrollView>
@@ -449,19 +463,23 @@ useFocusEffect(
         </View>
 
            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      <View style={{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}}>
+      <View style={[{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
             <Slider
           // value={value}
-              style={{marginTop: 15,width:'100%', alignSelf:'center'}}
+              style={{marginTop: 5,width:'90%', alignSelf:'center'}}
               onValueChange={value => setSliderValue(parseInt(value))}
-              minimumTrackTintColor={'#004d00'}
-              maximumValue={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+              minimumTrackTintColor={setMaxSliderValue() === sliderValue || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ? '#F97068' : '#545B98'}
+              //refactor for succulents when added to db
+              // maximumValue={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+              maximumValue={setMaxSliderValue()}
               minimumValue={0}
               value={0}
               onSlidingStart={value => setHoverValue(parseInt(value))}
               step={1}
                 />
-            <Text style={{textAlign:'center'}}>Last watered {
+                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:25}}>
+
+            <Text style={{textAlign:'center', fontWeight:'bold',color:'#545B98'}}>{isHydroponic ? 'Resevior water changed' : 'Watered'} {
           sliderValue === 0
           ? 'today'
           : sliderValue === 1
@@ -470,12 +488,28 @@ useFocusEffect(
           ? `${sliderValue} days ago`
           : sliderValue === 7
           ? 'a week ago'
-          : sliderValue > 7 && sliderValue <= 13
+          : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 15
           ? `${sliderValue} days ago`
+          : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 8
+          ? `over a week ago`
           : sliderValue === 14
           ? 'two weeks ago'
           : 'over two weeks ago'
           }</Text>
+
+            {!isHydroponic && sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
+                  <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5,marginLeft: 5,}, styles.shadow]}>
+                    <Text style={{color:'white', textAlign:'center'}}>Needs water</Text>
+                  </Animated.View>
+                  : null}
+                </View>
+                {isHydroponic && <View style={{height:25, marginTop: 5}}>
+                  {sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
+                  <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5}, styles.shadow]}>
+                    <Text style={{color:'white', textAlign:'center'}}>Needs resevior change</Text>
+                  </Animated.View>
+                  : null}
+                </View>}
       </View>
 
         {/* icons needed */}
@@ -532,7 +566,7 @@ useFocusEffect(
               {route.params.item.plant.tags.length > 0
         ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, padding:10, paddingHorizontal:15, width: '100%'}]}>
        {route.params.item.plant.tags.map((tag, idx) => {
-       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{tag[0].toUpperCase()+tag.slice(1)}</Text></View>
+       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
         })}
         </View>
         : <View/>}
@@ -573,7 +607,7 @@ export default UpdateModal
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'white',
+    backgroundColor: '#82A398',
     height: '100%',
     alignItems:'center'
   },
