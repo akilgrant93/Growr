@@ -5,7 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const SearchListItem2 = (props) => {
-  console.log(props.item.item.tags)
+  // console.log(props.item.item.tags)
   const tagsArr = [...new Set(props.item.item.tags)]
   //might need to refactor the animation delay w/ regard to the lazy loading
   return (

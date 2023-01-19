@@ -14,6 +14,8 @@ import { ArrowUpOnSquareIcon, TrashIcon } from 'react-native-heroicons/outline'
 import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
 const UpdateModal = ({route, navigation}) => {
+  console.log(route.params.item.id)
+
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)
@@ -94,34 +96,14 @@ const UpdateModal = ({route, navigation}) => {
       }
       }
 
-    //if the common name is bugged
-    if(typeof plant === 'string'){
-      postUserPlant(
-        plant,
-        isPotted,
-        isIndoors,
-        isHydroponic,
-        succulent, '', base, sliderValue,plant.firestoreID
-        )
-      }
-
-    //if theres a common name
     if(plant.commonName){
-      postUserPlant(
+      updateUserPlant(
+        route.params.item.id,
         plant.commonName,
         isPotted,
         isIndoors,
-        isHydroponic,
-        succulent, '', base, sliderValue,plant.firestoreID
+        isHydroponic, '', base, sliderValue
       )
-    //otherwise refer to the scientific name
-    } else if(!plant.commonName && typeof plant !== 'string') {
-      postUserPlant(
-        plant.scientificName,
-        isPotted,
-        isIndoors,
-        isHydroponic,
-        succulent, '', base, sliderValue,plant.firestoreID)
     }
     setIsPotted(false)
     setIsIndoors(false)
@@ -129,12 +111,12 @@ const UpdateModal = ({route, navigation}) => {
     navigation.navigate('My Garden')
   }
 
-   const postUserPlant = async(
+   const updateUserPlant = async(
+    id,
     name,
     isPotted,
     isIndoors,
-    isHydroponic,
-    isSucculent, notes, notificationInterval, lastWatered,firestoreID) => {
+    isHydroponic, notes, notificationInterval, lastWatered) => {
 
     const one_day=1000*60*60*24;
     const now = moment()
@@ -147,18 +129,14 @@ const UpdateModal = ({route, navigation}) => {
     const difference_ms = date1_ms - date2_ms;
     const difference_days = Math.round(difference_ms/one_day)
 
-    let isThirsty
     let notificationID
 
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-    const newUserPlant = plantsRef.doc()
-    const newUserPlantID = newUserPlant.id
+    const currentUserPlant = plantsRef.doc(id)
 
     //no notification immediate alert
     if(difference_days >= notificationInterval){
-      isThirsty = true
       notificationID = null
-
     }
     //notification with alert tied to notificationInterval
     else {
@@ -167,7 +145,6 @@ const UpdateModal = ({route, navigation}) => {
 
     const difference_ms = date2_ms - date1_ms;
     const difference_days = Math.round(difference_ms/one_day)
-      isThirsty = false
       notificationID = await Notifications.scheduleNotificationAsync({
         content: {
           title: `${
@@ -213,7 +190,6 @@ const UpdateModal = ({route, navigation}) => {
         notificationInterval,
         nextWateringDate:nextWateringDate.valueOf(),
         lastWateringDate:lastWateringDate.valueOf(),
-        isThirsty,
         calendar:{
           wateringDates: [lastWateringDate.valueOf()],
           nextWateringDate:nextWateringDate.valueOf(),
@@ -222,15 +198,16 @@ const UpdateModal = ({route, navigation}) => {
           notes,
          }
       }
-      newUserPlant
-      .set(plantData)
+
+      currentUserPlant
+      .set(plantData,{ merge: true })
       .then(() => {
         setSliderValue(0)
         setIsHydroponic(false)
         setIsIndoors(false)
         setIsPotted(false)
         Keyboard.dismiss()
-        if(isThirsty){
+        if(difference_days <= 0){
           alert(`Your ${name} needs water!`)
         }
       })
@@ -588,7 +565,7 @@ useFocusEffect(
           <Text style={{color:'#fff', paddingHorizontal: 5, paddingRight: 10, fontWeight:'bold'}}>Delete</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={() => {postPlant(route.params.item.plant, isIndoors, isPotted, isHydroponic)}}
+          onPress={() => {updatePlant(route.params.item.plant, isIndoors, isPotted, isHydroponic)}}
           style={{backgroundColor:'#545B98', padding: 15, borderTopLeftRadius: 100, flexDirection:'row', alignItems:'flex-end'}}
         >
           <Text style={{color:'#fff', paddingHorizontal: 5, paddingLeft: 10, fontWeight:'bold'}}>Update</Text>

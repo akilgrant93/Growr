@@ -15,7 +15,7 @@ const Settings = () => {
   const [unitSystem, setUnitSystem] = useState('Imperial')
 
   // const signOut = () => {
-  //   // console.log()
+  //   console.log()
   //   navigation.navigate('Sign In')
   //   // firebase.auth().signOut()
   // }

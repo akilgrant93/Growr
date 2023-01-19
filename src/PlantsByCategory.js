@@ -1,14 +1,20 @@
 import { StyleSheet, Text, View, FlatList, TouchableOpacity, ImageBackground, ActivityIndicator, RefreshControl, SafeAreaView } from 'react-native'
 import React, {useState, useEffect} from 'react'
-import CustomSVG from './CustomSVG'
 import { firebase } from '../config'
+
 import SearchListItem from './SearchListItem'
 import SearchListItem2 from './SearchListItem2'
+import CategoryDescription from './CategoryDescription'
+// import { BookOpenIcon, ArrowDownLeftIcon } from 'react-native-heroicons/solid'
+// import Animated, { withSpring, useSharedValue, useAnimatedGestureHandler, useAnimatedStyle } from 'react-native-reanimated';
+// import { TapGestureHandler } from 'react-native-gesture-handler'
+
 
 const Reminders = ({route, navigation}) => {
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
+
   const fbRoute = () => {
     if(route.params.name === 'culinary'){
       return 'culinary herb'
@@ -84,12 +90,16 @@ const Reminders = ({route, navigation}) => {
           scrollEventThrottle={100}
           numColumns={2}
           onEndReached={getNextPlants}
-          renderItem={(item) => { console.log(item.index)
+          renderItem={(item) => {
+            // console.log(item.index)
              return (
               <SearchListItem2 key={item.item.id} navigation={navigation} item={item}/>
             )
           }} />}
+
           {refreshing ? <ActivityIndicator key={'asdasdasdas'} style={{justifyContent:'center', alignItems:'center'}} size={'large'}/> : null}
+
+          <CategoryDescription name={route.params.name}/>
     </View>
   )
 }

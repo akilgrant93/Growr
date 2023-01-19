@@ -87,16 +87,16 @@ const Dashboard = () => {
 
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
-      const plantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(notification.request.content.data.firestoreplantID)
-      plantRef.get().then(async (plant) => {
-        if (plant.exists) {
-          await plantRef.update({isThirsty: true});
-        } else {
-            console.log("No such document!");
-        }
-    }).catch((error) => {
-       alert("Error getting document:", error);
-    });
+    //   const plantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(notification.request.content.data.firestoreplantID)
+    //   plantRef.get().then(async (plant) => {
+    //     if (plant.exists) {
+    //       await plantRef.update({isThirsty: true});
+    //     } else {
+    //         console.log("No such document!");
+    //     }
+    // }).catch((error) => {
+    //    alert("Error getting document:", error);
+    // });
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
