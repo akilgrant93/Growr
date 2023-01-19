@@ -472,6 +472,7 @@ useFocusEffect(
               //refactor for succulents when added to db
               // maximumValue={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') || isHydroponic ? 15 : 8}
               maximumValue={setMaxSliderValue()}
+              maximumTrackTintColor={'#F97068'}
               minimumValue={0}
               value={0}
               onSlidingStart={value => setHoverValue(parseInt(value))}

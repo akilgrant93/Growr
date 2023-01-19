@@ -21,9 +21,9 @@ const DashboardListItem2 = (props) => {
                   onPress={() => navigation.navigate('UpdateModal',{item:props.item, navigation})}>
                         <View style={{width:'100%',height: '100%',justifyContent:'center', alignItems:'center'}}>
 
-                        {wateringDateDifference < 0 ?
-                              <Blink duration={1500} style={{marginLeft: '70%', top: -15}}>
-                               <View style={[{position: 'absolute',borderRadius: 50}, styles.shadow]}>
+                        {wateringDateDifference <= 0 ?
+                              <Blink duration={1500} style={{left: 135, top: 5, position: 'absolute'}}>
+                               <View style={[{borderRadius: 50}, styles.shadow]}>
 
                                 <FontAwesome
                                 style={[{padding:5}, styles.shadow]}

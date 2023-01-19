@@ -31,7 +31,7 @@ const DashboardListItem = (props) => {
                               <Text style={[{fontSize: 14, fontWeight: '800',color:'#000'}, wateringDateDifference >= 0 ? {maxWidth: '60%'} : {maxWidth: '80%'}]}>
                                 {props.item.name}
                               </Text>
-                              {wateringDateDifference < 0 ?
+                              {wateringDateDifference <= 0 ?
                               <Blink duration={2000}>
                                <View style={{backgroundColor:'#F97068', flexDirection:'row',alignSelf:'flex-start', alignItems:'center', paddingHorizontal: 5, borderRadius: 5, padding: 2.5}}>
 

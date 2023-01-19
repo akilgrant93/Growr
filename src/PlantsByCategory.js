@@ -21,7 +21,7 @@ const Reminders = ({route, navigation}) => {
   const getNextPlants = () => {
     snapshot
     .startAfter(endCursor)
-    .limit(25)
+    .limit(26)
     .onSnapshot(
       querySnapshot => {
         const plantsArr = []
@@ -38,7 +38,7 @@ const Reminders = ({route, navigation}) => {
   useEffect(() => {
     //we will need to process route params for 'fruit', 'hydroponic', 'medicinal'
     snapshot
-    .limit(25)
+    .limit(26)
     .onSnapshot(
       querySnapshot => {
         const plantsArr = []
@@ -77,7 +77,7 @@ const Reminders = ({route, navigation}) => {
 
       {!plants
            ? <View></View>
-           :<FlatList style={{flexDirection:'column', height:'89%', width:'100%'}}
+           :<FlatList style={{flexDirection:'column', height:'89%', width:'100%', overflow:'hidden'}}
           data={plants}
           showsVerticalScrollIndicator={false}
           onEndReachedThreshold={0.01}

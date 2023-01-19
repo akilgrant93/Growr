@@ -287,7 +287,7 @@ const Dashboard = () => {
         onEndReached={() => setBottomReached(true)}
         renderItem={({item, index}) => {
             return (
-                <DashboardListItem2 item={item} lastIdx={plants.length-1} index={index}/>
+                <DashboardListItem item={item} lastIdx={plants.length-1} index={index}/>
             )
         }}
       />
