@@ -61,24 +61,10 @@ const Reminders = ({route, navigation}) => {
   return (
     <View>
       <View style={[{height:'11%', marginBottom: '2.5%'}, styles.shadow]}>
-      <ImageBackground
-        style={[{height: '100%'}, styles.shadow]}
-          source={
-            route.params.name === 'edible'
-            ? require(`../assets/header_bgs/edible-01.png`)
-            : route.params.name === 'medicinal'
-            ? require(`../assets/header_bgs/medicinal-01.png`)
-            : route.params.name === 'fruit'
-            ? require(`../assets/header_bgs/fruit-01.png`)
-            : route.params.name === 'tropical'
-            ? require(`../assets/header_bgs/tropical-01.png`)
-            : route.params.name === 'succulent'
-            ? require(`../assets/header_bgs/succulent-01.png`)
-            : require(`../assets/header_bgs/hydroponic-01.png`)} resizeMode="cover">
               <View style={[{backgroundColor: "rgba(0, 0, 0, 0.35)", justifyContent:'flex-end', height:'100%'}, styles.shadow]}>
                 <Text style={[{fontSize: 25, marginLeft: 125, fontWeight: '900', color: 'white', marginVertical: 10, }]}>{route.params.name === 'culinary' ? 'Culinary Herbs' : `${route.params.name[0].toUpperCase()+route.params.name.slice(1)}${route.params.name[route.params.name.length-1] === 's' ? '' : 's'}`}</Text>
               </View>
-      </ImageBackground>
+
       </View>
 
       {!plants

@@ -22,6 +22,8 @@ const PostModal = ({route, navigation}) => {
   const [calendars, setCalendars]= useState([])
   const [bottomReached, setBottomReached] = useState(false)
 
+  console.log(route.params.item.id)
+
   // const diseasesObj = {
   //   rootRot:'Root Rot',
   //   canker:'Canker',
@@ -107,7 +109,7 @@ const PostModal = ({route, navigation}) => {
         isPotted,
         isIndoors,
         isHydroponic,
-        succulent, '', base, sliderValue, plant.tags, plant.id
+        succulent, '', base, sliderValue
       )
 
     setIsPotted(false)
@@ -134,7 +136,6 @@ const PostModal = ({route, navigation}) => {
     const difference_ms = date1_ms - date2_ms;
     const difference_days = Math.round(difference_ms/one_day)
 
-    let isThirsty
     let notificationID
 
     const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
@@ -143,9 +144,7 @@ const PostModal = ({route, navigation}) => {
 
     //no notification immediate alert
     if(difference_days >= notificationInterval){
-      isThirsty = true
       notificationID = null
-
     }
     //notification with alert tied to notificationInterval
     else {
@@ -154,7 +153,6 @@ const PostModal = ({route, navigation}) => {
 
     const difference_ms = date2_ms - date1_ms;
     const difference_days = Math.round(difference_ms/one_day)
-      isThirsty = false
       notificationID = await Notifications.scheduleNotificationAsync({
         content: {
           title: `${
@@ -171,8 +169,10 @@ const PostModal = ({route, navigation}) => {
           }
         },
         //will need to switch seconds to days
+
+        //calculate seconds such that it actually translates to days - eventually landing on the exact date at 12 PM. Change notification time function added in later updates.
         trigger: {
-          seconds: difference_days,
+          seconds: difference_days*60,
           repeats: false
         }
       })
@@ -202,7 +202,6 @@ const PostModal = ({route, navigation}) => {
         notificationInterval,
         nextWateringDate:nextWateringDate.valueOf(),
         lastWateringDate:lastWateringDate.valueOf(),
-        isThirsty,
         wateringDates: [lastWateringDate.valueOf()],
       }
       newUserPlant
@@ -213,7 +212,7 @@ const PostModal = ({route, navigation}) => {
         setIsIndoors(false)
         setIsPotted(false)
         Keyboard.dismiss()
-        if(isThirsty){
+        if(difference_days <= 0){
           alert(`Your ${name} needs water!`)
         }
       })

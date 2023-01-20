@@ -1,5 +1,6 @@
 import { Text, View, TouchableOpacity, ImageBackground } from 'react-native'
 import React from 'react'
+import Animated, { FadeInLeft } from 'react-native-reanimated';
 
 const CategoryLink = (props) => {
   function titleCase(str) {
@@ -9,7 +10,7 @@ const CategoryLink = (props) => {
   }
 
   return (
-    <View style={{flex: 1, marginLeft: '2.5%',borderRadius:25, overflow:'hidden'}}>
+    <Animated.View entering={FadeInLeft.delay(200*props.timescale)} style={{flex: 1, marginLeft: '2.5%',borderRadius:25, overflow:'hidden'}}>
       <TouchableOpacity onPress={() => props.navigation.navigate('PlantsByCategory', {name:props.type, navigation:props.navigation})}>
           <ImageBackground
           style={{height:160}}
@@ -36,7 +37,7 @@ const CategoryLink = (props) => {
             </View>
         </ImageBackground>
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   )
 }
 

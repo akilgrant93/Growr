@@ -123,16 +123,16 @@ const SearchPlant = ({route, navigation}) => {
       {plants.length < 1 ?
       <View style={{marginTop: '3%',marginLeft: '2.5%', width: '92.5%'}}>
         <View style={{flexDirection:'row'}}>
-        <CategoryLink navigation={navigation} type='fruit'/>
-        <CategoryLink navigation={navigation} type='vegetable'/>
+        <CategoryLink timescale={1} navigation={navigation} type='fruit'/>
+        <CategoryLink timescale={2}  navigation={navigation} type='vegetable'/>
         </View>
         <View style={{flexDirection:'row', paddingTop: '2.5%'}}>
-        <CategoryLink navigation={navigation} type='culinary'/>
-        <CategoryLink navigation={navigation} type='hydroponic'/>
+        <CategoryLink timescale={3}  navigation={navigation} type='culinary'/>
+        <CategoryLink timescale={4}  navigation={navigation} type='hydroponic'/>
         </View>
         <View style={{flexDirection:'row', paddingTop: '2.5%'}}>
-        <CategoryLink navigation={navigation} type='carnivorous'/>
-        <CategoryLink navigation={navigation} type='houseplant'/>
+        <CategoryLink timescale={5}  navigation={navigation} type='carnivorous'/>
+        <CategoryLink timescale={6}  navigation={navigation} type='houseplant'/>
         </View>
       </View>
       : <View/>}

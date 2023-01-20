@@ -14,7 +14,7 @@ import { ArrowUpOnSquareIcon, TrashIcon } from 'react-native-heroicons/outline'
 import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
 const UpdateModal = ({route, navigation}) => {
-  console.log(route.params.item.id)
+  console.log(route.params.item.notificationID)
 
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
@@ -24,6 +24,7 @@ const UpdateModal = ({route, navigation}) => {
   const [hoverValue, setHoverValue]= useState(0)
   const [calendars, setCalendars]= useState([])
   const [bottomReached, setBottomReached] = useState(false)
+  const [toggled, setToggled] = useState(false)
 
   // const diseasesObj = {
   //   rootRot:'Root Rot',
@@ -52,6 +53,7 @@ const UpdateModal = ({route, navigation}) => {
 
   const updatePlant = (plant, indoors, potted, hydroponic) => {
     let succulent
+
 
     if(plant.tags.includes('Succulent') || plant.tags.includes('Cactus') || plant.family === 'Cactaceae'){
       succulent = true
@@ -98,11 +100,12 @@ const UpdateModal = ({route, navigation}) => {
 
     if(plant.commonName){
       updateUserPlant(
-        route.params.item.id,
-        plant.commonName,
+        route.params.item.name,
+        plant,
         isPotted,
         isIndoors,
-        isHydroponic, '', base, sliderValue
+        isHydroponic,
+        succulent,'', base, sliderValue
       )
     }
     setIsPotted(false)
@@ -112,11 +115,12 @@ const UpdateModal = ({route, navigation}) => {
   }
 
    const updateUserPlant = async(
-    id,
     name,
+    plant,
     isPotted,
     isIndoors,
-    isHydroponic, notes, notificationInterval, lastWatered) => {
+    isHydroponic,
+    isSucculent, notes, notificationInterval, lastWatered) => {
 
     const one_day=1000*60*60*24;
     const now = moment()
@@ -131,9 +135,11 @@ const UpdateModal = ({route, navigation}) => {
 
     let notificationID
 
-    const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
-    const currentUserPlant = plantsRef.doc(id)
 
+    const plantsRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants')
+    const currentUserPlant = plantsRef.doc(route.params.item.id)
+
+    console.log('testing')
     //no notification immediate alert
     if(difference_days >= notificationInterval){
       notificationID = null
@@ -145,6 +151,15 @@ const UpdateModal = ({route, navigation}) => {
 
     const difference_ms = date2_ms - date1_ms;
     const difference_days = Math.round(difference_ms/one_day)
+
+    //if the date slider OR notificationinterval has changed has been moved (cancel old notification if it exists)
+    if(toggled || route.params.item.notificationInterval === notificationInterval){
+      console.log('?????')
+
+      // await Notifications.cancelScheduledNotificationAsync(route.params.item.notificationID)
+
+      // console.log('cancelled')
+
       notificationID = await Notifications.scheduleNotificationAsync({
         content: {
           title: `${
@@ -157,15 +172,21 @@ const UpdateModal = ({route, navigation}) => {
             : 'Outdoor'} ${name}`,
           body: 'Needs water.',
           data: {
-            firestoreplantID: newUserPlantID,
+            firestoreplantID: route.params.item.id,
           }
         },
         //will need to switch seconds to days
         trigger: {
-          seconds: difference_days,
-          repeats: false
+          seconds: difference_days*60,
+          repeats: false,
         }
       })
+    }
+    //if the date slider hasn't been moved (notification data remains the same)
+    else {
+      notificationID = route.params.item.notificationID
+    }
+
     }
 
     //  const eventData = {
@@ -178,29 +199,25 @@ const UpdateModal = ({route, navigation}) => {
     //   firestoreID
     //  }
     //  addNewEvent(eventData)
+
       const plantData = {
         name,
+        id: route.params.item.id,
+        plant,
         isPotted,
         isIndoors,
         isHydroponic,
         isSucculent,
-        firestoreID,
         notes,
         notificationID,
         notificationInterval,
         nextWateringDate:nextWateringDate.valueOf(),
         lastWateringDate:lastWateringDate.valueOf(),
-        calendar:{
-          wateringDates: [lastWateringDate.valueOf()],
-          nextWateringDate:nextWateringDate.valueOf(),
-          notificationInterval,
-          name,
-          notes,
-         }
+        wateringDates: [lastWateringDate.valueOf()],
       }
 
       currentUserPlant
-      .set(plantData,{ merge: true })
+      .set(plantData, {merge: true})
       .then(() => {
         setSliderValue(0)
         setIsHydroponic(false)
@@ -325,7 +342,8 @@ useFocusEffect(
       );
       setCalendars(userCalendars)
     }
-    const plantRef = firebase.firestore().collection('plant').doc(route.params.item.plant.id)
+    // console.log(route.params.item.id)
+    const plantRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('plants').doc(route.params.item.id)
 
     plantRef.get().then((doc) => {
       if (doc.exists) {
@@ -367,6 +385,11 @@ useFocusEffect(
     .catch( error =>{
       alert('Error deleting the plant')
     })
+  }
+
+  const changeValue = (value) => {
+    setToggled(true)
+    setSliderValue(parseInt(value))
   }
 
   return (
@@ -413,9 +436,9 @@ useFocusEffect(
         </View>
 
         <View style={{width:'100%', flex:1}}>
-        <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
+        <View  style={{width: '100%', paddingVertical:15, paddingHorizontal: 15}}>
           <View style={styles.shadow}>
-          <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}]}>
+          <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 10,width: '40%'}]}>
             <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
           </View>
           </View>
@@ -429,7 +452,7 @@ useFocusEffect(
       {route.params.item.plant.description}
       </Text>
       </ScrollView>
-       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 165, right: 15}}>
+       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 175, right: 15}}>
         <FontAwesome
         style={{}}
         color='rgba(249,112,104,.75)'
@@ -440,11 +463,11 @@ useFocusEffect(
         </View>
 
            {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      <View style={[{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
+      <View style={[{ paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
             <Slider
           // value={value}
               style={{marginTop: 5,width:'90%', alignSelf:'center'}}
-              onValueChange={value => setSliderValue(parseInt(value))}
+              onValueChange={value => changeValue(value)}
               minimumTrackTintColor={setMaxSliderValue() === sliderValue || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ? '#F97068' : '#545B98'}
               //refactor for succulents when added to db
               // maximumValue={route.params.item.plant.tags.includes('Cactus') || route.params.item.plant.tags.includes('Succulent') || isHydroponic ? 15 : 8}
@@ -475,7 +498,7 @@ useFocusEffect(
           : 'over two weeks ago'
           }</Text>
 
-            {!isHydroponic && sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
+            {!isHydroponic && sliderValue === setMaxSliderValue() || !isHydroponic && moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') <= 0 ?
                   <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5,marginLeft: 5,}, styles.shadow]}>
                     <Text style={{color:'white', textAlign:'center'}}>Needs water</Text>
                   </Animated.View>
@@ -491,7 +514,7 @@ useFocusEffect(
       </View>
 
         {/* icons needed */}
-        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:15, width: '100%'}}>
+        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 1, borderTopColor: 'rgba(3, 71, 50, .25)',borderTopWidth: 1, paddingVertical:15, width: '100%'}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
         size={20}
@@ -542,7 +565,7 @@ useFocusEffect(
 
               {/* tag map ternary needs flexwrap*/}
               {route.params.item.plant.tags.length > 0
-        ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, padding:10, paddingHorizontal:15, width: '100%'}]}>
+        ?<View style={[styles.tagBox, {padding:10, paddingHorizontal:15, width: '100%'}]}>
        {route.params.item.plant.tags.map((tag, idx) => {
        return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
         })}
