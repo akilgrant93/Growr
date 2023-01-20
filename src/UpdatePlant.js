@@ -154,9 +154,9 @@ const UpdateModal = ({route, navigation}) => {
 
     //if the date slider OR notificationinterval has changed has been moved (cancel old notification if it exists)
     if(toggled || route.params.item.notificationInterval === notificationInterval){
-      console.log('?????')
+      // console.log('?????')
 
-      // await Notifications.cancelScheduledNotificationAsync(route.params.item.notificationID)
+      await Notifications.cancelScheduledNotificationAsync(route.params.item.notificationID)
 
       // console.log('cancelled')
 
