@@ -445,7 +445,7 @@ useFocusEffect(
       {route.params.item.plant.description}
       </Text>
       </ScrollView>
-       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 175, right: 15}}>
+       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 185, right: 15}}>
         <FontAwesome
         style={{}}
         color='rgba(249,112,104,.75)'
