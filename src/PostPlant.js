@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Keyboard, Platform, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Keyboard, Platform, ImageBackground, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
@@ -350,183 +350,166 @@ const pickImage = async () => {
       </View>
         <View style={[styles.shadow, {height: '92.5%'}]}>
         <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#82A398'}}>
-        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .7)'}}>
-      <Image source={{ uri: route.params.item.imgSrc }} style={{width: 300, height: 300}} />
-      <View style={{flex:1}}>
+        <View style={{flexDirection:'row', backgroundColor:'#82A398'}}>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
-      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
-        Family
-      </Text>
-      <Text style={{color:'white'}}>
-        {route.params.item.family}
-      </Text>
-      </View>
+<ImageBackground source={{ uri: route.params.item.imgSrc }} style={{width: '100%', height: 270}}>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
-      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
-        Genus
-      </Text>
-      <Text style={{color:'white'}}>
-        {route.params.item.genus}
-      </Text>
-      </View>
+<View style={{flex:1, justifyContent:'center', backgroundColor:'rgba(0,0,0,.25)'}}>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
-      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
-        Species
-      </Text>
-      <Text style={{color:'white'}}>
-        {route.params.item.species}
-      </Text>
-      </View>
+<View style={{justifyContent:'space-between', paddingTop: 10, paddingHorizontal: 10, justifyContent:'center', alignItems:'center'}}>
+<Text style={{color:'white', textAlign:'center', paddingVertical: '17.5%', fontWeight:'800', fontSize: 24}}>
+  {route.params.item.commonName}
+</Text>
+<View>
+{route.params.item.tags.length > 0
+  ?<View style={[styles.tagBox, {padding:10, paddingHorizontal:15, width: '100%'}]}>
+ {route.params.item.tags.map((tag, idx) => {
+ return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
+  })}
+  </View>
+  : <View/>}
+</View>
+</View>
 
-      </View>
 
-        </View>
+</View>
 
-        <View style={{width:'100%', flex:1}}>
-        <View  style={{width: '100%', paddingVertical:15, borderBottomColor: 'rgba(3, 71, 50, .25)',borderBottomWidth: 2, paddingHorizontal: 15}}>
-          <View style={styles.shadow}>
-          <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 5,width: '40%'}]}>
-            <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
+</ImageBackground>
+
+  </View>
+
+  <View style={{width:'100%', flex:1}}>
+  <View  style={{width: '100%', paddingBottom: 5, paddingHorizontal: 15, paddingTop: 7.5}}>
+    <View style={styles.shadow}>
+    <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 10,width: '40%'}]}>
+      <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
+    </View>
+    </View>
+<ScrollView style={[{height:140, padding:15, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
+  if (isCloseToBottom(nativeEvent)) {
+  setBottomReached(true)
+  }
+  }}
+scrollEventThrottle={400}>
+<Text style={{paddingBottom: 25}}>
+{route.params.item.description}
+</Text>
+</ScrollView>
+ {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 185, right: 15}}>
+  <FontAwesome
+  style={{}}
+  color='rgba(249,112,104,.75)'
+  name='sort-desc'
+  size={30}
+  />
+</Blink>}
+  </View>
+
+     {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
+<View style={[{ paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
+      <Slider
+    // value={value}
+        style={{width:'80%', alignSelf:'center'}}
+        onValueChange={value => (setSliderValue(parseInt(value)))}
+        minimumTrackTintColor={setMaxSliderValue() === sliderValue || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ? '#F97068' : '#545B98'}
+        //refactor for succulents when added to db
+        // maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
+        maximumValue={setMaxSliderValue()}
+        maximumTrackTintColor={'#F97068'}
+        minimumValue={0}
+        value={0}
+        onSlidingStart={value => setHoverValue(parseInt(value))}
+        step={1}
+          />
+          <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:25}}>
+
+      <Text style={{textAlign:'center', fontWeight:'bold',color:'#545B98'}}>{isHydroponic ? 'Resevior water changed' : 'Watered'} {
+    sliderValue === 0
+    ? 'today'
+    : sliderValue === 1
+    ? 'yesterday'
+    : sliderValue > 1 && sliderValue <= 6
+    ? `${sliderValue} days ago`
+    : sliderValue === 7
+    ? 'a week ago'
+    : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 15
+    ? `${sliderValue} days ago`
+    : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 8
+    ? `over a week ago`
+    : sliderValue === 14
+    ? 'two weeks ago'
+    : 'over two weeks ago'
+    }</Text>
+
+      {!isHydroponic && sliderValue === setMaxSliderValue() || !isHydroponic && moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') <= 0 ?
+            <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5,marginLeft: 5,}, styles.shadow]}>
+              <Text style={{color:'white', textAlign:'center'}}>Needs water</Text>
+            </Animated.View>
+            : null}
           </View>
-          </View>
-      <ScrollView style={[{height:120, padding:15, marginBottom: 5, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
-        if (isCloseToBottom(nativeEvent)) {
-        setBottomReached(true)
-        }
-        }}
-      scrollEventThrottle={400}>
-      <Text style={{paddingBottom: 25}}>
-      {route.params.item.description}
-      </Text>
-      </ScrollView>
-       {!bottomReached && <Blink delay={500} duration={1000} style={{position:'absolute', top: 165, right: 15}}>
-        <FontAwesome
-        style={{}}
-        color='rgba(249,112,104,.75)'
-        name='sort-desc'
-        size={30}
-        />
-      </Blink>}
-        </View>
+          {isHydroponic && <View style={{height:25, marginTop: 5}}>
+            {sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
+            <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5}, styles.shadow]}>
+              <Text style={{color:'white', textAlign:'center'}}>Needs resevior change</Text>
+            </Animated.View>
+            : null}
+          </View>}
+</View>
 
-           {/* slider form control will go here and load conditionally based on plant.tags OR isHydroponic state */}
-      <View style={[{borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
-            <Slider
-          // value={value}
-              style={{marginTop: 5,width:'90%', alignSelf:'center'}}
-              onValueChange={value => setSliderValue(parseInt(value))}
-              minimumTrackTintColor={setMaxSliderValue() === sliderValue || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ? '#F97068' : '#545B98'}
-              //refactor for succulents when added to db
-              // maximumValue={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') || isHydroponic ? 15 : 8}
-              maximumValue={setMaxSliderValue()}
-              minimumValue={0}
-              value={0}
-              onSlidingStart={value => setHoverValue(parseInt(value))}
-              step={1}
-                />
-                <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', height:25}}>
+  {/* icons needed */}
+  <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderTopColor: 'rgba(3, 71, 50, .25)',borderTopWidth: 1, paddingVertical:15, width: '100%'}}>
+  <BouncyCheckbox
+  style={{marginRight: 15}}
+  size={20}
+  textContainerStyle={{marginLeft: 5}}
+  disableBuiltInState
+  textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+  fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+  unfillColor="#FFFFFF"
+  text="Potted"
+  bounceEffectIn={isHydroponic ? 1 : 0.8}
+  bounceEffectOut={1}
+  iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+  innerIconStyle={{ borderWidth: 2 }}
+  onPress = {isHydroponic ? '' :togglePotted}
+  isChecked = {isPotted}/>
+  <BouncyCheckbox
+  style={{marginRight: 15}}
+  size={20}
+  textContainerStyle={{marginLeft: 5}}
+  disableBuiltInState
+  textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+  fillColor={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
+  unfillColor="#FFFFFF"
+  text="Hydroponic"
+  bounceEffectIn={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? 1: 0.8}
+  iconStyle={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+  innerIconStyle={{ borderWidth: 2 }}
+  onPress = {route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? '' :toggleHydroponic}
+  isChecked = {isHydroponic}/>
+  <BouncyCheckbox
+  size={20}
+  textContainerStyle={{marginLeft: 5}}
+  disableBuiltInState
+  textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
+  fillColor={isHydroponic?"#E0E0E0":"#004d00"}
+  unfillColor="#FFFFFF"
+  text="Indoors"
+  bounceEffectIn={isHydroponic ? 1: 0.8}
+  bounceEffectOut={1}
+  bounceEffect={0}
+  iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
+  innerIconStyle={{ borderWidth: 2 }}
+  onPress = {isHydroponic?'':toggleIndoors}
+  isChecked = {isIndoors}/>
+</View>
 
-            <Text style={{textAlign:'center', fontWeight:'bold',color:'#545B98'}}>{isHydroponic ? 'Resevior water changed' : 'Watered'} {
-          sliderValue === 0
-          ? 'today'
-          : sliderValue === 1
-          ? 'yesterday'
-          : sliderValue > 1 && sliderValue <= 6
-          ? `${sliderValue} days ago`
-          : sliderValue === 7
-          ? 'a week ago'
-          : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 15
-          ? `${sliderValue} days ago`
-          : sliderValue > 7 && sliderValue <= 13 && setMaxSliderValue() === 8
-          ? `over a week ago`
-          : sliderValue === 14
-          ? 'two weeks ago'
-          : 'over two weeks ago'
-          }</Text>
+  {/* notes textInput */}
+  {/* <View style={{width: '90%'}}>
+      <TextInput placeholder='Write some notes about your plant' style={{marginTop: 5,padding: 5,width: 340}}/>
+  </View> */}
 
-            {!isHydroponic && sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
-                  <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5,marginLeft: 5,}, styles.shadow]}>
-                    <Text style={{color:'white', textAlign:'center'}}>Needs water</Text>
-                  </Animated.View>
-                  : null}
-                </View>
-                {isHydroponic && <View style={{height:25, marginTop: 5}}>
-                  {sliderValue === setMaxSliderValue() || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ?
-                  <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5}, styles.shadow]}>
-                    <Text style={{color:'white', textAlign:'center'}}>Needs resevior change</Text>
-                  </Animated.View>
-                  : null}
-                </View>}
-      </View>
-
-        {/* icons needed */}
-        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, paddingVertical:15, width: '100%'}}>
-        <BouncyCheckbox
-        style={{marginRight: 15}}
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
-        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Potted"
-        bounceEffectIn={isHydroponic ? 1 : 0.8}
-        bounceEffectOut={1}
-        iconStyle={isHydroponic ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic ? '' :togglePotted}
-        isChecked = {isPotted}/>
-        <BouncyCheckbox
-        style={{marginRight: 15}}
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
-        fillColor={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent')?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Hydroponic"
-        bounceEffectIn={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? 1: 0.8}
-        iconStyle={route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {route.params.item.tags.includes('Cactus') || route.params.item.tags.includes('Succulent') ? '' :toggleHydroponic}
-        isChecked = {isHydroponic}/>
-        <BouncyCheckbox
-        size={20}
-        textContainerStyle={{marginLeft: 5}}
-        disableBuiltInState
-        textStyle={{textDecorationLine: "none", fontSize: 12, color:'black'}}
-        fillColor={isHydroponic?"#E0E0E0":"#004d00"}
-        unfillColor="#FFFFFF"
-        text="Indoors"
-        bounceEffectIn={isHydroponic ? 1: 0.8}
-        bounceEffectOut={1}
-        bounceEffect={0}
-        iconStyle={isHydroponic?{ borderColor: "#E0E0E0" }:{ borderColor: "#004d00" }}
-        innerIconStyle={{ borderWidth: 2 }}
-        onPress = {isHydroponic?'':toggleIndoors}
-        isChecked = {isIndoors}/>
-      </View>
-
-
-
-              {/* tag map ternary needs flexwrap*/}
-              {route.params.item.tags.length > 0
-        ?<View style={[styles.tagBox, { borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 2, padding:10, paddingHorizontal:15, width: '100%'}]}>
-       {route.params.item.tags.map((tag, idx) => {
-       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
-        })}
-        </View>
-        : <View/>}
-
-        {/* notes textInput */}
-        {/* <View style={{width: '90%'}}>
-            <TextInput placeholder='Write some notes about your plant' style={{marginTop: 5,padding: 5,width: 340}}/>
-        </View> */}
-
-        </View>
+  </View>
 
         <View style={{width: '101%', alignItems:'flex-end'}}>
       <TouchableOpacity

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Keyboard, Platform, Image, SafeAreaView, TouchableOpacity, ScrollView, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, Keyboard, Platform, SafeAreaView, TouchableOpacity, ScrollView, ImageBackground } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
