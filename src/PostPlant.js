@@ -22,8 +22,7 @@ const PostModal = ({route, navigation}) => {
   const [calendars, setCalendars]= useState([])
   const [bottomReached, setBottomReached] = useState(false)
 
-  console.log(route.params.item.id)
-
+  // imgsrc.
   // const diseasesObj = {
   //   rootRot:'Root Rot',
   //   canker:'Canker',
@@ -352,7 +351,7 @@ const pickImage = async () => {
         <View style={[styles.shadow, {height: '92.5%'}]}>
         <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#82A398'}}>
         <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .7)'}}>
-      <Image source={{ uri: route.params.item.imgSrc }} style={{width: 115, height: 115}} />
+      <Image source={{ uri: route.params.item.imgSrc }} style={{width: 300, height: 300}} />
       <View style={{flex:1}}>
 
       <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>

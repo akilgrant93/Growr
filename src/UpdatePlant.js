@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Keyboard, Platform, Image, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Keyboard, Platform, Image, SafeAreaView, TouchableOpacity, ScrollView, ImageBackground } from 'react-native'
 import BouncyCheckbox from 'react-native-bouncy-checkbox'
 import Slider from '@react-native-community/slider';
 import React, { useState, useEffect } from 'react'
@@ -400,49 +400,42 @@ useFocusEffect(
       </View>
         <View style={[styles.shadow, {height: '92.5%'}]}>
         <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#82A398'}}>
-        <View style={{flexDirection:'row', backgroundColor:'rgba(3, 71, 50, .7)'}}>
-      <Image source={{ uri: route.params.item.plant.imgSrc }} style={{width: 115, height: 115}} />
-      <View style={{flex:1}}>
+        <View style={{flexDirection:'row', backgroundColor:'#82A398'}}>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
-      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
-        Family
+      <ImageBackground source={{ uri: route.params.item.plant.imgSrc }} style={{width: '100%', height: 270}}>
+
+      <View style={{flex:1, justifyContent:'center', backgroundColor:'rgba(0,0,0,.25)'}}>
+
+      <View style={{justifyContent:'space-between', paddingTop: 10, paddingHorizontal: 10, justifyContent:'center', alignItems:'center'}}>
+      <Text style={{color:'white', textAlign:'center', paddingVertical: '17.5%', fontWeight:'800', fontSize: 24}}>
+        {route.params.item.plant.commonName}
       </Text>
-      <Text style={{color:'white'}}>
-        {route.params.item.plant.family}
-      </Text>
+      <View>
+      {route.params.item.plant.tags.length > 0
+        ?<View style={[styles.tagBox, {padding:10, paddingHorizontal:15, width: '100%'}]}>
+       {route.params.item.plant.tags.map((tag, idx) => {
+       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
+        })}
+        </View>
+        : <View/>}
+      </View>
       </View>
 
-      <View style={{flexDirection:'row', justifyContent:'space-between', borderBottomWidth: 2, borderBottomColor: 'rgba(3, 71, 50, .25)', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
-      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
-        Genus
-      </Text>
-      <Text style={{color:'white'}}>
-        {route.params.item.plant.genus}
-      </Text>
-      </View>
-
-      <View style={{flexDirection:'row', justifyContent:'space-between', paddingVertical: 10, paddingRight: 10, paddingLeft: 5}}>
-      <Text style={{fontWeight:'bold', color:'rgba(0,0,0,.25)'}}>
-        Species
-      </Text>
-      <Text style={{color:'white'}}>
-        {route.params.item.plant.species}
-      </Text>
-      </View>
 
       </View>
+
+      </ImageBackground>
 
         </View>
 
         <View style={{width:'100%', flex:1}}>
-        <View  style={{width: '100%', paddingVertical:15, paddingHorizontal: 15}}>
+        <View  style={{width: '100%', paddingBottom: 5, paddingHorizontal: 15, paddingTop: 7.5}}>
           <View style={styles.shadow}>
           <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 10,width: '40%'}]}>
             <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
           </View>
           </View>
-      <ScrollView style={[{height:120, padding:15, marginBottom: 5, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
+      <ScrollView style={[{height:140, padding:15, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
         if (isCloseToBottom(nativeEvent)) {
         setBottomReached(true)
         }
@@ -466,7 +459,7 @@ useFocusEffect(
       <View style={[{ paddingBottom:15, width: '100%', paddingHorizontal:15}]}>
             <Slider
           // value={value}
-              style={{marginTop: 5,width:'90%', alignSelf:'center'}}
+              style={{width:'80%', alignSelf:'center'}}
               onValueChange={value => changeValue(value)}
               minimumTrackTintColor={setMaxSliderValue() === sliderValue || moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') < 0 ? '#F97068' : '#545B98'}
               //refactor for succulents when added to db
@@ -514,7 +507,7 @@ useFocusEffect(
       </View>
 
         {/* icons needed */}
-        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderBottomColor: 'rgba(3, 71, 50, .25)', borderBottomWidth: 1, borderTopColor: 'rgba(3, 71, 50, .25)',borderTopWidth: 1, paddingVertical:15, width: '100%'}}>
+        <View style={{flexDirection: 'row', justifyContent:'space-evenly', alignItems:'center', borderTopColor: 'rgba(3, 71, 50, .25)',borderTopWidth: 1, paddingVertical:15, width: '100%'}}>
         <BouncyCheckbox
         style={{marginRight: 15}}
         size={20}
@@ -560,17 +553,6 @@ useFocusEffect(
         onPress = {isHydroponic?'':toggleIndoors}
         isChecked = {isIndoors}/>
       </View>
-
-
-
-              {/* tag map ternary needs flexwrap*/}
-              {route.params.item.plant.tags.length > 0
-        ?<View style={[styles.tagBox, {padding:10, paddingHorizontal:15, width: '100%'}]}>
-       {route.params.item.plant.tags.map((tag, idx) => {
-       return  <View key={idx} style={[styles.tag, styles.shadow, {marginVertical:2.5}]}><Text style={{color:'white'}}>{titleCase(tag[0].toUpperCase()+tag.slice(1))}</Text></View>
-        })}
-        </View>
-        : <View/>}
 
         {/* notes textInput */}
         {/* <View style={{width: '90%'}}>
@@ -634,7 +616,7 @@ const styles = StyleSheet.create({
   tag: {
     padding: 8,
     marginRight:5,
-    backgroundColor:'#F5928D',
+    backgroundColor:'rgba(84,91,152,.75)',
     borderRadius: '5%'
   }
 })

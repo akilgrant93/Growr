@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, TextInput, SafeAreaView, ImageBackground } from 'react-native'
 import React, { useState } from 'react'
 import { firebase } from '../config'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
+import { PlusCircleIcon } from 'react-native-heroicons/outline'
 const Registration = () => {
   const navigation = useNavigation()
   const [email, setEmail] = useState('')
@@ -41,29 +42,34 @@ const Registration = () => {
   }
 
   return (
+    <ImageBackground blurRadius={8} style={{height: '100%', width: '100%'}} source={require(`../assets/splashBG.jpg`)}>
     <SafeAreaView style={styles.container}>
       <FontAwesome
           onPress={() => navigation.navigate('Sign In')}
-          name='angle-double-left'
-          color='#034732'
-          size={32}
-          style={{marginLeft: 10, alignSelf: 'flex-start'}}
+          name='caret-left'
+          color='#fff'
+          size={50}
+          style={{marginLeft: 20, alignSelf: 'flex-start'}}
         />
-      <View style={{alignItems:'center', justifyContent:'center', height: '100%', marginTop: -10}}>
-      <View style={{marginTop:40}}>
+      <View style={{alignItems:'center', justifyContent:'center', height: '100%', marginTop: -20, borderRadius: 25, overflow:'hidden'}}>
+      <View style={{marginTop:40, borderRadius: 25, borderWidth: 2, borderColor:'white', backgroundColor:'rgba(255,255,255,.10)', padding:20, overflow:'hidden'}}>
+      <Text style={{paddingTop:20,fontSize: 25, fontWeight: '900', color: '#fff'}}>Registration</Text>
         <TextInput
+          placeholderTextColor='white'
           style={styles.textInput}
           placeholder='First Name'
           onChangeText={(firstName) => setFirstName(firstName)}
           autoCorrect={false}
         />
         <TextInput
+          placeholderTextColor='white'
           style={styles.textInput}
           placeholder='Last Name'
           onChangeText={(lastName) => setLastName(lastName)}
           autoCorrect={false}
         />
         <TextInput
+          placeholderTextColor='white'
           style={styles.textInput}
           placeholder='Email'
           onChangeText={(email) => setEmail(email)}
@@ -72,6 +78,7 @@ const Registration = () => {
           keyboardType='email-address'
         />
         <TextInput
+          placeholderTextColor='white'
           style={styles.textInput}
           placeholder='Password'
           onChangeText={(password) => setPassword(password)}
@@ -79,21 +86,17 @@ const Registration = () => {
           autoCapitalize='none'
           secureTextEntry={true}
         />
-      </View>
       <TouchableOpacity
         onPress={() => registerUser(email,password,firstName,lastName)}
-        style={[styles.button, styles.shadow]}
+        style={[{marginTop: 10},styles.shadow]}
       >
-        <Text style={{fontWeight:'bold',fontSize:22, color: 'white'}}>Register</Text>
-        <FontAwesome
-          name='pencil-square'
-          color='white'
-          size={22}
-          style={{marginLeft: 10}}
-        />
+        <PlusCircleIcon style={{alignSelf:'flex-end'}} color={'white'} size={50}/>
       </TouchableOpacity>
       </View>
+
+      </View>
     </SafeAreaView>
+    </ImageBackground>
   )
 }
 
@@ -103,23 +106,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-start',
-    backgroundColor:'rgba(228, 241, 228, .5)'
+    backgroundColor:'rgba(0, 0, 0, .65)'
   },
   textInput: {
-    paddingTop: 20,
-    paddingBottom: 10,
-    width: 400,
-    fontSize:  20,
+    width: 225,
+    paddingLeft: 5,
+    paddingBottom: 2,
+    fontSize:  15,
+    color: '#fff',
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
-    textAlign:'center',
-    marginBottom: 10,
+    borderBottomColor: '#fff',
+    textAlign:'left',
+    marginVertical: 20
   },
   button: {
     marginTop: 50,
     height: 70,
     width: 250,
-    backgroundColor: '#034732',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',

@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import { SunIcon, HomeModernIcon } from 'react-native-heroicons/solid'
 import  Svg, { Path, G } from 'react-native-svg'
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useNavigation } from '@react-navigation/native'
 import moment from 'moment';
 import { FontAwesome } from '@expo/vector-icons'
 import Blink from './Blink'
 import Animated, { FadeInLeft } from 'react-native-reanimated';
+
 
 
 const DashboardListItem = (props) => {
@@ -22,7 +23,7 @@ const DashboardListItem = (props) => {
                       <View style={styles.textView}>
 
                         {/* the image URI will be pulled from the wikipedia data when we recreate the database */}
-                        <Image  source={{ uri: props.item.plant.imgSrc }} style={[{ width:75, height: 101}]} />
+                        <Image  source={{ uri: linkResizer() }} style={[{ width:75, height: 101}]} />
                         <View style={{width:'60.5%', justifyContent:'space-between'}}>
                           <View>
 
