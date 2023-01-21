@@ -410,7 +410,7 @@ useFocusEffect(
       <Text style={{color:'white', textAlign:'center', paddingVertical: '17.5%', fontWeight:'800', fontSize: 24}}>
         {route.params.item.plant.commonName}
       </Text>
-      <View>
+      <View style={{alignItems:'center'}}>
       {route.params.item.plant.tags.length > 0
         ?<View style={[styles.tagBox, {padding:10, paddingHorizontal:15, width: '100%'}]}>
        {route.params.item.plant.tags.map((tag, idx) => {
@@ -418,6 +418,7 @@ useFocusEffect(
         })}
         </View>
         : <View/>}
+        {route.params.item.plant.tags.includes('carnivorous') ? <Text style={{color:'white', fontWeight:'bold'}}>*Distilled or rainwater only</Text> : null}
       </View>
       </View>
 

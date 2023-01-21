@@ -345,8 +345,8 @@ const pickImage = async () => {
   return (
     <View style={[styles.container, {backgroundColor: '#034732'}]}>
       <SafeAreaView style={{backgroundColor:'rgba(240,240,240,.25)', width:'100%', height: '100%'}}>
-      <View style={[{backgroundColor: '#545B98', position:'absolute', marginLeft: 150, width: '60%', marginTop: 35, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, height: 51, justifyContent:'center'}, styles.shadow]}>
-      <Text style={{fontSize: 15, padding:7.5, paddingLeft: 15,fontWeight:'900', color:'white', }}>My {route.params.item.commonName}</Text>
+      <View style={[{backgroundColor: '#F97068', position:'absolute', marginLeft: 150, width: '60%', marginTop: 35, borderTopLeftRadius: 25, borderBottomLeftRadius: 25, height: 51, justifyContent:'center'}, styles.shadow]}>
+      <Text style={{fontSize: 15, padding:7.5, paddingLeft: 15,fontWeight:'900', color:'white', }}>{route.params.item.commonName}</Text>
       </View>
         <View style={[styles.shadow, {height: '92.5%'}]}>
         <View style={{alignItems:'center', height: '100%', width: '90%', marginLeft: '5%', marginTop: 50, borderRadius: 25, overflow:'hidden', backgroundColor:'#82A398'}}>
@@ -360,7 +360,7 @@ const pickImage = async () => {
 <Text style={{color:'white', textAlign:'center', paddingVertical: '17.5%', fontWeight:'800', fontSize: 24}}>
   {route.params.item.commonName}
 </Text>
-<View>
+<View style={{alignItems:'center'}}>
 {route.params.item.tags.length > 0
   ?<View style={[styles.tagBox, {padding:10, paddingHorizontal:15, width: '100%'}]}>
  {route.params.item.tags.map((tag, idx) => {
@@ -368,6 +368,7 @@ const pickImage = async () => {
   })}
   </View>
   : <View/>}
+  {route.params.item.tags.includes('carnivorous') ? <Text style={{color:'white', fontWeight:'bold'}}>*Distilled or rainwater only</Text> : null}
 </View>
 </View>
 
@@ -380,9 +381,9 @@ const pickImage = async () => {
 
   <View style={{width:'100%', flex:1}}>
   <View  style={{width: '100%', paddingBottom: 5, paddingHorizontal: 15, paddingTop: 7.5}}>
-    <View style={styles.shadow}>
+    <View style={[styles.shadow, {flexDirection:'row'}]}>
     <View style={[moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') > 0 ?{backgroundColor:'#545B98'}:{backgroundColor:'#F97068'}, {borderRadius: 25, overflow:'hidden', padding: 10, marginBottom: 10,width: '40%'}]}>
-      <Text style={{fontWeight:'bold', color:'white'}}>Description: </Text>
+      <Text style={{fontWeight:'bold', color:'white'}}>Description:</Text>
     </View>
     </View>
 <ScrollView style={[{height:140, padding:15, backgroundColor:'rgba(255,255,255, .75)', borderRadius: 10}, styles.shadow]} onScroll={({nativeEvent}) => {
