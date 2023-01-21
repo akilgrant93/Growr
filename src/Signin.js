@@ -33,7 +33,7 @@ const Signin = () => {
     <View style={styles.container} >
       <View style={{marginTop:40, alignItems:'center'}}>
       <Image style={[{width: 376/2, height: 97/2}, styles.shadow]} source={require('../assets/growr-02.png')}/>
-      <LottieView style={{width: '90%'}} source={require('../assets/welcome_plants.json')} />
+      <LottieView style={{width: '90%'}} source={require('../assets/welcome_plants.json')} autoPlay loop />
       <Animated.View entering={FadeInLeft}>
         <TextInput
           placeholderTextColor='white'
@@ -59,12 +59,12 @@ const Signin = () => {
         onPress={() => signinUser(email, password)}
         style={[styles.button, styles.shadow]}
       >
-        <Text style={{fontWeight: 'bold', color:'#034732', fontSize:22}}>
+        <Text style={{fontWeight: 'bold', fontSize:22}}>
           Sign In
         </Text>
         <FontAwesome
           name='sign-in'
-          color='#034732'
+          color='#000'
           size={22}
           style={{marginLeft: 10}}
         />
@@ -103,11 +103,13 @@ const styles = StyleSheet.create({
   textInput: {
     width: 225,
     paddingLeft: 5,
+    paddingBottom: 2,
     fontSize:  15,
     color: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#fff',
-    textAlign:'left'
+    textAlign:'left',
+    marginVertical: 20
   },
   button: {
     height: 70,

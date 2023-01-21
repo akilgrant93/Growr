@@ -441,7 +441,7 @@ scrollEventThrottle={400}>
     : 'over two weeks ago'
     }</Text>
 
-      {!isHydroponic && sliderValue === setMaxSliderValue() || !isHydroponic && moment(route.params.item.nextWateringDate).startOf('day').diff(moment().startOf('day'), 'days') <= 0 ?
+      {!isHydroponic && sliderValue === setMaxSliderValue() ?
             <Animated.View exiting={FadeOutRight} entering={FadeInRight} style={[{backgroundColor:'#F97068',padding: 5, alignSelf:'center', borderRadius: 5,marginLeft: 5,}, styles.shadow]}>
               <Text style={{color:'white', textAlign:'center'}}>Needs water</Text>
             </Animated.View>

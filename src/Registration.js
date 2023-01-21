@@ -51,8 +51,8 @@ const Registration = () => {
           size={50}
           style={{marginLeft: 20, alignSelf: 'flex-start'}}
         />
-      <View style={{alignItems:'center', justifyContent:'center', height: '100%', marginTop: -20, borderRadius: 25, overflow:'hidden'}}>
-      <View style={{marginTop:40, borderRadius: 25, borderWidth: 2, borderColor:'white', backgroundColor:'rgba(255,255,255,.10)', padding:20, overflow:'hidden'}}>
+      <View style={{alignItems:'center', justifyContent:'flex-start', height: '100%', marginTop: '25%', borderRadius: 25, overflow:'hidden'}}>
+      <View style={{borderRadius: 25, borderWidth: 2, borderColor:'white', backgroundColor:'rgba(255,255,255,.10)', padding:20, overflow:'hidden'}}>
       <Text style={{paddingTop:20,fontSize: 25, fontWeight: '900', color: '#fff'}}>Registration</Text>
         <TextInput
           placeholderTextColor='white'

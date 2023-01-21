@@ -37,7 +37,7 @@ const DashboardListItem2 = (props) => {
 
                           <View style={{flexDirection:'row', width: '100%'}}>
                             <View style={[{width: '100%',  alignItems:'center'}, styles.shadow]}>
-                              <Text style={[{fontSize: 18,textAlign:'center', fontWeight: '800',color:'#fff'}, styles.shadow]}>
+                              <Text style={[{fontSize: 18,textAlign:'center', fontWeight: '800',color:'#fff', width: '95%'}, styles.shadow]}>
                                 {props.item.name}
                               </Text>
 

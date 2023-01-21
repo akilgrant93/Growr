@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View,TouchableOpacity, SafeAreaView, Switch } from 'react-native'
-import {firebase} from '../config'
+import { firebase } from '../config'
 import React, {useEffect, useState} from 'react'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -14,11 +14,9 @@ const Settings = () => {
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const [unitSystem, setUnitSystem] = useState('Imperial')
 
-  // const signOut = () => {
-  //   console.log()
-  //   navigation.navigate('Sign In')
-  //   // firebase.auth().signOut()
-  // }
+  const signOut = () => {
+    firebase.auth().signOut()
+  }
 
   const changeLocation = async() => {
     let { status } = await Location.requestForegroundPermissionsAsync();
@@ -33,7 +31,7 @@ const Settings = () => {
   }
 
   const changePassword = () => {
-    firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.uid)
+    firebase.auth().sendPasswordResetEmail(user.email)
     .then(() => {
       alert('Password reset email sent')
     }).catch((error) => {
@@ -191,18 +189,13 @@ const Settings = () => {
         </View>
 
       <TouchableOpacity
-        onPress={() => {console.log('sign out! needs to fix')}}
+        onPress={() => signOut()}
         style={styles.button}
       >
-        <View style={[styles.textBox, {borderBottomWidth:0, borderTopWidth:1, marginBottom: 10, justifyContent:'flex-start', alignItems:'center'}]}>
-        <Text style={[styles.text, {color:'#fff', fontWeight:'900', fontSize: 25, paddingRight: 5}]}>
-            Sign out
+        <View style={[styles.textBox, {borderBottomWidth:0, borderTopWidth:1,paddingRight:10, marginBottom: 10, justifyContent:'flex-end', alignItems:'center'}]}>
+        <Text style={[styles.text, {color:'#F97068', paddingRight: 15}]}>
+            Sign Out
         </Text>
-        <FontAwesome
-        color='#F97068'
-        size='25'
-        name='sign-out'
-        />
         </View>
       </TouchableOpacity>
       </View>
