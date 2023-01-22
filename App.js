@@ -155,12 +155,12 @@ function App(){
         <Stack.Screen
         name="UpdateModal"
         component={UpdatePlant}
-        options={({route}) =>
+        options={({route, navigation}) =>
         ({
           title: route.params.item.name,
           headerTitle: () => <CategoryHeader title={route.params.item.name}/>,
           headerLeft: () =>
-            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => route.params.navigation.navigate('Discover')}>
+            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => navigation.navigate('Discover')}>
             <FontAwesome
             color={'white'}
             size={24}
@@ -174,13 +174,13 @@ function App(){
         <Stack.Screen
         name="PostModal"
         component={PostPlant}
-        options={({route}) =>
+        options={({route, navigation}) =>
         // console.log(route)
         ({
           title: route.params.item.commonName,
           headerTitle: () => <CategoryHeader title={route.params.item.commonName}/>,
           headerLeft: () =>
-            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => route.params.navigation.navigate('Plants')}>
+            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => navigation.navigate('Plants')}>
             <FontAwesome
             color={'white'}
             size={24}

@@ -18,7 +18,7 @@ const DashboardListItem = (props) => {
               <View>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
-                  onPress={() => navigation.navigate('UpdateModal',{item:props.item, navigation})}>
+                  onPress={() => navigation.navigate('UpdateModal',{item:props.item})}>
                     <View style={[{ flexDirection: 'row',}]}>
                       <View style={styles.textView}>
 

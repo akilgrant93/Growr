@@ -12,7 +12,7 @@ const SearchListItem = (props) => {
                 marginBottom: 1,
                 }}>
                     <TouchableOpacity
-                    onPress={() => props.navigation.navigate('PostModal',{item:props.item.item, navigation:props.navigation})}>
+                    onPress={() => props.navigation.navigate('PostModal',{item:props.item.item})}>
                       <View style={{flexDirection: 'row',
                        overflow:'hidden', shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2, backgroundColor: '#fff'}}>
                         <View style={styles.textView}>

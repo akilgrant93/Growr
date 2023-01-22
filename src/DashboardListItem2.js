@@ -18,7 +18,7 @@ const DashboardListItem2 = (props) => {
               <View style={[styles.textView, wateringDateDifference > 0 ?{backgroundColor:'rgba(84,91,152,.35)'} : {backgroundColor:'rgba(249,112,104,.25)'}]}>
                 {/* neeeds indoors and tags modularity */}
                   <TouchableOpacity
-                  onPress={() => navigation.navigate('UpdateModal',{item:props.item, navigation})}>
+                  onPress={() => navigation.navigate('UpdateModal',{item:props.item})}>
                         <View style={{width:'100%',height: '100%',justifyContent:'center', alignItems:'center'}}>
 
                         {wateringDateDifference <= 0 ?

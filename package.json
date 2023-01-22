@@ -20,6 +20,7 @@
     "@react-navigation/drawer": "^6.5.6",
     "@react-navigation/native": "^6.0.14",
     "@react-navigation/stack": "^6.3.5",
+    "eas-cli": "^3.4.0",
     "expo": "~47.0.8",
     "expo-blur": "~12.0.1",
     "expo-calendar": "~11.0.1",

@@ -11,8 +11,10 @@ import { PlusCircleIcon } from 'react-native-heroicons/outline'
 import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 import { FontAwesome } from '@expo/vector-icons'
 import Blink from './Blink'
+import { useNavigation } from '@react-navigation/native';
 
-const PostModal = ({route, navigation}) => {
+const PostModal = ({route}) => {
+  const navigation = useNavigation()
   const [image, setImage] = useState(null);
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)

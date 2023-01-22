@@ -7,13 +7,15 @@ import * as Notifications from 'expo-notifications';
 import * as ImagePicker from 'expo-image-picker';
 import * as Calendar from "expo-calendar";
 import moment from 'moment';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Blink from './Blink'
 import { FontAwesome } from '@expo/vector-icons'
 import { ArrowUpOnSquareIcon, TrashIcon } from 'react-native-heroicons/outline'
 import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
-const UpdateModal = ({route, navigation}) => {
+const UpdateModal = ({route}) => {
+  console.log(route.params)
+  const navigation = useNavigation()
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)

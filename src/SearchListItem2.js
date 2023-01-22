@@ -14,7 +14,7 @@ const SearchListItem2 = (props) => {
                   marginTop: '4%'
                 } : null}>
                     <TouchableOpacity
-                    onPress={() => props.navigation.navigate('PostModal',{item:props.item.item, navigation:props.navigation})}>
+                    onPress={() => props.navigation.navigate('PostModal',{item:props.item.item})}>
                       <View style={{flexDirection: 'row',
                        overflow:'hidden', shadowOpacity: .25,shadowOffset: {width:1,height:1}, shadowRadius: 2}}>
                         <View style={styles.textView}>
