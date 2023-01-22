@@ -1,20 +1,15 @@
 {
   "expo": {
-    "name": "Blank Template",
-    "slug": "Growr",
-    "privacy": "public",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "name": "new",
+    "slug": "new",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#9CB2A5"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -25,12 +20,27 @@
     "ios": {
       "supportsTablet": true
     },
-    "web": {
-      "build": {
-        "babel": {
-          "include": ["@codler/react-native-keyboard-aware-scroll-view"]
-        }
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#9CB2A5"
       }
-    }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#ffffff",
+          "sounds": [
+            "./local/assets/notification-sound.wav",
+            "./local/assets/notification-sound-other.wav"
+          ]
+        }
+      ]
+    ]
   }
 }
