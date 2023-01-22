@@ -14,8 +14,6 @@ import { ArrowUpOnSquareIcon, TrashIcon } from 'react-native-heroicons/outline'
 import Animated, { FadeInRight, FadeOutRight } from 'react-native-reanimated';
 
 const UpdateModal = ({route, navigation}) => {
-  console.log(route.params.item.notificationID)
-
   const [isPotted, setIsPotted]= useState(false)
   const [isIndoors, setIsIndoors]= useState(false)
   const [isHydroponic, setIsHydroponic]= useState(false)

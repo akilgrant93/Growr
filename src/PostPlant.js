@@ -164,14 +164,14 @@ const PostModal = ({route, navigation}) => {
             : 'Outdoor'} ${name}`,
           body: 'Needs water.',
           data: {
-            firestoreplantID: newUserPlantID,
+            plant,
           }
         },
         //will need to switch seconds to days
 
         //calculate seconds such that it actually translates to days - eventually landing on the exact date at 12 PM. Change notification time function added in later updates.
         trigger: {
-          seconds: difference_days*60,
+          seconds: difference_days,
           repeats: false
         }
       })
@@ -211,9 +211,6 @@ const PostModal = ({route, navigation}) => {
         setIsIndoors(false)
         setIsPotted(false)
         Keyboard.dismiss()
-        if(difference_days <= 0){
-          alert(`Your ${name} needs water!`)
-        }
       })
       .catch((error) => {
         alert(error)

@@ -7,7 +7,7 @@ import { FontAwesome } from '@expo/vector-icons'
 import DashboardListItem from './DashboardListItem2'
 import DashboardListItem2 from './DashboardListItem'
 import Svg, { Path } from 'react-native-svg';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import Blink from './Blink'
 import Weather from './Weather';
 import Animated, { FadeInLeft } from 'react-native-reanimated';
@@ -22,6 +22,7 @@ Notifications.setNotificationHandler({
 });
 
 const Dashboard = () => {
+  const navigation = useNavigation()
   const [name, setName] = useState('')
   const [hungry, toggleHungry] = useState(false)
   const [thirsty, toggleThirsty] = useState(false)
@@ -99,7 +100,10 @@ const Dashboard = () => {
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+      // console.log('respponse',response);
+      // console.log(response.notification.request.content.data.plant)
+      navigation.navigate('UpdateModal',{item:{plant:response.notification.request.content.data.plant}, navigation})
+
     });
 
 
