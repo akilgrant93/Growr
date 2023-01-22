@@ -92,7 +92,7 @@ const customDayHeaderStyles = () => {
 const customDatesStylesCallback = date => {
   switch(date) {
     case date:
-        if(nextWateringDays.includes(moment(date).startOf('day').toString())){
+        if(nextWateringDays.includes(moment(date).startOf('day').toString()) && moment(date).startOf('day').toString() !== moment().startOf('day').toString()){
           return {
           style:{
             backgroundColor: '#034732',
@@ -106,7 +106,7 @@ const customDatesStylesCallback = date => {
             fontWeight: 'bold',
           }
         };}
-        if(wateringDays.includes(moment(date).startOf('day').toString())){
+        if(wateringDays.includes(moment(date).startOf('day').toString()) && moment(date).startOf('day').toString() !== moment().startOf('day').toString()){
           return {
           style:{
             backgroundColor: '#C9E4CA',
