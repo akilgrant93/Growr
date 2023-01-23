@@ -11,7 +11,7 @@ const CategoryLink = (props) => {
 
   return (
     <Animated.View entering={FadeInLeft.delay(200*props.timescale)} style={{flex: 1, marginLeft: '2.5%',borderRadius:25, overflow:'hidden'}}>
-      <TouchableOpacity onPress={() => props.navigation.navigate('PlantsByCategory', {name:props.type, navigation:props.navigation})}>
+      <TouchableOpacity onPress={() => props.navigation.navigate('PlantsByCategory', {name:props.type})}>
           <ImageBackground
           style={{height:160}}
           source={

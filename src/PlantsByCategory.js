@@ -5,12 +5,15 @@ import { firebase } from '../config'
 import SearchListItem from './SearchListItem'
 import SearchListItem2 from './SearchListItem2'
 import CategoryDescription from './CategoryDescription'
+import { useNavigation } from '@react-navigation/native'
+
 // import { BookOpenIcon, ArrowDownLeftIcon } from 'react-native-heroicons/solid'
 // import Animated, { withSpring, useSharedValue, useAnimatedGestureHandler, useAnimatedStyle } from 'react-native-reanimated';
 // import { TapGestureHandler } from 'react-native-gesture-handler'
 
 
-const Reminders = ({route, navigation}) => {
+const Reminders = ({route}) => {
+  const navigation = useNavigation()
   const [refreshing, setRefreshing] = useState(true);
   const [plants, setPlants] = useState([])
   const [endCursor, setEndCursor] = useState({})
