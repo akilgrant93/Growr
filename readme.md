@@ -1,6 +1,8 @@
 # Growr - for all your gardening needs
 
-##### Are you a gardening novice trying to make sure you don’t kill your first succulent? An experienced gardener who specializes in hydroponics? Well look no further - Growr is the app for you.
+![The San Juan Mountains are beautiful!](/assets/growr_mockup_sm.jpg "Mockup")
+
+## Are you a gardening novice trying to make sure you don’t kill your first succulent? An experienced gardener who specializes in hydroponics? Well look no further - Growr is the app for you.
 
 
 ### Overview
