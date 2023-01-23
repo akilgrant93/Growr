@@ -26,13 +26,13 @@ Growr is a garden tracking app that uses expo-notifications, firebase and openwe
 
 - OpenWeatherAPI and Expo-Location work together to provide real-time weather updates.
 
-![RPReplay_Final1674477801_AdobeExpress](https://user-images.githubusercontent.com/55894684/214045608-9e1896b7-f741-442f-9861-759d75f21b2f.gif)
+![RPReplay_Final1674477801_AdobeExpress](https://user-images.githubusercontent.com/55894684/214045608-9e1896b7-f741-442f-9861-759d75f21b2f.gif "OpenWeatherAPI")
 
 - Expo-Notifications are triggered to remind the user about plant care events based on on data the user provides about the plant.
 
-![RPReplay_Final1674479001_MP4_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059129-f7f4ca9b-dff3-4937-a87d-3589adece109.gif)
-![RPReplay_Final1674481357_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059149-be3de50e-fd07-47f8-ada6-babde2e84b98.gif)
-![RPReplay_Final1674496746_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214139478-4526d844-2ff5-4287-b1d0-6c1acbe6fdc7.gif)
+![RPReplay_Final1674479001_MP4_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059129-f7f4ca9b-dff3-4937-a87d-3589adece109.gif "Lottie")
+![RPReplay_Final1674481357_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059149-be3de50e-fd07-47f8-ada6-babde2e84b98.gif "Reanimated 2")
+![RPReplay_Final1674496746_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214139478-4526d844-2ff5-4287-b1d0-6c1acbe6fdc7.gif "React Native Calendar Picker")
 
 - Reanimated-2 and Lottie provide seamless and classic animations of both imagery and UI components. 
 - React-Native-Calendar-Picker provides a smooth and seamless calendar UI that helps the user track what needs to, and has been done to the plants under their care
