@@ -194,10 +194,10 @@ function App(){
         <Stack.Screen
         name="PlantsByCategory"
         component={PlantsByCategory}
-        options={({route}) => ({
+        options={({route, navigation}) => ({
           headerTitle: () => <CategoryHeader title={route.params.name}/>,
           headerLeft: () =>
-            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => route.params.navigation.navigate('Plants')}>
+            <TouchableOpacity style={{alignItems:'center', marginRight: 7, marginTop: 1, marginLeft: 3, flexDirection:'row'}} onPress={() => navigation.navigate('Plants')}>
             <FontAwesome
             color={'white'}
             size={24}
