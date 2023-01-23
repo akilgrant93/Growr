@@ -1,6 +1,6 @@
 # Growr - for all your gardening needs
 
-![The San Juan Mountains are beautiful!](/assets/growr_mockup_sm.jpg "Mockup")
+![Growr Screens](/assets/growr_mockup_sm.jpg "Growr Screens")
 
 ## Are you a gardening novice trying to make sure you don’t kill your first succulent? An experienced gardener who specializes in hydroponics? Well look no further - Growr is the app for you.
 
@@ -12,14 +12,14 @@ Growr is a garden tracking app that uses expo-notifications, firebase and openwe
 
 ### Tech Stack
 
-React-Native
-Expo
-Firebase
-OpenWeatherAPI
-REanimated-2
-React Navigation
-React-Native-Calendar-Picker
-Lottie
+- React-Native
+- Expo
+- Firebase
+- OpenWeatherAPI
+- REanimated-2
+- React Navigation
+- React-Native-Calendar-Picker
+- Lottie
 
 
 ### Features
