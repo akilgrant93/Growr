@@ -26,6 +26,8 @@ Growr is a garden tracking app that uses expo-notifications, firebase and openwe
 
 OpenWeatherAPI and Expo-Location work together to provide real-time weather updates.
 
+![RPReplay_Final1674477801_AdobeExpress](https://user-images.githubusercontent.com/55894684/214045608-9e1896b7-f741-442f-9861-759d75f21b2f.gif)
+
 Expo-Notifications are triggered to remind the user about plant care events based on on data the user provides about the plant.
 
 React-Native-Calendar-Picker provides a smooth and seamless calendar UI that helps the user track what needs to, and has been done to the plants under their care.
