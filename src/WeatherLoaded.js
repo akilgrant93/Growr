@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, Dimensions } from 'react-native'
 import React from 'react'
 import moment from 'moment';
 import Animated, { FadeInLeft } from 'react-native-reanimated';
@@ -94,8 +94,7 @@ export default WeatherLoaded
 const styles = StyleSheet.create({
   heading: {
     height: '85%',
-    width: '100%',
-    marginHorizontal: '5%',
+    width: Dimensions.get('window').width*.9,
     marginTop: '2.5%',
     borderRadius:25,
     overflow:'hidden',
@@ -104,7 +103,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     flexDirection:'row',
     overflow:'hidden',
-    width: 225 ,
+    width: '100%' ,
     paddingVertical: 5,
     paddingHorizontal: 10,
     backgroundColor:'white'
