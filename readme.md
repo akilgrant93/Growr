@@ -3,12 +3,12 @@
 ##### Are you a gardening novice trying to make sure you don’t kill your first succulent? An experienced gardener who specializes in hydroponics? Well look no further - Growr is the app for you.
 
 
-## Overview
+### Overview
 
 Growr is a garden tracking app that uses expo-notifications, firebase and openweatherapi to give users realtime data to help them water their plants at the appropriate time.
 
 
-## Tech Stack
+### Tech Stack
 
 React-Native
 Expo
@@ -20,7 +20,7 @@ React-Native-Calendar-Picker
 Lottie
 
 
-## Features
+### Features
 
 OpenWeatherAPI and Expo-Location work together to provide real-time weather updates.
 
