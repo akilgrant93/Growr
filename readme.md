@@ -34,4 +34,6 @@ Expo-Notifications are triggered to remind the user about plant care events base
 ![RPReplay_Final1674481357_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059149-be3de50e-fd07-47f8-ada6-babde2e84b98.gif)
 ![RPReplay_Final1674496746_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214139478-4526d844-2ff5-4287-b1d0-6c1acbe6fdc7.gif)
 
-REanimated-2 and Lottie provide seamless and classic animations of both imagery and UI components. React-Native-Calendar-Picker provides a smooth and seamless calendar UI that helps the user track what needs to, and has been done to the plants under their care while React Navigation gives smooth transition between screens.
+- Reanimated-2 and Lottie provide seamless and classic animations of both imagery and UI components. 
+- React-Native-Calendar-Picker provides a smooth and seamless calendar UI that helps the user track what needs to, and has been done to the plants under their care
+- React Navigation gives smooth transition between screens.
