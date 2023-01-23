@@ -24,11 +24,11 @@ Growr is a garden tracking app that uses expo-notifications, firebase and openwe
 
 ### Features
 
-OpenWeatherAPI and Expo-Location work together to provide real-time weather updates.
+- OpenWeatherAPI and Expo-Location work together to provide real-time weather updates.
 
 ![RPReplay_Final1674477801_AdobeExpress](https://user-images.githubusercontent.com/55894684/214045608-9e1896b7-f741-442f-9861-759d75f21b2f.gif)
 
-Expo-Notifications are triggered to remind the user about plant care events based on on data the user provides about the plant.
+- Expo-Notifications are triggered to remind the user about plant care events based on on data the user provides about the plant.
 
 ![RPReplay_Final1674479001_MP4_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059129-f7f4ca9b-dff3-4937-a87d-3589adece109.gif)
 ![RPReplay_Final1674481357_MOV_AdobeExpress](https://user-images.githubusercontent.com/55894684/214059149-be3de50e-fd07-47f8-ada6-babde2e84b98.gif)
